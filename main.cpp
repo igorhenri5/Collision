@@ -2,7 +2,7 @@
 #include <GL/freeglut.h>
 
 void draw(){
-    glClear (GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
     glutSwapBuffers();
 }
 
@@ -18,21 +18,18 @@ void onKeyboardDownEvent(unsigned char key, int x, int y){
     std::cout << "onKeyboardDownEvent" << std::endl;
 }
 
-void initOpenGLEnvironment(int weight, int height){
-    glClearColor (0.0, 0.0, 0.0, 0.0); //black
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0.0, weight, 0.0, height, -1.0, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+void initOpenGLEnvironment(){
+    glEnable(GL_DEPTH_TEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glClearColor(0.0f, 0.0f, 1.0f, 1.0f); // Set background frame color
 }
 
 int main(int argc, char **argv){
     int weight, height;
     weight = 512;
     height = 512;
-    std::cout << "UHAAAAA" << std::endl;
-    initOpenGLEnvironment(weight, height);
+    initOpenGLEnvironment();
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutInitWindowSize(weight, height);
