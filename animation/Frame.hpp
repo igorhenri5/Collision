@@ -5,9 +5,9 @@ class Frame{
 private:
     float *vertices;
     short *drawOrder;
-    DrawableBuffer drawableBuffer;
+    //DrawableBuffer drawableBuffer;
 public:
-    Frame(float *vertices, drawOrde *drawOrder);
+    Frame(float *vertices, short *drawOrder);
     float* getVertices();
     short* getDrawOrder();
     ~Frame();

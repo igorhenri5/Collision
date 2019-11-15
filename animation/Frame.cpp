@@ -2,7 +2,7 @@
 
 Frame::Frame(float *vertices, short *drawOrder){
     this->vertices = vertices;
-    this->drawOrder= drawOrder;
+    this->drawOrder = drawOrder;
 }
 
 float* getVertices(){
