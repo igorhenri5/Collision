@@ -1,12 +1,28 @@
 #include <iostream>
 #include <GL/freeglut.h>
+#include <vector>
+#include "drawable/IDrawable.hpp"
+
+namespace game{
+    std::vector<IDrawable *> drawables;
+}
+
+void update(){
+    for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
+        (*drawable)->update();
+    }
+}
 
 void draw(){
     glClear(GL_COLOR_BUFFER_BIT);
+    for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
+        (*drawable)->draw();
+    }
     glutSwapBuffers();
 }
 
 void mainloop(){
+    update();
     draw();
 }
 
