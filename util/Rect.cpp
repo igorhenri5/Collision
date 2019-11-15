@@ -10,12 +10,23 @@ Rect::Rect(int x, int y, int width, int height){
 int getX(){
     return this->x;
 }
+
 int getY(){
     return this->y;
 }
+
 int getWidth(){
     return this->width;
 }
+
 int getHeight(){
     return this->height;
+}
+
+int setX(int x){
+    this->x = x;
+}
+
+int setY(int y){
+    this->y = y;
 }

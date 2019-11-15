@@ -9,8 +9,9 @@ class Rectangle: IDrawable{
 private:
     Rect *rect;
     Frame *frame;
+    int displacementX, DisplacementY;
 public:
-    Rectangle(Rect *rect,  Rect *screenRect, float alpha);
+    Rectangle(Rect *rect,  Rect *screenRect, float alpha, int displacementX, int displacementY);
     virtual void draw();
     virtual void update();
     ~Rectangle();
