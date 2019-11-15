@@ -17,7 +17,7 @@ public:
 	void split();
 	void addEntity(?);
 	int getPlaceIndex(?);
-	std::vector<?> retrieve(? entity, List returnObjects);
+	std::vector<?> retrieve(? entity);
 };
 
 #endif

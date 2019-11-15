@@ -40,13 +40,11 @@ QuadTree::int getPlaceIndex(?){
 	return index;
 }
 
-//Retornar um vector com os objetos que possivelmente podem colidir com o objeto do primerio parâmetro
-QuadTree::List retrieve(? entity, List returnObjects){
+//Retornar um vector com os objetos que possivelmente podem colidir com o objeto do parametro
+QuadTree::std::vector<?>* retrieve(? entity){
 	int index = getPlaceIndex(entity);
 	if(index != -1 && nodes[0] != null){
-		return nodes[index].retrieve(entity, returnObjects);
+		return nodes[index].retrieve(entity);
 	}
-	returnObjects.addAll(objects);
-
-	return returnObjects;
+	return &returnObjects;
  }
