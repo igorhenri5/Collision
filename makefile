@@ -2,10 +2,10 @@ all: build_animation build_entities build_quadtree build_threadpool build_util b
 .PHONY: all
 
 link:
-	g++ -o main main.o -L"C:\MinGW\freeglut\lib" -lfreeglut -lopengl32 -Wl,--subsystem,windows
+	g++ -o main *.o -L"C:\MinGW\freeglut\lib" -lfreeglut -pthread -lopengl32 -Wl,--subsystem,windows
 
 build_main:
-	g++ -c -o main.o main.cpp -I"C:\MinGW\freeglut\include"
+	g++ -c main.cpp -I"C:\MinGW\freeglut\include"
 
 build_animation:
 	g++ -c animation/*.cpp
