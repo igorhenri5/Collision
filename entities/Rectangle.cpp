@@ -1,7 +1,8 @@
 #include "Rectangle.hpp"
 
-Rectangle::Rectangle(Rect *rect, Rect *screenRect, float alpha, int displacementX, int displacementY){
+Rectangle::Rectangle(Rect *rect, Rect *screenRect, float alpha, int displacementX, int displacementY, ProgramFactory *programFactory){
     int vertcesLegth, drawOrderLength;
+
     this->rect = rect;
     this->frame = new Frame(
         VerticesFactory::initVertices(&vertcesLegth, rect, screenRect, alpha),
@@ -9,17 +10,21 @@ Rectangle::Rectangle(Rect *rect, Rect *screenRect, float alpha, int displacement
         VerticesFactory::initDrawOrder(&drawOrderLength),
         drawOrderLength
     );
+
     this->displacementX = displacementX;
     this->displacementY = displacementY;
+
     this->mvpWidth = 4;
     this->mvpHeight = 4;
     this->mvp = new float[this->mvpHeight * this->mvpWidth];
     MatrixM::identity(this->mvp, this->mvpWidth, this->mvpHeight);
     this->programParams = new ProgramParams(this->frame->getDrawableBuffer(), this->mvp);
+
+    this->programFactory = programFactory;
 }
 
 void Rectangle::draw(){
-
+    GlUtil::draw(programFactory->getProgram(), this->programParams);
 }
 
 void Rectangle::update(){
