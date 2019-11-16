@@ -1,8 +1,8 @@
 #include "DrawableBuffer.hpp"
 
-DrawableBuffer::DrawableBuffer(float *vertices, int verticeLength, short *drawOrder, int drawOrderLength){
+DrawableBuffer::DrawableBuffer(GLfloat *vertices, int verticeLength, GLshort *drawOrder, int drawOrderLength){
     this->length = 2;
-    this->drawableBuffers = new int[this->length];
+    this->drawableBuffers = new GLuint[this->length];
     glGenBuffers(length, this->drawableBuffers);
     //setting vertices buffer id
     glBindBuffer(GL_ARRAY_BUFFER, this->drawableBuffers[0]);
