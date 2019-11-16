@@ -2,6 +2,7 @@
 #include "util/Rect.hpp"
 #include "entities/Rectangle.hpp"
 #include "graphics/ProgramFactory.hpp"
+#include "quadtree/QuadTree.hpp"
 #include <iostream>
 #include <vector>
 #include <time.h>

@@ -24,9 +24,25 @@ MyRectangle::MyRectangle(Rect *rect, Rect *screenRect, float alpha, int displace
     this->programFactory = programFactory;
 }
 
+Rect* MyRectangle::getRect(){
+    return this->rect;
+}
+Frame* MyRectangle::getFrame(){
+    return this->frame;
+}
+
+void MyRectangle::setRect(Rect* rect){
+    this->rect = rect;
+}
+
+void MyRectangle::setFrame(Frame* frame){
+    this->frame = frame;
+}
+
+
 void MyRectangle::draw(){
     std::cout << "draw rect" << std::endl;
-    // GlUtil::draw(programFactory->getProgram(), this->programParams);
+    //GlUtil::draw(programFactory->getProgram(), this->programParams);
 }
 
 void MyRectangle::update(){
