@@ -2,6 +2,14 @@
 #include <GL/freeglut.h>
 #include <vector>
 #include "drawable/IDrawable.hpp"
+#include <time.h>
+#include <chrono>
+#include <sys/time.h>
+#include <string.h>
+
+struct timeval tempoInicial, tempoFinal;
+float elapsedTime;
+//char buffer[64];
 
 namespace game{
     std::vector<IDrawable *> drawables;
@@ -22,8 +30,13 @@ void draw(){
 }
 
 void mainloop(){
+    gettimeofday(&tempoInicial, NULL);
     update();
     draw();
+    gettimeofday(&tempoFinal, NULL);
+    elapsedTime = ((tempoFinal.tv_sec  - tempoInicial.tv_sec) * 1000000u + tempoFinal.tv_usec - tempoInicial.tv_usec) / 1.e6;
+    //snprintf(buffer, sizeof(buffer), "%f", elapsedTime);
+    //glutSetWindowTitle(buffer);
 }
 
 void onClose(){
