@@ -16,7 +16,7 @@ QuadTree::~QuadTree(){
 void QuadTree::clear(){
 	entityList.clear();
 	for(int i=0; i<4; i++){
-		if(nodes[i] != NULL){
+		if(nodes[i] != nullptr){
 			nodes[i]->clear();
 			delete nodes[i];
 		}
@@ -37,7 +37,7 @@ void QuadTree::split(){
 
 void QuadTree::add(Rect* entity){
 
-	if(nodes[0] != NULL){
+	if(nodes[0] != nullptr){
 		int index = getPlaceIndex(entity);
 		if(index != -1){
 			nodes[index]->add(entity);
@@ -48,7 +48,7 @@ void QuadTree::add(Rect* entity){
 	entityList.push_back(entity);
 
 	if(entityList.size() > MAX_ENTITIES){
-		if(nodes[0] == NULL)
+		if(nodes[0] == nullptr)
 			split();
 
 		for(std::vector<Rect*>::iterator it = entityList.begin(); it != entityList.end(); it++){
@@ -95,7 +95,7 @@ int QuadTree::getPlaceIndex(Rect* entity){
 //Retornar um vector com os objetos que possivelmente podem colidir com o objeto do parametro
 std::vector<Rect*>* QuadTree::retrieve(Rect* entity){
 	int index = getPlaceIndex(entity);
-	if(index != -1 && nodes[0] != NULL){
+	if(index != -1 && nodes[0] != nullptr){
 		return nodes[index]->retrieve(entity);
 	}
 	return &entityList;
