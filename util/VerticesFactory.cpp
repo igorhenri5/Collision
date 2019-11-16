@@ -4,7 +4,7 @@ float VerticesFactory::pixelToGlCoordinate(int pixel, int screenSize){
     return pixel * (2.0f / screenSize) - 1.0f;
 }
 
-float* VerticesFactory::initVertices(Rect *frameRect, Rect *screenRect, float alpha){
+float* VerticesFactory::initVertices(Rect *frameRect, Rect *screenRect, float alpha, int *length){
     float *vertices = new float[12];
     vertices[0] = pixelToGlCoordinate(0, screenRect->getWidth());
     vertices[1] = pixelToGlCoordinate(frameRect->getHeight(), screenRect->getHeight());
@@ -21,10 +21,11 @@ float* VerticesFactory::initVertices(Rect *frameRect, Rect *screenRect, float al
     vertices[9] = pixelToGlCoordinate(frameRect->getWidth(), screenRect->getWidth());
     vertices[10] = pixelToGlCoordinate(frameRect->getHeight(), screenRect->getHeight());
     vertices[11] = alpha;
+    *length = 12;
     return vertices;
 }
 
-short* VerticesFactory::initDrawOrder(){
+short* VerticesFactory::initDrawOrder(int *length){
     short *drawOrder = new short[6];
     drawOrder[0] = 0;
     drawOrder[1] = 1;
@@ -32,5 +33,6 @@ short* VerticesFactory::initDrawOrder(){
     drawOrder[3] = 0;
     drawOrder[4] = 2;
     drawOrder[5] = 3;
+    *length = 6;
     return drawOrder;
 }

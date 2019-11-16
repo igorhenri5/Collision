@@ -8,10 +8,10 @@ build_main:
 	g++ -c main.cpp -I"C:\MinGW\freeglut\include"
 
 build_animation:
-	g++ -c animation/*.cpp
+	g++ -c animation/*.cpp -I"C:\MinGW\glew\include"
 
 build_entities:
-	g++ -c entities/*.cpp
+	g++ -c entities/*.cpp -I"C:\MinGW\glew\include"
 
 build_util:
 	g++ -c util/*.cpp

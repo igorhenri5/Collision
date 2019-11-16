@@ -6,7 +6,7 @@
 class DrawableBuffer {
 private:
     int length;
-    GLuint *drawableBuffers; //Array that optimizes the access of class buffers
+    GLuint *buffers; //Array that optimizes the access of class buffers
 public:
     DrawableBuffer(GLfloat *vertices, int verticeLength, GLshort *drawOrder, int drawOrderLength);
     unsigned int getVerticesId();
