@@ -1,10 +1,12 @@
 #ifndef __SHADERPROVIDER__
 #define __SHADERPROVIDER__
 
+#include <string>
+
 class ShaderProvider{
 public:
-    static const char* getVertexShader();
-    static const char* getFragmentShader();
+    static std::string getVertexShader();
+    static std::string getFragmentShader();
 };
 
 #endif

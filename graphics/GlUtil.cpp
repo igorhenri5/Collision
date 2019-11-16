@@ -1,10 +1,11 @@
 #include "GlUtil.hpp"
 
-int GlUtil::loadShader(int type, const char *shaderCode){
+int GlUtil::loadShader(int type, std::string shaderCode){
     int shader = glCreateShader(type);
+    const char *c_str = shaderCode.c_str();
     if(shader == 0)
         return 0;
-    glShaderSource(shader, 1, shaderCode, NULL);
+    glShaderSource(shader, 1, &c_str, NULL);
     glCompileShader(shader);
     return shader;
 }
@@ -33,7 +34,7 @@ void GlUtil::draw(int program, ProgramParams *programParams){
     mvpMatrixHandle = glGetUniformLocation(program, "u_mvpMatrix");
     positionHandle = glGetAttribLocation(program, "a_position");
 
-    glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
+    glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix);
 
     glBindBuffer(GL_ARRAY_BUFFER, drawableBuffer->getVerticesId());
     glVertexAttribPointer(positionHandle, vertexCoordinateAxisNumber,

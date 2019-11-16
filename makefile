@@ -23,7 +23,7 @@ build_threadpool:
 	g++ -c threadpool/*.cpp
 
 build_graphics:
-	g++ -c graphics/DrawableBuffer.cpp -I"C:\MinGW\glew\include"
+	g++ -c graphics/*.cpp -I"C:\MinGW\glew\include"
 
 clean:
 	rm -f *.o *.exe
