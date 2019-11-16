@@ -1,4 +1,5 @@
 #include "Rectangle.hpp"
+#include <iostream>
 
 MyRectangle::MyRectangle(Rect *rect, Rect *screenRect, float alpha, int displacementX, int displacementY, ProgramFactory *programFactory){
     int vertcesLegth, drawOrderLength;
@@ -24,7 +25,8 @@ MyRectangle::MyRectangle(Rect *rect, Rect *screenRect, float alpha, int displace
 }
 
 void MyRectangle::draw(){
-    GlUtil::draw(programFactory->getProgram(), this->programParams);
+    std::cout << "draw rect" << std::endl;
+    // GlUtil::draw(programFactory->getProgram(), this->programParams);
 }
 
 void MyRectangle::update(){

@@ -18,7 +18,7 @@
 #else
     #include <unistd.h>
     void sleep(unsigned milliseconds){
-        usleep(milliseconds); 
+        usleep(milliseconds);
     }
 #endif
 
@@ -29,7 +29,7 @@ char buffer[64];
 namespace game{
     Rect *screenRect;
     std::vector<IDrawable *> drawables;
-    ProgramFactory programFacory;
+    ProgramFactory programFactory;
 }
 
 void update(){
@@ -40,6 +40,8 @@ void update(){
 
 void draw(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    std::cout << "draw" << std::endl;
+    std::cout << game::drawables.size() << std::endl;
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
         (*drawable)->draw();
     }
@@ -54,9 +56,9 @@ void mainloop(){
     elapsedTime = ((tempoFinal.tv_sec  - tempoInicial.tv_sec) * 1000000u + tempoFinal.tv_usec - tempoInicial.tv_usec) / 1.e6;
     snprintf(buffer, sizeof(buffer), "%f", elapsedTime);
     glutSetWindowTitle(buffer);
-    std::cout << elapsedTime << std::endl;
+    //std::cout << elapsedTime << std::endl;
     //sleep(1000/60);
-    sleep(8);
+    //sleep(8);
 }
 
 void onKeyboardDownEvent(unsigned char key, int x, int y){
@@ -64,7 +66,12 @@ void onKeyboardDownEvent(unsigned char key, int x, int y){
 }
 
 void init(int width, int height){
+    game::screenRect = new Rect(0, 0, width, height);
     MyRectangle *rectangle;
+    Rect *rect;
+    rect = new Rect(0, 0, 16, 16);
+    rectangle = new MyRectangle(rect, game::screenRect, 0, 0, 0, &(game::programFactory));
+    game::drawables.push_back(rectangle);
 }
 
 void onClose(){
@@ -94,6 +101,7 @@ int main(int argc, char **argv){
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Programacao Paralela - TP");
     initOpenGLEnvironment(width, height);
+    init(width, height);
     glutDisplayFunc(draw);
     glutIdleFunc(mainloop);
     glutCloseFunc(onClose);
