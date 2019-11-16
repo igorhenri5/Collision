@@ -6,16 +6,14 @@ DrawableBuffer::DrawableBuffer(GLfloat *vertices, int verticeLength, GLshort *dr
     this->drawOrderLength = drawOrderLength;
     this->length = 2;
     this->buffers = new GLuint[2];
-    std::cout << "OPA" << std::endl;
     glGenBuffers(2, this->buffers);
-    std::cout << "EPA" << std::endl;
 
     //setting vertices buffer id
-    // glBindBuffer(GL_ARRAY_BUFFER, this->buffers[0]);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * verticeLength, vertices, GL_DYNAMIC_DRAW);
-    // //setting drawOrder buffer id
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->buffers[1]);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLshort) * drawOrderLength, drawOrder, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, this->buffers[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * verticeLength, vertices, GL_DYNAMIC_DRAW);
+    //setting drawOrder buffer id
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->buffers[1]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLshort) * drawOrderLength, drawOrder, GL_STATIC_DRAW);
 }
 
 unsigned int DrawableBuffer::getVerticesId() {
