@@ -1,17 +1,21 @@
 #include "DrawableBuffer.hpp"
+#include <iostream>
 
 DrawableBuffer::DrawableBuffer(GLfloat *vertices, int verticeLength, GLshort *drawOrder, int drawOrderLength){
     this->verticesLength = verticesLength;
     this->drawOrderLength = drawOrderLength;
     this->length = 2;
     this->buffers = new GLuint[this->length];
-    glGenBuffers(length, this->buffers);
+    std::cout << "OPA" << std::endl;
+    glGenBuffers(2, this->buffers);
+    std::cout << "EPA" << std::endl;
+
     //setting vertices buffer id
-    glBindBuffer(GL_ARRAY_BUFFER, this->buffers[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * verticeLength, vertices, GL_DYNAMIC_DRAW);
-    //setting drawOrder buffer id
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->buffers[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLshort) * drawOrderLength, drawOrder, GL_STATIC_DRAW);
+    // glBindBuffer(GL_ARRAY_BUFFER, this->buffers[0]);
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * verticeLength, vertices, GL_DYNAMIC_DRAW);
+    // //setting drawOrder buffer id
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->buffers[1]);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLshort) * drawOrderLength, drawOrder, GL_STATIC_DRAW);
 }
 
 unsigned int DrawableBuffer::getVerticesId() {

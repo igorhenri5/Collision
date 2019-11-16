@@ -25,11 +25,20 @@
 struct timeval tempoInicial, tempoFinal;
 float elapsedTime;
 char buffer[64];
+bool initFlag = true;
 
 namespace game{
     Rect *screenRect;
     std::vector<IDrawable *> drawables;
     ProgramFactory programFactory;
+}
+
+void init(){
+    MyRectangle *rectangle;
+    Rect *rect;
+    rect = new Rect(0, 0, 16, 16);
+    rectangle = new MyRectangle(rect, game::screenRect, 0, 0, 0, &(game::programFactory));
+    game::drawables.push_back(rectangle);
 }
 
 void update(){
@@ -40,6 +49,10 @@ void update(){
 
 void draw(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    if(initFlag){
+        init();
+        initFlag = false;
+    }
     std::cout << "draw" << std::endl;
     std::cout << game::drawables.size() << std::endl;
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
@@ -65,15 +78,6 @@ void onKeyboardDownEvent(unsigned char key, int x, int y){
     std::cout << "onKeyboardDownEvent" << std::endl;
 }
 
-void init(int width, int height){
-    game::screenRect = new Rect(0, 0, width, height);
-    MyRectangle *rectangle;
-    Rect *rect;
-    rect = new Rect(0, 0, 16, 16);
-    rectangle = new MyRectangle(rect, game::screenRect, 0, 0, 0, &(game::programFactory));
-    game::drawables.push_back(rectangle);
-}
-
 void onClose(){
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
         delete (*drawable);
@@ -95,13 +99,14 @@ int main(int argc, char **argv){
     width = 512;
     height = 512;
 
+    game::screenRect = new Rect(0, 0, width, height);
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutInitWindowSize(width, height);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Programacao Paralela - TP");
     initOpenGLEnvironment(width, height);
-    init(width, height);
     glutDisplayFunc(draw);
     glutIdleFunc(mainloop);
     glutCloseFunc(onClose);
