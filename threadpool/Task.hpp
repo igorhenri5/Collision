@@ -3,8 +3,6 @@
 
 #include <vector>
 #include "MasterFlag.hpp"
-#include "Partition.hpp"
-#include "Collection.hpp"
 
 class Task{
 protected:

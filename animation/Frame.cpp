@@ -5,11 +5,11 @@ Frame::Frame(float *vertices, short *drawOrder){
     this->drawOrder = drawOrder;
 }
 
-float* getVertices(){
+float* Frame::getVertices(){
     return this->vertices;
 }
 
-short* getDrawOrder(){
+short* Frame::getDrawOrder(){
     return this->drawOrder;
 }
 

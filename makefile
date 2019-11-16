@@ -1,4 +1,4 @@
-all: build_util build_quadtree build_main link
+all: build_animation build_quadtree build_threadpool build_util build_main link
 .PHONY: all
 
 link:
@@ -7,11 +7,20 @@ link:
 build_main:
 	g++ -c -o main.o main.cpp -I"C:\MinGW\freeglut\include"
 
+build_animation:
+	g++ -c animation/*.cpp
+
+build_entities:
+	g++ -c entities/*.cpp
+
 build_util:
-	g++ -c -o Rect.o util/Rect.cpp
+	g++ -c util/*.cpp
 
 build_quadtree:
-	g++ -c -o QuadTree.o quadtree/QuadTree.cpp
+	g++ -c quadtree/*.cpp
+
+build_threadpool:
+	g++ -c threadpool/*.cpp
 
 build_framework:
 	g++ -c -o ShaderProvider.o framework/ShaderProvider.cpp
