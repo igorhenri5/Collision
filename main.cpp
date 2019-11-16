@@ -10,9 +10,21 @@
 #include <GL/freeglut.h>
 #include <string.h>
 
+#ifdef _WIN32
+    #include <windows.h>
+    void sleep(unsigned milliseconds){
+        Sleep(milliseconds);
+    }
+#else
+    #include <unistd.h>
+    void sleep(unsigned milliseconds){
+        usleep(milliseconds); 
+    }
+#endif
+
 struct timeval tempoInicial, tempoFinal;
 float elapsedTime;
-//char buffer[64];
+char buffer[64];
 
 namespace game{
     Rect *screenRect;
@@ -40,8 +52,11 @@ void mainloop(){
     draw();
     gettimeofday(&tempoFinal, NULL);
     elapsedTime = ((tempoFinal.tv_sec  - tempoInicial.tv_sec) * 1000000u + tempoFinal.tv_usec - tempoInicial.tv_usec) / 1.e6;
-    //snprintf(buffer, sizeof(buffer), "%f", elapsedTime);
-    //glutSetWindowTitle(buffer);
+    snprintf(buffer, sizeof(buffer), "%f", elapsedTime);
+    glutSetWindowTitle(buffer);
+    std::cout << elapsedTime << std::endl;
+    //sleep(1000/60);
+    sleep(8);
 }
 
 void onKeyboardDownEvent(unsigned char key, int x, int y){
