@@ -2,7 +2,9 @@
 #define __QTREE__
 
 #include <vector>
+#include "../util/Rect.hpp"
 #define MAX_ENTITIES 4
+
 class QuadTree{
 private:
 	QuadTree** nodes;
@@ -11,7 +13,7 @@ private:
 	int level;
 
 public:
-	QuadTree(int);
+	QuadTree(int level, Rect* bounds);
 	~QuadTree();
 
 	void clear();

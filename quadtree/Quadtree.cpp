@@ -1,5 +1,4 @@
 #include "Quadtree.hpp"
-#include "Rect.hpp"
 
 QuadTree::QuadTree(int level, Rect* bounds){
 	this->nodes  = new QuadTree[4];

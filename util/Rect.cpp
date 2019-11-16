@@ -7,26 +7,26 @@ Rect::Rect(int x, int y, int width, int height){
     this->height = height;
 }
 
-int getX(){
+int Rect::getX(){
     return this->x;
 }
 
-int getY(){
+int Rect::getY(){
     return this->y;
 }
 
-int getWidth(){
+int Rect::getWidth(){
     return this->width;
 }
 
-int getHeight(){
+int Rect::getHeight(){
     return this->height;
 }
 
-int setX(int x){
+int Rect::setX(int x){
     this->x = x;
 }
 
-int setY(int y){
+int Rect::setY(int y){
     this->y = y;
 }
