@@ -25,7 +25,6 @@
 struct timeval tempoInicial, tempoFinal;
 float elapsedTime;
 char buffer[64];
-bool initFlag = true;
 
 namespace game{
     Rect *screenRect;
