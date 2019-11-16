@@ -5,7 +5,7 @@ DrawableBuffer::DrawableBuffer(GLfloat *vertices, int verticeLength, GLshort *dr
     this->verticesLength = verticesLength;
     this->drawOrderLength = drawOrderLength;
     this->length = 2;
-    this->buffers = new GLuint[this->length];
+    this->buffers = new GLuint[2];
     std::cout << "OPA" << std::endl;
     glGenBuffers(2, this->buffers);
     std::cout << "EPA" << std::endl;

@@ -33,7 +33,7 @@ namespace game{
     ProgramFactory programFactory;
 }
 
-void init(){
+void initDrawables(){
     MyRectangle *rectangle;
     Rect *rect;
     rect = new Rect(0, 0, 16, 16);
@@ -49,10 +49,6 @@ void update(){
 
 void draw(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    if(initFlag){
-        init();
-        initFlag = false;
-    }
     std::cout << "draw" << std::endl;
     std::cout << game::drawables.size() << std::endl;
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
@@ -106,7 +102,9 @@ int main(int argc, char **argv){
     glutInitWindowSize(width, height);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Programacao Paralela - TP");
+    glewInit();
     initOpenGLEnvironment(width, height);
+    initDrawables();
     glutDisplayFunc(draw);
     glutIdleFunc(mainloop);
     glutCloseFunc(onClose);
