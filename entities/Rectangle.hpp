@@ -14,7 +14,7 @@ private:
     Frame *frame;
     int mvpWidth, mvpHeight, displacementX, displacementY;
     ProgramParams *programParams;
-    float **mvp;
+    float *mvp;
 public:
     Rectangle(Rect *rect,  Rect *screenRect, float alpha, int displacementX, int displacementY);
     virtual void draw();

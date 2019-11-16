@@ -1,6 +1,8 @@
 #include "DrawableBuffer.hpp"
 
 DrawableBuffer::DrawableBuffer(GLfloat *vertices, int verticeLength, GLshort *drawOrder, int drawOrderLength){
+    this->verticesLength = verticesLength;
+    this->drawOrderLength = drawOrderLength;
     this->length = 2;
     this->buffers = new GLuint[this->length];
     glGenBuffers(length, this->buffers);
@@ -18,6 +20,14 @@ unsigned int DrawableBuffer::getVerticesId() {
 
 unsigned int DrawableBuffer::getDrawOrderId() {
     return this->buffers[1];
+}
+
+int DrawableBuffer::getVerticesLength(){
+    return this->verticesLength;
+}
+
+int DrawableBuffer::getDrawOrderLength(){
+    return this->drawOrderLength;
 }
 
 DrawableBuffer::~DrawableBuffer(){

@@ -13,11 +13,9 @@ Rectangle::Rectangle(Rect *rect, Rect *screenRect, float alpha, int displacement
     this->displacementY = displacementY;
     this->mvpWidth = 4;
     this->mvpHeight = 4;
-    this->mvp = new float*[this->mvpHeight];
-    for(int i = 0; i < this->mvpHeight; i++){
-        this->mvp[i] = new float[this->mvpWidth];
-    }
+    this->mvp = new float[this->mvpHeight * this->mvpWidth];
     MatrixM::identity(this->mvp, this->mvpWidth, this->mvpHeight);
+    this->programParams = new ProgramParams(this->frame->getDrawableBuffer(), this->mvp);
 }
 
 void Rectangle::draw(){
@@ -30,10 +28,8 @@ void Rectangle::update(){
 }
 
 Rectangle::~Rectangle(){
-    for(int i = 0; i < this->mvpHeight; i++){
-        delete this->mvp[i];
-    }
     delete this->mvp;
     delete this->rect;
     delete this->frame;
+    delete this->programParams;
 }

@@ -25,8 +25,8 @@ void GlUtil::draw(int program, ProgramParams *programParams){
 
     DrawableBuffer *drawableBuffer =  programParams->getDrawableBuffer();
     float *mvpMatrix = programParams->getMvpMatrix();
-    int verticesLength = programParams->getVerticesLength();
-    int drawOrderLength = programParams->getDrawOrderLength();
+    int verticesLength = drawableBuffer->getVerticesLength();
+    int drawOrderLength = drawableBuffer->getDrawOrderLength();
 
     glUseProgram(program);
 
