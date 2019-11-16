@@ -1,4 +1,4 @@
-all: build_animation build_quadtree build_threadpool build_util build_main link
+all: build_animation build_entities build_quadtree build_threadpool build_util build_main link
 .PHONY: all
 
 link:
