@@ -18,9 +18,9 @@ public:
 
 	void clear();
 	void split();
-	void add(Rect);
-	int getPlaceIndex(Rect);
-	std::vector<Rect> retrieve(Rect);
+	void add(Rect*);
+	int getPlaceIndex(Rect*);
+	std::vector<Rect*>* retrieve(Rect*);
 };
 
 #endif

@@ -10,8 +10,8 @@ public:
     int getY();
     int getWidth();
     int getHeight();
-    int setX(int x);
-    int setY(int y);
+    void setX(int x);
+    void setY(int y);
 };
 
 #endif

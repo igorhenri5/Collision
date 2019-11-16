@@ -1,7 +1,7 @@
-#include "Quadtree.hpp"
+#include "QuadTree.hpp"
 
 QuadTree::QuadTree(int level, Rect* bounds){
-	this->nodes  = new QuadTree[4];
+	this->nodes  = new QuadTree*[4];
 	this->level  = level;
 	this->bounds = bounds;
 }
@@ -29,10 +29,10 @@ void QuadTree::split(){
 	int x = (int)bounds->getX();
 	int y = (int)bounds->getY();
 
-	nodes[0] = new Quadtree(level+1, new Rectangle(x + nodeWidth, y, nodeWidth, nodeHeight));
-	nodes[1] = new Quadtree(level+1, new Rectangle(x, y, nodeWidth, nodeHeight));
-	nodes[2] = new Quadtree(level+1, new Rectangle(x, y + nodeHeight, nodeWidth, nodeHeight));
-	nodes[3] = new Quadtree(level+1, new Rectangle(x + nodeWidth, y + nodeHeight, nodeWidth, nodeHeight));
+	nodes[0] = new QuadTree(level+1, new Rect(x + nodeWidth, y, nodeWidth, nodeHeight));
+	nodes[1] = new QuadTree(level+1, new Rect(x, y, nodeWidth, nodeHeight));
+	nodes[2] = new QuadTree(level+1, new Rect(x, y + nodeHeight, nodeWidth, nodeHeight));
+	nodes[3] = new QuadTree(level+1, new Rect(x + nodeWidth, y + nodeHeight, nodeWidth, nodeHeight));
 }
 
 void QuadTree::add(Rect* entity){
@@ -40,7 +40,7 @@ void QuadTree::add(Rect* entity){
 	if(nodes[0] != NULL){
 		int index = getPlaceIndex(entity);
 		if(index != -1){
-			nodes[index]->addEntity(entity);
+			nodes[index]->add(entity);
 			return;
 		}
 	}
@@ -51,13 +51,11 @@ void QuadTree::add(Rect* entity){
 		if(nodes[0] == NULL)
 			split();
 
-		for(std::vector<int>::iterator it = entityList.begin(); it != entityList.end(); it++){
-			int index = getPlaceIndex(entityList.at(it));
+		for(std::vector<Rect*>::iterator it = entityList.begin(); it != entityList.end(); it++){
+			int index = getPlaceIndex(*it);
 			if(index != -1){
-				nodes[index]->add(it);
+				nodes[index]->add(*it);
 				entityList.erase(it);
-			}else{
-				i++;
 			}
 		}
 	}
@@ -70,8 +68,8 @@ int QuadTree::getPlaceIndex(Rect* entity){
 	double centralX = bounds->getX() + (bounds->getWidth() /2);
 	double centralY = bounds->getY() + (bounds->getHeight()/2);
 
-	boolean topQuad    = (entity->getY() < centralY && entity->getY() + entity->getHeight() < centralY);
-	boolean bottomQuad = (entity->getY() > centralY);
+	bool topQuad    = (entity->getY() < centralY && entity->getY() + entity->getHeight() < centralY);
+	bool bottomQuad = (entity->getY() > centralY);
 
 //  0 1
 //  3 2

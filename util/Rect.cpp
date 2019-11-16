@@ -23,10 +23,10 @@ int Rect::getHeight(){
     return this->height;
 }
 
-int Rect::setX(int x){
+void Rect::setX(int x){
     this->x = x;
 }
 
-int Rect::setY(int y){
+void Rect::setY(int y){
     this->y = y;
 }
