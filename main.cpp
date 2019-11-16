@@ -14,7 +14,7 @@ void update(){
 }
 
 void draw(){
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
         (*drawable)->draw();
     }
@@ -34,23 +34,25 @@ void onKeyboardDownEvent(unsigned char key, int x, int y){
     std::cout << "onKeyboardDownEvent" << std::endl;
 }
 
-void initOpenGLEnvironment(){
+void initOpenGLEnvironment(int width, int height){
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
     glClearColor(0.0f, 0.0f, 1.0f, 1.0f); // Set background frame color
+    glViewport(0, 0, width, height)
 }
 
 int main(int argc, char **argv){
-    int weight, height;
-    weight = 512;
+    int width, height;
+    width = 512;
     height = 512;
-    initOpenGLEnvironment();
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize(weight, height);
+    glutInitWindowSize(width, height);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Programacao Paralela - TP");
+    initOpenGLEnvironment(width, height);
     glutDisplayFunc(draw);
     glutIdleFunc(mainloop);
     glutCloseFunc(onClose);
