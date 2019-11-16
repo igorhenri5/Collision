@@ -5,7 +5,7 @@ link:
 	g++ -o main *.o -L"C:\MinGW\glew\lib" -L"C:\MinGW\freeglut\lib" -pthread -lglew32 -lfreeglut -lopengl32 -Wl,--subsystem,windows
 
 build_main:
-	g++ -c main.cpp -I"C:\MinGW\freeglut\include"
+	g++ -c main.cpp -I"C:\MinGW\freeglut\include" -I"C:\MinGW\glew\include"
 
 build_animation:
 	g++ -c animation/*.cpp -I"C:\MinGW\glew\include"

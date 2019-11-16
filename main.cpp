@@ -1,10 +1,11 @@
-#include <iostream>
-#include <GL/freeglut.h>
-#include <vector>
 #include "drawable/IDrawable.hpp"
+#include "graphics/ProgramFactory.hpp"
+#include <iostream>
+#include <vector>
 #include <time.h>
 #include <chrono>
 #include <sys/time.h>
+#include <GL/freeglut.h>
 #include <string.h>
 
 #ifdef _WIN32
@@ -25,6 +26,7 @@ char buffer[64];
 
 namespace game{
     std::vector<IDrawable *> drawables;
+    ProgramFactory programFacory;
 }
 
 void update(){
@@ -54,12 +56,19 @@ void mainloop(){
     sleep(8);
 }
 
-void onClose(){
-    std::cout << "onClose" << std::endl;
-}
-
 void onKeyboardDownEvent(unsigned char key, int x, int y){
     std::cout << "onKeyboardDownEvent" << std::endl;
+}
+
+void init(){
+    
+}
+
+void onClose(){
+    for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
+        delete (*drawable);
+    }
+    std::cout << "onClose" << std::endl;
 }
 
 void initOpenGLEnvironment(int width, int height){
