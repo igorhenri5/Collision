@@ -34,7 +34,7 @@ QuadTree::void split(){
 	nodes[3] = new Quadtree(level+1, new Rectangle(x + nodeWidth, y + nodeHeight, nodeWidth, nodeHeight));
 }
 
-QuadTree::void addEntity(Rect entity){
+QuadTree::void add(Rect entity){
 
 	if(nodes[0] != NULL){
 		int index = getPlaceIndex(entity);

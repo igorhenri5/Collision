@@ -7,7 +7,7 @@ class QuadTree{
 private:
 	QuadTree* nodes;
 	Rect bounds;
-	std::vector<?> entityList;
+	std::vector<Rect> entityList;
 	int level;
 
 public:
@@ -16,9 +16,9 @@ public:
 
 	void clear();
 	void split();
-	void addEntity(Rect);
+	void add(Rect);
 	int getPlaceIndex(Rect);
-	std::vector<?> retrieve(Rect);
+	std::vector<Rect> retrieve(Rect);
 };
 
 #endif
