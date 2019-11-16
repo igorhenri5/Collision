@@ -9,7 +9,7 @@
 #include "../graphics/ProgramParams.hpp"
 #include "../util/MatrixM.hpp"
 
-class Rectangle: IDrawable{
+class Rectangle: public IDrawable{
 private:
     Rect *rect;
     Frame *frame;
