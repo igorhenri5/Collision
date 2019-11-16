@@ -9,7 +9,7 @@
 #include "../graphics/ProgramParams.hpp"
 #include "../util/MatrixM.hpp"
 
-class myRectangle: public IDrawable{
+class MyRectangle: public IDrawable{
 private:
     Rect *rect;
     Frame *frame;
@@ -18,10 +18,10 @@ private:
     ProgramParams *programParams;
     float *mvp;
 public:
-    myRectangle(Rect *rect,  Rect *screenRect, float alpha, int displacementX, int displacementY, ProgramFactory *programFactory);
+    MyRectangle(Rect *rect,  Rect *screenRect, float alpha, int displacementX, int displacementY, ProgramFactory *programFactory);
     virtual void draw();
     virtual void update();
-    ~myRectangle();
+    ~MyRectangle();
 };
 
 #endif

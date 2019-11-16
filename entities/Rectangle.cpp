@@ -1,6 +1,6 @@
 #include "Rectangle.hpp"
 
-myRectangle::myRectangle(Rect *rect, Rect *screenRect, float alpha, int displacementX, int displacementY, ProgramFactory *programFactory){
+MyRectangle::MyRectangle(Rect *rect, Rect *screenRect, float alpha, int displacementX, int displacementY, ProgramFactory *programFactory){
     int vertcesLegth, drawOrderLength;
 
     this->rect = rect;
@@ -23,16 +23,16 @@ myRectangle::myRectangle(Rect *rect, Rect *screenRect, float alpha, int displace
     this->programFactory = programFactory;
 }
 
-void myRectangle::draw(){
+void MyRectangle::draw(){
     GlUtil::draw(programFactory->getProgram(), this->programParams);
 }
 
-void myRectangle::update(){
+void MyRectangle::update(){
     this->rect->setX(this->rect->getX() + this->displacementX);
     this->rect->setY(this->rect->getY() + this->displacementY);
 }
 
-myRectangle::~myRectangle(){
+MyRectangle::~MyRectangle(){
     delete this->mvp;
     delete this->rect;
     delete this->frame;

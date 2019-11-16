@@ -64,7 +64,7 @@ void onKeyboardDownEvent(unsigned char key, int x, int y){
 }
 
 void init(int width, int height){
-    myRectangle *rectangle;
+    MyRectangle *rectangle;
 }
 
 void onClose(){
