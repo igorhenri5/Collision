@@ -6,18 +6,19 @@
 class QuadTree{
 private:
 	QuadTree* nodes;
+	Rect bounds;
 	std::vector<?> entityList;
 	int level;
 
 public:
-	QuadTree(int level);
+	QuadTree(int);
 	~QuadTree();
 
 	void clear();
 	void split();
-	void addEntity(?);
-	int getPlaceIndex(?);
-	std::vector<?> retrieve(? entity);
+	void addEntity(Rect);
+	int getPlaceIndex(Rect);
+	std::vector<?> retrieve(Rect);
 };
 
 #endif
