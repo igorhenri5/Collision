@@ -1,7 +1,9 @@
 #ifndef __DRAWABLEBUFFER__
 #define __DRAWABLEBUFFER__
 
+#define GL_GLEXT_PROTOTYPES
 #include <GL/gl.h>
+#include <GL/glext.h>
 
 class DrawableBuffer {
 private:

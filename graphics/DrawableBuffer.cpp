@@ -3,13 +3,13 @@
 DrawableBuffer::DrawableBuffer(float *vertices, int verticeLength, short *drawOrder, int drawOrderLength){
     this->length = 2;
     this->drawableBuffers = new int[this->length];
-    glGenBuffers(length, this->drawableBuffers, 0);
+    glGenBuffers(length, this->drawableBuffers);
     //setting vertices buffer id
     glBindBuffer(GL_ARRAY_BUFFER, this->drawableBuffers[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Glfloat) * verticeLength, vertices, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * verticeLength, vertices, GL_DYNAMIC_DRAW);
     //setting drawOrder buffer id
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->drawableBuffers[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Glshort) * drawOrderLength, drawOrder, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLshort) * drawOrderLength, drawOrder, GL_STATIC_DRAW);
 }
 
 int DrawableBuffer::getVerticesId() {

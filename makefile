@@ -1,8 +1,8 @@
-all: build_animation build_entities build_quadtree build_threadpool build_util build_main link
+all: build_animation build_entities build_quadtree build_threadpool build_util build_graphics build_main link
 .PHONY: all
 
 link:
-	g++ -o main *.o -L"C:\MinGW\freeglut\lib" -lfreeglut -pthread -lopengl32 -Wl,--subsystem,windows
+	g++ -o main *.o -L"C:\MinGW\freeglut\lib" -pthread -lfreeglut -lopengl32 -Wl,--subsystem,windows
 
 build_main:
 	g++ -c main.cpp -I"C:\MinGW\freeglut\include"
@@ -22,9 +22,8 @@ build_quadtree:
 build_threadpool:
 	g++ -c threadpool/*.cpp
 
-build_framework:
-	g++ -c -o ShaderProvider.o framework/ShaderProvider.cpp
-	g++ -c -o DrawableBuffer.o framework/DrawableBuffer.cpp
+build_graphics:
+	g++ -c graphics/DrawableBuffer.cpp
 
 clean:
 	rm -f *.o *.exe
