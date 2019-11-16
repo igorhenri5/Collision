@@ -9,7 +9,7 @@ private:
     short *drawOrder;
     DrawableBuffer *drawableBuffer;
 public:
-    Frame(float *vertices, short *drawOrder);
+    Frame(float *vertices, int verticeLength, short *drawOrder, int drawOrderLength);
     float* getVertices();
     short* getDrawOrder();
     DrawableBuffer* getDrawableBuffer();
