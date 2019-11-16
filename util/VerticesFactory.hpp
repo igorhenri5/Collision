@@ -7,8 +7,8 @@ class VerticesFactory{
 private:
     static float pixelToGlCoordinate(int pixel, int screenSize);
 public:
-    static float* initVertices(Rect *frameRect, Rect *screenRect, float alpha);
-    static short* initDrawOrder();
+    static float* initVertices(int *length, Rect *frameRect, Rect *screenRect, float alpha);
+    static short* initDrawOrder(int *length);
 };
 
 #endif

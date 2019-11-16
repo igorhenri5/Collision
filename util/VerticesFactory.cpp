@@ -4,7 +4,7 @@ float VerticesFactory::pixelToGlCoordinate(int pixel, int screenSize){
     return pixel * (2.0f / screenSize) - 1.0f;
 }
 
-float* VerticesFactory::initVertices(Rect *frameRect, Rect *screenRect, float alpha, int *length){
+float* VerticesFactory::initVertices(int *length, Rect *frameRect, Rect *screenRect, float alpha){
     float *vertices = new float[12];
     vertices[0] = pixelToGlCoordinate(0, screenRect->getWidth());
     vertices[1] = pixelToGlCoordinate(frameRect->getHeight(), screenRect->getHeight());

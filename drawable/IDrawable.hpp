@@ -1,5 +1,5 @@
-#ifndef __DRAWABLEBUFFER__
-#define __DRAWABLEBUFFER__
+#ifndef __IDRAWABLE__
+#define __IDRAWABLE__
 
 class IDrawable{
 public:

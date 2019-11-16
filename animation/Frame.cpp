@@ -14,9 +14,9 @@ short* Frame::getDrawOrder(){
     return this->drawOrder;
 }
 
-// DrawableBuffer* Frame::getDrawableBuffer(){
-//     return this->drawableBuffer;
-// }
+DrawableBuffer* Frame::getDrawableBuffer(){
+    return this->drawableBuffer;
+}
 
 Frame::~Frame(){
     delete this->vertices;

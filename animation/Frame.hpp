@@ -12,7 +12,7 @@ public:
     Frame(float *vertices, short *drawOrder);
     float* getVertices();
     short* getDrawOrder();
-    //DrawableBuffer* getDrawableBuffer();
+    DrawableBuffer* getDrawableBuffer();
     ~Frame();
 };
 

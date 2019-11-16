@@ -1,10 +1,11 @@
 #include "Rectangle.hpp"
 
 Rectangle::Rectangle(Rect *rect, Rect *screenRect, float alpha, int displacementX, int displacementY){
+    int vertcesLegth, drawOrderLength;
     this->rect = rect;
     this->frame = new Frame(
-        VerticesFactory::initVertices(rect, screenRect, alpha),
-        VerticesFactory::initDrawOrder()
+        VerticesFactory::initVertices(&vertcesLegth, rect, screenRect, alpha),
+        VerticesFactory::initDrawOrder(&drawOrderLength)
     );
     this->displacementX = displacementX;
     this->displacementY = displacementY;
