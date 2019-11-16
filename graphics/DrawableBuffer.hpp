@@ -9,8 +9,8 @@ private:
     GLuint *drawableBuffers; //Array that optimizes the access of class buffers
 public:
     DrawableBuffer(GLfloat *vertices, int verticeLength, GLshort *drawOrder, int drawOrderLength);
-    int getVerticesId();
-    int getDrawOrderId();
+    unsigned int getVerticesId();
+    unsigned int getDrawOrderId();
     ~DrawableBuffer();
 };
 

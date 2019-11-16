@@ -12,11 +12,11 @@ DrawableBuffer::DrawableBuffer(GLfloat *vertices, int verticeLength, GLshort *dr
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLshort) * drawOrderLength, drawOrder, GL_STATIC_DRAW);
 }
 
-int DrawableBuffer::getVerticesId() {
+unsigned int DrawableBuffer::getVerticesId() {
     return this->drawableBuffers[0];
 }
 
-int DrawableBuffer::getDrawOrderId() {
+unsigned int DrawableBuffer::getDrawOrderId() {
     return this->drawableBuffers[1];
 }
 
