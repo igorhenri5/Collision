@@ -1,4 +1,6 @@
 #include "drawable/IDrawable.hpp"
+#include "util/Rect.hpp"
+#include "entities/Rectangle.hpp"
 #include "graphics/ProgramFactory.hpp"
 #include <iostream>
 #include <vector>
@@ -13,6 +15,7 @@ float elapsedTime;
 //char buffer[64];
 
 namespace game{
+    Rect *screenRect;
     std::vector<IDrawable *> drawables;
     ProgramFactory programFacory;
 }
@@ -45,14 +48,15 @@ void onKeyboardDownEvent(unsigned char key, int x, int y){
     std::cout << "onKeyboardDownEvent" << std::endl;
 }
 
-void init(){
-    
+void init(int width, int height){
+    Rectangle *rectangle;
 }
 
 void onClose(){
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
         delete (*drawable);
     }
+    delete game::screenRect;
     std::cout << "onClose" << std::endl;
 }
 
