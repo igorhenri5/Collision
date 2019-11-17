@@ -77,7 +77,7 @@ int MyRectangle::getDisplacementY(){
 
 void MyRectangle::setDisplacementY(int val){
     this->displacementY = val;
-}  
+}
 
 void MyRectangle::draw(){
     // std::cout << "draw rect" << std::endl;
@@ -100,7 +100,7 @@ void MyRectangle::update(){
 
     MatrixM::translate(this->mvp, this->mvpWidth, this->mvpHeight,
         VerticesFactory::pixelToGlCoordinateVariation(this->displacementX, this->screenRect->getWidth()),
-        VerticesFactory::pixelToGlCoordinateVariation(this->displacementX, this->screenRect->getHeight()),
+        VerticesFactory::pixelToGlCoordinateVariation(this->displacementY, this->screenRect->getHeight()),
         0);
 
 }
