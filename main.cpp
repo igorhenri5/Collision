@@ -31,9 +31,13 @@ namespace game{
     Rect *screenRect;
     std::vector<IDrawable *> drawables;
     ProgramFactory programFactory;
+    QuadTree* quadtree;
 }
 
 void initDrawables(){
+    
+    game::quadtree = new QuadTree(0, new Rect(0,0,512,512));
+    
     MyRectangle *rectangle;
     Rect *rect;
     rect = new Rect(0, 0, 16, 16);

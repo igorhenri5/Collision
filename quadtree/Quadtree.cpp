@@ -35,7 +35,7 @@ void QuadTree::split(){
 	nodes[3] = new QuadTree(level+1, new Rect(x + nodeWidth, y + nodeHeight, nodeWidth, nodeHeight));
 }
 
-void QuadTree::add(Rect* entity){
+void QuadTree::add(MyRectangle* entity){
 
 	if(nodes[0] != nullptr){
 		int index = getPlaceIndex(entity);
@@ -51,7 +51,7 @@ void QuadTree::add(Rect* entity){
 		if(nodes[0] == nullptr)
 			split();
 
-		for(std::vector<Rect*>::iterator it = entityList.begin(); it != entityList.end(); it++){
+		for(std::vector<MyRectangle*>::iterator it = entityList.begin(); it != entityList.end(); it++){
 			int index = getPlaceIndex(*it);
 			if(index != -1){
 				nodes[index]->add(*it);
@@ -62,18 +62,18 @@ void QuadTree::add(Rect* entity){
 }
 
 //Descobrir em qual subQuadrante o objeto de tipo ? se encaixaria na arvore
-int QuadTree::getPlaceIndex(Rect* entity){
+int QuadTree::getPlaceIndex(MyRectangle* entity){
 	int index = -1;
 
 	double centralX = bounds->getX() + (bounds->getWidth() /2);
 	double centralY = bounds->getY() + (bounds->getHeight()/2);
 
-	bool topQuad    = (entity->getY() < centralY && entity->getY() + entity->getHeight() < centralY);
-	bool bottomQuad = (entity->getY() > centralY);
+	bool topQuad    = (entity->getRect()->getY() < centralY && entity->getRect()->getY() + entity->getRect()->getHeight() < centralY);
+	bool bottomQuad = (entity->getRect()->getY() > centralY);
 
 //  0 1
 //  3 2
-	if(entity->getX() < centralX && entity->getX() + entity->getWidth() < centralX) {
+	if(entity->getRect()->getX() < centralX && entity->getRect()->getX() + entity->getRect()->getWidth() < centralX) {
 		if(topQuad){
 			index = 0;
 		}
@@ -81,7 +81,7 @@ int QuadTree::getPlaceIndex(Rect* entity){
 			index = 3;
 		}
 	}
-	else if(entity->getX() > centralX){
+	else if(entity->getRect()->getX() > centralX){
 		if(topQuad){
 			index = 1;
 		}
@@ -93,7 +93,7 @@ int QuadTree::getPlaceIndex(Rect* entity){
 }
 
 //Retornar um vector com os objetos que possivelmente podem colidir com o objeto do parametro
-std::vector<Rect*>* QuadTree::retrieve(Rect* entity){
+std::vector<MyRectangle*>* QuadTree::retrieve(MyRectangle* entity){
 	int index = getPlaceIndex(entity);
 	if(index != -1 && nodes[0] != nullptr){
 		return nodes[index]->retrieve(entity);
