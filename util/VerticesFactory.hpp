@@ -2,13 +2,14 @@
 #define __VERTICESFACTORY__
 
 #include "Rect.hpp"
+#include <GL/glew.h>
 
 class VerticesFactory{
 private:
-    static float pixelToGlCoordinate(int pixel, int screenSize);
+    static GLfloat pixelToGlCoordinate(int pixel, int screenSize);
 public:
-    static float* initVertices(int *length, Rect *frameRect, Rect *screenRect, float alpha);
-    static short* initDrawOrder(int *length);
+    static GLfloat* initVertices(int *length, Rect *frameRect, Rect *screenRect, float alpha);
+    static GLuint* initDrawOrder(int *length);
 };
 
 #endif

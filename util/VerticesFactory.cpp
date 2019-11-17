@@ -1,11 +1,11 @@
 #include "VerticesFactory.hpp"
 
-float VerticesFactory::pixelToGlCoordinate(int pixel, int screenSize){
-    return pixel * (2.0f / screenSize) - 1.0f;
+GLfloat VerticesFactory::pixelToGlCoordinate(int pixel, int screenSize){
+    return pixel * (2.0f / screenSize) - 1.0;
 }
 
-float* VerticesFactory::initVertices(int *length, Rect *frameRect, Rect *screenRect, float alpha){
-    float *vertices = new float[12];
+GLfloat* VerticesFactory::initVertices(int *length, Rect *frameRect, Rect *screenRect, float alpha){
+    GLfloat *vertices = new GLfloat[12];
     vertices[0] = pixelToGlCoordinate(0, screenRect->getWidth());
     vertices[1] = pixelToGlCoordinate(frameRect->getHeight(), screenRect->getHeight());
     vertices[2] = alpha;
@@ -21,12 +21,13 @@ float* VerticesFactory::initVertices(int *length, Rect *frameRect, Rect *screenR
     vertices[9] = pixelToGlCoordinate(frameRect->getWidth(), screenRect->getWidth());
     vertices[10] = pixelToGlCoordinate(frameRect->getHeight(), screenRect->getHeight());
     vertices[11] = alpha;
+
     *length = 12;
     return vertices;
 }
 
-short* VerticesFactory::initDrawOrder(int *length){
-    short *drawOrder = new short[6];
+GLuint* VerticesFactory::initDrawOrder(int *length){
+    GLuint *drawOrder = new GLuint[6];
     drawOrder[0] = 0;
     drawOrder[1] = 1;
     drawOrder[2] = 2;

@@ -4,6 +4,7 @@
 #include <string>
 #include <GL/glew.h>
 #include "ProgramParams.hpp"
+#include "GlError.hpp"
 
 class GlUtil{
 public:

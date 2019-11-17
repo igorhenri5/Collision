@@ -14,7 +14,7 @@ build_entities:
 	g++ -c entities/*.cpp -I"C:\MinGW\glew\include"
 
 build_util:
-	g++ -c util/*.cpp
+	g++ -c util/*.cpp -I"C:\MinGW\glew\include"
 
 build_quadtree:
 	g++ -c quadtree/*.cpp

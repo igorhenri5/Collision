@@ -1,6 +1,7 @@
 #ifndef __MYRECTANG__
 #define __MYRECTANG__
 
+#include <GL/glew.h>
 #include "../drawable/IDrawable.hpp"
 #include "../animation/Frame.hpp"
 #include "../util/Rect.hpp"

@@ -35,7 +35,7 @@ namespace game{
 void initDrawables(){
     MyRectangle *rectangle;
     Rect *rect;
-    rect = new Rect(0, 0, 16, 16);
+    rect = new Rect(0, 0, 64, 64);
     rectangle = new MyRectangle(rect, game::screenRect, 0, 0, 0, &(game::programFactory));
     game::drawables.push_back(rectangle);
 }
@@ -49,7 +49,7 @@ void update(){
 void draw(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     std::cout << "draw" << std::endl;
-    std::cout << game::drawables.size() << std::endl;
+    // std::cout << game::drawables.size() << std::endl;
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
         (*drawable)->draw();
     }

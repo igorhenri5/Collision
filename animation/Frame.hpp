@@ -2,16 +2,17 @@
 #define __FRAME__
 
 #include "../graphics/DrawableBuffer.hpp"
+#include <GL/glew.h>
 
 class Frame{
 private:
-    float *vertices;
-    short *drawOrder;
+    GLfloat *vertices;
+    GLuint *drawOrder;
     DrawableBuffer *drawableBuffer;
 public:
-    Frame(float *vertices, int verticeLength, short *drawOrder, int drawOrderLength);
-    float* getVertices();
-    short* getDrawOrder();
+    Frame(GLfloat *vertices, int verticeLength, GLuint *drawOrder, int drawOrderLength);
+    GLfloat* getVertices();
+    GLuint* getDrawOrder();
     DrawableBuffer* getDrawableBuffer();
     ~Frame();
 };

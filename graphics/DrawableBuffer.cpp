@@ -1,7 +1,7 @@
 #include "DrawableBuffer.hpp"
 #include <iostream>
 
-DrawableBuffer::DrawableBuffer(GLfloat *vertices, int verticeLength, GLshort *drawOrder, int drawOrderLength){
+DrawableBuffer::DrawableBuffer(GLfloat *vertices, int verticesLength, GLuint *drawOrder, int drawOrderLength){
     this->verticesLength = verticesLength;
     this->drawOrderLength = drawOrderLength;
     this->length = 2;
@@ -10,10 +10,10 @@ DrawableBuffer::DrawableBuffer(GLfloat *vertices, int verticeLength, GLshort *dr
 
     //setting vertices buffer id
     glBindBuffer(GL_ARRAY_BUFFER, this->buffers[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * verticeLength, vertices, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * verticesLength, vertices, GL_DYNAMIC_DRAW);
     //setting drawOrder buffer id
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->buffers[1]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLshort) * drawOrderLength, drawOrder, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * drawOrderLength, drawOrder, GL_STATIC_DRAW);
 }
 
 unsigned int DrawableBuffer::getVerticesId() {
