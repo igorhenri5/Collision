@@ -128,7 +128,7 @@ void initOpenGLEnvironment(int width, int height){
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f); // Set background frame color
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // Set background frame color
     glViewport(0, 0, width, height);
 }
 
