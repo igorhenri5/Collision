@@ -21,11 +21,11 @@ bool ScreenBounds::checkScreenLeft(MyRectangle* rectangle){
 }
 
 bool ScreenBounds::checkCollisionY(MyRectangle* rectangle){
-	return (rectangle->getDisplacementY() == 1 && checkScreenUp(rectangle) || rectangle->getDisplacementY() == -1 && checkScreenDown(rectangle));
+	return (rectangle->getDisplacementY() > 0 && checkScreenUp(rectangle) || rectangle->getDisplacementY() < 0 && checkScreenDown(rectangle));
 }
 
 bool ScreenBounds::checkCollisionX(MyRectangle* rectangle){
-	return (rectangle->getDisplacementX() == 1 && checkScreenRight(rectangle) || rectangle->getDisplacementX() == -1 && checkScreenLeft(rectangle));
+	return (rectangle->getDisplacementX() > 0 && checkScreenRight(rectangle) || rectangle->getDisplacementX() < 0 && checkScreenLeft(rectangle));
 }
 
 void ScreenBounds::collidesScreenBounds(MyRectangle* rectangle){
