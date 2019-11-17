@@ -46,15 +46,17 @@ void initDrawables(){
     // game::drawables.push_back(new MyRectangle(new Rect(64, 64, RECSIZE, RECSIZE), game::screenRect,   0,  0, -1, &(game::programFactory)));
     // game::drawables.push_back(new MyRectangle(new Rect(128, 128, RECSIZE, RECSIZE), game::screenRect, 0,  1,  1, &(game::programFactory)));
     // game::drawables.push_back(new MyRectangle(new Rect(192, 128, RECSIZE, RECSIZE), game::screenRect, 0,  1,  0, &(game::programFactory)));
- 
+
 
     srand(game::seed);
     int displacementX, displacementY;
-    for(int i=0; i < game::screenRect->getHeight(); i += 16){
-        displacementX = (rand() % 3) - 1;
-        displacementY = (rand() % 3) - 1;
+    for(int i=0; i < game::screenRect->getWidth(); i += 16){
+        for(int j = 0; j < game::screenRect->getHeight(); j += 64){
+            displacementX = (rand() % 3) - 1;
+            displacementY = (rand() % 3) - 1;
 
-        game::drawables.push_back(new MyRectangle(new Rect(i, i, RECSIZE, RECSIZE), game::screenRect, 0, displacementX, displacementY, &(game::programFactory)));
+            game::drawables.push_back(new MyRectangle(new Rect(i, j, RECSIZE, RECSIZE), game::screenRect, 0, displacementX, displacementY, &(game::programFactory)));
+        }
     }
 }
 
