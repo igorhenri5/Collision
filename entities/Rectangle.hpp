@@ -17,7 +17,7 @@ private:
     int mvpWidth, mvpHeight, displacementX, displacementY;
     ProgramFactory *programFactory;
     ProgramParams *programParams;
-    float *mvp;
+    float *mvpMatrix;
 public:
     MyRectangle(Rect *rect,  Rect *screenRect, float alpha, int displacementX, int displacementY, ProgramFactory *programFactory);
     Rect* getRect();
@@ -27,7 +27,7 @@ public:
     int getDisplacementX();
     void setDisplacementX(int);
     int getDisplacementY();
-    void setDisplacementY(int);    
+    void setDisplacementY(int);
     virtual void draw();
     virtual void update();
     ~MyRectangle();

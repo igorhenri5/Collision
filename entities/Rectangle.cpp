@@ -1,48 +1,33 @@
 #include "Rectangle.hpp"
-#include <iostream>
 
 MyRectangle::MyRectangle(Rect *rect, Rect *screenRect, float alpha, int displacementX, int displacementY, ProgramFactory *programFactory){
     int vertcesLegth, drawOrderLength;
     GLfloat *vertices;
     GLuint *drawOrder;
+
     this->rect = rect;
     this->screenRect = screenRect;
+
+    //init Frame
     vertices = VerticesFactory::initVertices(&vertcesLegth, rect, screenRect, alpha);
     drawOrder = VerticesFactory::initDrawOrder(&drawOrderLength);
     this->frame = new Frame(vertices, vertcesLegth, drawOrder, drawOrderLength);
 
+    //init displacement
     this->displacementX = displacementX;
     this->displacementY = displacementY;
 
+    //init mvpMatrix
     this->mvpWidth = 4;
     this->mvpHeight = 4;
-    this->mvp = new float[this->mvpHeight * this->mvpWidth];
-    MatrixM::identity(this->mvp, this->mvpWidth, this->mvpHeight);
-    MatrixM::translate(this->mvp, this->mvpWidth, this->mvpHeight,
+    this->mvpMatrix = new float[this->mvpHeight * this->mvpWidth];
+    MatrixM::identity(this->mvpMatrix, this->mvpWidth, this->mvpHeight);
+    MatrixM::translate(this->mvpMatrix, this->mvpWidth, this->mvpHeight,
         VerticesFactory::pixelToGlCoordinateVariation(rect->getX(), screenRect->getWidth()),
         VerticesFactory::pixelToGlCoordinateVariation(rect->getY(), screenRect->getHeight()),
          0);
 
-    for(int j = 0; j < 6; j++){
-        std::cout << drawOrder[j] << " ";
-    }
-    std::cout << std::endl;
-
-    for(int i = 0; i < 4; i++){
-        for(int j = 0; j < 3; j++){
-            std::cout << vertices[i*3 + j] << " ";
-        }
-        std::cout << std::endl;
-    }
-
-    for(int i = 0; i < 4; i++){
-        for(int j = 0; j < 4; j++){
-            std::cout << this->mvp[i*4 + j] << " ";
-        }
-        std::cout << std::endl;
-    }
-
-    this->programParams = new ProgramParams(this->frame->getDrawableBuffer(), this->mvp);
+    this->programParams = new ProgramParams(this->frame->getDrawableBuffer(), this->mvpMatrix);
 
     this->programFactory = programFactory;
 }
@@ -89,7 +74,7 @@ void MyRectangle::update(){
     this->rect->setX(this->rect->getX() + this->displacementX);
     this->rect->setY(this->rect->getY() + this->displacementY);
 
-    MatrixM::translate(this->mvp, this->mvpWidth, this->mvpHeight,
+    MatrixM::translate(this->mvpMatrix, this->mvpWidth, this->mvpHeight,
         VerticesFactory::pixelToGlCoordinateVariation(this->displacementX, this->screenRect->getWidth()),
         VerticesFactory::pixelToGlCoordinateVariation(this->displacementY, this->screenRect->getHeight()),
         0);
@@ -97,7 +82,7 @@ void MyRectangle::update(){
 }
 
 MyRectangle::~MyRectangle(){
-    delete this->mvp;
+    delete this->mvpMatrix;
     delete this->rect;
     delete this->frame;
     delete this->programParams;
