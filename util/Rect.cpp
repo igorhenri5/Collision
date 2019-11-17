@@ -31,7 +31,9 @@ void Rect::setY(int y){
     this->y = y;
 }
 
-
-bool Rect::isAllBoundsInside(Rect *rect){
-
+bool Rect::intersect(Rect *rect){
+    return (this->x < rect->getX() + rect->getWidth()
+            && this->x + this->width > rect->getX()
+            && this->y + this->height > rect->getY()
+            && this->y < rect->getY() + rect->getHeight());
 }

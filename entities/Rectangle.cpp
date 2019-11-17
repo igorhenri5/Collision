@@ -63,8 +63,25 @@ void MyRectangle::setDisplacementY(int val){
     this->displacementY = val;
 }
 
-void MyRectangle::collides(MyRectangle *renctangle){
-
+void MyRectangle::collides(MyRectangle *rectangle){
+    Rect rectA(
+        this->rect->getX() + this->displacementX,
+        this->rect->getY() + this->displacementY,
+        this->rect->getWidth(),
+        this->rect->getHeight()
+    );
+    Rect rectB(
+        rectangle->getRect()->getX() + rectangle->getDisplacementX(),
+        rectangle->getRect()->getY() + rectangle->getDisplacementY(),
+        rectangle->getRect()->getWidth(),
+        rectangle->getRect()->getHeight()
+    );
+    if(rectA.intersect(&rectB)){
+        rectangle->setDisplacementY(rectangle->getDisplacementY() * -1);
+        rectangle->setDisplacementX(rectangle->getDisplacementX() * -1);
+        this->displacementY *= -1;
+        this->displacementX *= -1;
+    }
 }
 
 void MyRectangle::draw(){
