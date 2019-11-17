@@ -49,6 +49,6 @@ void GlUtil::draw(int program, ProgramParams *programParams){
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, drawableBuffer->getDrawOrderId());
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-    GlError::checkGlError();
-    GlError::checkProgramValidity(program);
+    //GlError::checkGlError();
+    //GlError::checkProgramValidity(program);
 }
