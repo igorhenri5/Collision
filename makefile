@@ -17,7 +17,7 @@ build_util:
 	g++ -c util/*.cpp -I"C:\MinGW\glew\include"
 
 build_quadtree:
-	g++ -c quadtree/*.cpp
+	g++ -c quadtree/*.cpp -I"C:\MinGW\glew\include"
 
 build_threadpool:
 	g++ -c threadpool/*.cpp

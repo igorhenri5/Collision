@@ -2,6 +2,7 @@
 #include "util/Rect.hpp"
 #include "entities/Rectangle.hpp"
 #include "graphics/ProgramFactory.hpp"
+#include "quadtree/QuadTree.hpp"
 #include <iostream>
 #include <vector>
 #include <time.h>
@@ -30,9 +31,13 @@ namespace game{
     Rect *screenRect;
     std::vector<IDrawable *> drawables;
     ProgramFactory programFactory;
+    QuadTree* quadtree;
 }
 
 void initDrawables(){
+    
+    game::quadtree = new QuadTree(0, new Rect(0,0,512,512));
+    
     MyRectangle *rectangle;
     Rect *rect;
     rect = new Rect(0, 0, 64, 64);

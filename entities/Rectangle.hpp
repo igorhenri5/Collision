@@ -20,6 +20,10 @@ private:
     float *mvp;
 public:
     MyRectangle(Rect *rect,  Rect *screenRect, float alpha, int displacementX, int displacementY, ProgramFactory *programFactory);
+    Rect* getRect();
+    void setRect(Rect*);
+    Frame* getFrame();
+    void setFrame(Frame*);
     virtual void draw();
     virtual void update();
     ~MyRectangle();

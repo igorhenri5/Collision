@@ -3,13 +3,15 @@
 
 #include <vector>
 #include "../util/Rect.hpp"
+#include "../entities/Rectangle.hpp"
+
 #define MAX_ENTITIES 4
 
 class QuadTree{
 private:
 	QuadTree** nodes;
 	Rect* bounds;
-	std::vector<Rect*> entityList;
+	std::vector<MyRectangle*> entityList;
 	int level;
 
 public:
@@ -18,9 +20,9 @@ public:
 
 	void clear();
 	void split();
-	void add(Rect*);
-	int getPlaceIndex(Rect*);
-	std::vector<Rect*>* retrieve(Rect*);
+	void add(MyRectangle*);
+	int getPlaceIndex(MyRectangle*);
+	std::vector<MyRectangle*>* retrieve(MyRectangle*);
 };
 
 #endif
