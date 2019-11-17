@@ -1,4 +1,5 @@
 #include "QuadTree.hpp"
+#include <iostream>
 
 QuadTree::QuadTree(int level, Rect* bounds){
 	this->nodes = new QuadTree*[4];
@@ -24,6 +25,7 @@ void QuadTree::clear(){
 		if(nodes[i] != nullptr){
 			nodes[i]->clear();
 			delete nodes[i];
+			nodes[i] = nullptr;
 		}
 	}
 }
@@ -54,13 +56,14 @@ void QuadTree::add(MyRectangle* entity){
 
 	if(entityList.size() > MAX_ENTITIES){
 		if(nodes[0] == nullptr)
-			split();
+			this->split();
 
-		for(std::vector<MyRectangle*>::iterator it = entityList.begin(); it != entityList.end(); it++){
+		for(std::vector<MyRectangle*>::iterator it = entityList.begin(); it != entityList.end();it++){
 			int index = getPlaceIndex(*it);
 			if(index != -1){
 				nodes[index]->add(*it);
 				entityList.erase(it);
+				it--;
 			}
 		}
 	}

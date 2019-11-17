@@ -42,33 +42,32 @@ namespace game{
 
 void initDrawables(){
 
-    game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()));
-    game::drawables.push_back(new MyRectangle(new Rect(32, 192, RECSIZE, RECSIZE), game::screenRect,  0, -1, -1, &(game::programFactory)));
-    game::drawables.push_back(new MyRectangle(new Rect(64, 64, RECSIZE, RECSIZE), game::screenRect,   0,  0, -1, &(game::programFactory)));
-    game::drawables.push_back(new MyRectangle(new Rect(128, 128, RECSIZE, RECSIZE), game::screenRect, 0,  1,  1, &(game::programFactory)));
-    game::drawables.push_back(new MyRectangle(new Rect(192, 128, RECSIZE, RECSIZE), game::screenRect, 0,  1,  0, &(game::programFactory)));
+    // game::drawables.push_back(new MyRectangle(new Rect(32, 192, RECSIZE, RECSIZE), game::screenRect,  0, -1, -1, &(game::programFactory)));
+    // game::drawables.push_back(new MyRectangle(new Rect(64, 64, RECSIZE, RECSIZE), game::screenRect,   0,  0, -1, &(game::programFactory)));
+    // game::drawables.push_back(new MyRectangle(new Rect(128, 128, RECSIZE, RECSIZE), game::screenRect, 0,  1,  1, &(game::programFactory)));
+    // game::drawables.push_back(new MyRectangle(new Rect(192, 128, RECSIZE, RECSIZE), game::screenRect, 0,  1,  0, &(game::programFactory)));
 
- /*
+
     srand(game::seed);
-    int displacementX,displacementY;
-    for(int i=0; i<game::height; i+=16){
-        displacementX = (rand()%2)-1;
-        displacementY = (rand()%2)-1;
+    int displacementX, displacementY;
+    for(int i=0; i < game::screenRect->getHeight(); i += 16){
+        displacementX = (rand() % 3) - 1;
+        displacementY = (rand() % 3) - 1;
 
-        displacementX = 1;
-        displacementY = 0;
-
-        game::drawables.push_back(new MyRectangle(new Rect(0, i, RECSIZE, RECSIZE), game::screenRect, 0, displacementX, displacementY, &(game::programFactory)));
+        game::drawables.push_back(new MyRectangle(new Rect(i, i, RECSIZE, RECSIZE), game::screenRect, 0, displacementX, displacementY, &(game::programFactory)));
     }
-*/
 }
 
 void update(){
-
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
         game::screenBounds->collidesScreenBounds((MyRectangle *)(*drawable));
         (*drawable)->update();
     }
+    game::quadtree->clear();
+    for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
+        game::quadtree->add((MyRectangle *)(*drawable));
+    }
+
 }
 
 void draw(){
@@ -133,6 +132,7 @@ void initOpenGLEnvironment(int width, int height){
 int main(int argc, char **argv){
     game::screenRect = new Rect(0, 0, 512, 512);
     game::screenBounds = new ScreenBounds(game::screenRect);
+    game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()));
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
