@@ -1,10 +1,10 @@
 #include "ShaderProvider.hpp"
 
 std::string ShaderProvider::getVertexShader(){
-    return "\nin vec3 a_position;\n"
-                //"uniform mat4 u_mvpMatrix;\n"
+    return "\nin vec4 a_position;\n"
+                "uniform mat4 u_mvpMatrix;\n"
                 "void main() {\n"
-                   "gl_Position = vec4(a_position, 1.0);\n"
+                   "gl_Position = u_mvpMatrix * a_position;\n"
                 "}\n";
 }
 

@@ -7,3 +7,9 @@ void MatrixM::identity(float *matrix, int width, int height){
         }
     }
 }
+
+void MatrixM::translate(float *matrix, int width, int height, float tx, float ty, float tz){
+    matrix[3 * height] += tx;
+    matrix[3 * height + 1] += ty;
+    matrix[3 * height + 2] += tz;
+}

@@ -12,7 +12,7 @@
 
 class MyRectangle: public IDrawable{
 private:
-    Rect *rect;
+    Rect *rect, *screenRect;
     Frame *frame;
     int mvpWidth, mvpHeight, displacementX, displacementY;
     ProgramFactory *programFactory;

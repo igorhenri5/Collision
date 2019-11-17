@@ -29,16 +29,16 @@ void GlUtil::draw(int program, ProgramParams *programParams){
     int verticesLength = drawableBuffer->getVerticesLength();
     int drawOrderLength = drawableBuffer->getDrawOrderLength();
 
-    std::cout << "program: " << program << std::endl;
     glUseProgram(program);
 
     positionHandle = glGetAttribLocation(program, "a_position");
-    // mvpMatrixHandle = glGetUniformLocation(program, "u_mvpMatrix");
-    //
-    // glUniformMatrix4fv(mvpMatrixHandle, 1, GL_FALSE, mvpMatrix);
-    //
+    mvpMatrixHandle = glGetUniformLocation(program, "u_mvpMatrix");
+
+    glUniformMatrix4fv(mvpMatrixHandle, 1, GL_FALSE, mvpMatrix);
+
+    // std::cout << "program: " << program << std::endl;
     // std::cout << "vertice id: " << drawableBuffer->getVerticesId() << std::endl;
-    std::cout << "drawOrder id: " << drawableBuffer->getDrawOrderId() << std::endl;
+    // std::cout << "drawOrder id: " << drawableBuffer->getDrawOrderId() << std::endl;
     // std::cout << "verticesLength: " << verticesLength << std::endl;
     // std::cout << "drawOrderLength: " << drawOrderLength << std::endl;
 

@@ -6,6 +6,7 @@ MyRectangle::MyRectangle(Rect *rect, Rect *screenRect, float alpha, int displace
     GLfloat *vertices;
     GLuint *drawOrder;
     this->rect = rect;
+    this->screenRect = screenRect;
     vertices = VerticesFactory::initVertices(&vertcesLegth, rect, screenRect, alpha);
     drawOrder = VerticesFactory::initDrawOrder(&drawOrderLength);
     this->frame = new Frame(vertices, vertcesLegth, drawOrder, drawOrderLength);
@@ -17,7 +18,10 @@ MyRectangle::MyRectangle(Rect *rect, Rect *screenRect, float alpha, int displace
     this->mvpHeight = 4;
     this->mvp = new float[this->mvpHeight * this->mvpWidth];
     MatrixM::identity(this->mvp, this->mvpWidth, this->mvpHeight);
-
+    MatrixM::translate(this->mvp, this->mvpWidth, this->mvpHeight,
+        VerticesFactory::pixelToGlCoordinateVariation(rect->getX(), screenRect->getWidth()),
+        VerticesFactory::pixelToGlCoordinateVariation(rect->getY(), screenRect->getHeight()),
+         0);
 
     for(int j = 0; j < 6; j++){
         std::cout << drawOrder[j] << " ";
@@ -61,13 +65,17 @@ void MyRectangle::setFrame(Frame* frame){
 
 void MyRectangle::draw(){
     // std::cout << "draw rect" << std::endl;
-    std::cout << this->programFactory->getProgram() << std::endl;
+    // std::cout << this->programFactory->getProgram() << std::endl;
     GlUtil::draw(programFactory->getProgram(), this->programParams);
 }
 
 void MyRectangle::update(){
     this->rect->setX(this->rect->getX() + this->displacementX);
     this->rect->setY(this->rect->getY() + this->displacementY);
+    MatrixM::translate(this->mvp, this->mvpWidth, this->mvpHeight,
+        VerticesFactory::pixelToGlCoordinateVariation(this->displacementX, this->screenRect->getWidth()),
+        VerticesFactory::pixelToGlCoordinateVariation(this->displacementX, this->screenRect->getHeight()),
+         0);
 }
 
 MyRectangle::~MyRectangle(){

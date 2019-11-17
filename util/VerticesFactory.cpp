@@ -4,6 +4,10 @@ GLfloat VerticesFactory::pixelToGlCoordinate(int pixel, int screenSize){
     return pixel * (2.0f / screenSize) - 1.0;
 }
 
+GLfloat VerticesFactory::pixelToGlCoordinateVariation(int pixel, int screenSize){
+    return pixel * (2.0f / screenSize);
+}
+
 GLfloat* VerticesFactory::initVertices(int *length, Rect *frameRect, Rect *screenRect, float alpha){
     GLfloat *vertices = new GLfloat[12];
     vertices[0] = pixelToGlCoordinate(0, screenRect->getWidth());

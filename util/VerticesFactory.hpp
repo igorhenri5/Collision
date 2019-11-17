@@ -8,6 +8,7 @@ class VerticesFactory{
 private:
     static GLfloat pixelToGlCoordinate(int pixel, int screenSize);
 public:
+    static GLfloat pixelToGlCoordinateVariation(int pixel, int screenSize);
     static GLfloat* initVertices(int *length, Rect *frameRect, Rect *screenRect, float alpha);
     static GLuint* initDrawOrder(int *length);
 };
