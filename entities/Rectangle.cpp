@@ -63,6 +63,10 @@ void MyRectangle::setDisplacementY(int val){
     this->displacementY = val;
 }
 
+void MyRectangle::collides(MyRectangle *renctangle){
+
+}
+
 void MyRectangle::draw(){
     // std::cout << "draw rect" << std::endl;
     // std::cout << this->programFactory->getProgram() << std::endl;

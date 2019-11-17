@@ -101,6 +101,10 @@ int QuadTree::getPlaceIndex(MyRectangle* entity){
 }
 
 //Retornar um vector com os objetos que possivelmente podem colidir com o objeto do parametro
+
+//SHURD
+//a lista ta incompleta. falta verificar a lista da quadtree filhas
+
 std::vector<MyRectangle*>* QuadTree::retrieve(MyRectangle* entity){
 	int index = getPlaceIndex(entity);
 	if(index != -1 && nodes[0] != nullptr){
@@ -108,3 +112,33 @@ std::vector<MyRectangle*>* QuadTree::retrieve(MyRectangle* entity){
 	}
 	return &entityList;
  }
+
+void QuadTree::collides(MyRectangle *rectangle){
+	for(int i = 0; i < this->entityList.size(); i++){
+		this->entityList.at(i)->collides(rectangle);
+	}
+	if(nodes[0] != nullptr){
+		for(int i = 0; i < 4; i++){
+			nodes[i]->collides(rectangle);
+		}
+	}
+}
+
+void QuadTree::collidesAll(){
+	for(int i = 0; i < this->entityList.size(); i++){
+		for(int j = i + 1; j < this->entityList.size(); j++){
+			this->entityList.at(i)->collides(this->entityList.at(j));
+		}
+	}
+	if(nodes[0] != nullptr){
+		for(int i = 0; i < this->entityList.size(); i++){
+			for(int j = 0; j < 4; j++){
+				nodes[j]->collides(this->entityList.at(i));
+			}
+		}
+		for(int j = 0; j < 4; j++){
+			nodes[j]->collidesAll();
+		}
+	}
+
+}

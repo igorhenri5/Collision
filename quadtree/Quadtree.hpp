@@ -13,6 +13,7 @@ private:
 	Rect* bounds;
 	std::vector<MyRectangle*> entityList;
 	int level;
+	void collides(MyRectangle*);
 
 public:
 	QuadTree(int level, Rect* bounds);
@@ -23,6 +24,7 @@ public:
 	void add(MyRectangle*);
 	int getPlaceIndex(MyRectangle*);
 	std::vector<MyRectangle*>* retrieve(MyRectangle*);
+	void collidesAll();
 };
 
 #endif

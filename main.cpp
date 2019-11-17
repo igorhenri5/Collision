@@ -46,7 +46,7 @@ void initDrawables(){
     // game::drawables.push_back(new MyRectangle(new Rect(64, 64, RECSIZE, RECSIZE), game::screenRect,   0,  0, -1, &(game::programFactory)));
     // game::drawables.push_back(new MyRectangle(new Rect(128, 128, RECSIZE, RECSIZE), game::screenRect, 0,  1,  1, &(game::programFactory)));
     // game::drawables.push_back(new MyRectangle(new Rect(192, 128, RECSIZE, RECSIZE), game::screenRect, 0,  1,  0, &(game::programFactory)));
-
+ 
 
     srand(game::seed);
     int displacementX, displacementY;
@@ -59,15 +59,16 @@ void initDrawables(){
 }
 
 void update(){
-    for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
-        game::screenBounds->collidesScreenBounds((MyRectangle *)(*drawable));
-        (*drawable)->update();
-    }
     game::quadtree->clear();
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
         game::quadtree->add((MyRectangle *)(*drawable));
     }
+    game::quadtree->collidesAll();
 
+    for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
+        game::screenBounds->collidesScreenBounds((MyRectangle *)(*drawable));
+        (*drawable)->update();
+    }
 }
 
 void draw(){
