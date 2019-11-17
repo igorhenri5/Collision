@@ -40,29 +40,19 @@ namespace game{
     std::vector<IDrawable *> drawables;
     ProgramFactory programFactory;
     QuadTree* quadtree;
-    int width;
-    int height;
     int seed = 420;
 }
 
 void initDrawables(){
 
     game::quadtree = new QuadTree(0, new Rect(0,0,512,512));
-
- /*   
-    MyRectangle *rectangle;
-    Rect *rect;
-    rect = new Rect(64, 64, 64, 64);
-    rectangle = new MyRectangle(rect, game::screenRect, 0, 1, 1, &(game::programFactory));
-    game::drawables.push_back(rectangle);
-*/
     game::drawables.push_back(new MyRectangle(new Rect(32, 192, RECSIZE, RECSIZE), game::screenRect,  0, -1, -1, &(game::programFactory)));
     game::drawables.push_back(new MyRectangle(new Rect(64, 64, RECSIZE, RECSIZE), game::screenRect,   0,  0, -1, &(game::programFactory)));
     game::drawables.push_back(new MyRectangle(new Rect(128, 128, RECSIZE, RECSIZE), game::screenRect, 0,  1,  1, &(game::programFactory)));
     game::drawables.push_back(new MyRectangle(new Rect(192, 128, RECSIZE, RECSIZE), game::screenRect, 0,  1,  0, &(game::programFactory)));
 
  /*
-    srand(game::seed); 
+    srand(game::seed);
     int displacementX,displacementY;
     for(int i=0; i<game::height; i+=16){
         displacementX = (rand()%2)-1;
@@ -92,18 +82,24 @@ void draw(){
     glutSwapBuffers();
 }
 
+void printEnlapsedTime(){
+    snprintf(buffer, sizeof(buffer), "%f", elapsedTime);
+    glutSetWindowTitle(buffer);
+    //std::cout << "elapsedTime: " << elapsedTime << std::endl;
+}
+
 void mainloop(){
+    float millis, fps;
+    fps = 30;
+
     gettimeofday(&tempoInicial, NULL);
     update();
     draw();
     gettimeofday(&tempoFinal, NULL);
+
     elapsedTime = ((tempoFinal.tv_sec  - tempoInicial.tv_sec) * 1000000u + tempoFinal.tv_usec - tempoInicial.tv_usec) / 1.e6;
-    snprintf(buffer, sizeof(buffer), "%f", elapsedTime);
-    glutSetWindowTitle(buffer);
-    float millis, fps;
-    fps = 30;
-    // std::cout << 1000.0f / 30 << std::endl;
-    // std::cout << "elapsedTime (millis): " << elapsedTime * 1000.0f << std::endl;
+    printEnlapsedTime();
+
     millis = 1000.0f / fps - elapsedTime * 1000.0f;
     if(millis < 0){
         std::cout << "Lag (millis): " << millis << std::endl;
@@ -134,18 +130,15 @@ void initOpenGLEnvironment(int width, int height){
 }
 
 int main(int argc, char **argv){
-    game::width = 512;
-    game::height = 512;
-
-    game::screenRect = new Rect(0, 0, game::width, game::height);
+    game::screenRect = new Rect(0, 0, 512, 512);
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize(game::width, game::height);
+    glutInitWindowSize(game::screenRect->getWidth(), game::screenRect->getHeight());
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Programacao Paralela - TP");
     glewInit();
-    initOpenGLEnvironment(game::width, game::height);
+    initOpenGLEnvironment(game::screenRect->getWidth(), game::screenRect->getHeight());
     initDrawables();
     glutDisplayFunc(draw);
     glutIdleFunc(mainloop);
