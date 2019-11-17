@@ -13,7 +13,6 @@
 #include <string.h>
 #include <cstdlib>
 
-
 #define  RECSIZE  8
 
 #ifdef _WIN32
@@ -43,7 +42,7 @@ namespace game{
 
 void initDrawables(){
 
-    game::quadtree = new QuadTree(0, new Rect(0,0,512,512));
+    game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()));
     game::drawables.push_back(new MyRectangle(new Rect(32, 192, RECSIZE, RECSIZE), game::screenRect,  0, -1, -1, &(game::programFactory)));
     game::drawables.push_back(new MyRectangle(new Rect(64, 64, RECSIZE, RECSIZE), game::screenRect,   0,  0, -1, &(game::programFactory)));
     game::drawables.push_back(new MyRectangle(new Rect(128, 128, RECSIZE, RECSIZE), game::screenRect, 0,  1,  1, &(game::programFactory)));
@@ -119,7 +118,7 @@ void onClose(){
     }
     delete game::screenRect;
     delete game::screenBounds;
-    //delete game::quadtree;
+    delete game::quadtree;
     std::cout << "onClose" << std::endl;
 }
 

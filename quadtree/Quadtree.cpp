@@ -1,16 +1,21 @@
 #include "QuadTree.hpp"
 
 QuadTree::QuadTree(int level, Rect* bounds){
-	this->nodes  = new QuadTree*[4];
+	this->nodes = new QuadTree*[4];
+	for(int i=0; i<4; i++){
+		nodes[i] = nullptr;
+	}
 	this->level  = level;
 	this->bounds = bounds;
 }
 
 QuadTree::~QuadTree(){
-	for(int i=0; i<4; i++)
-		delete nodes[i];
-	delete[] nodes;
-	delete   bounds;
+	for(int i=0; i<4; i++){
+		if(nodes[i] != nullptr)
+			delete nodes[i];
+	}
+	delete nodes;
+	delete bounds;
 }
 
 void QuadTree::clear(){
