@@ -12,6 +12,7 @@ public:
     int getHeight();
     void setX(int x);
     void setY(int y);
+    bool isAllBoundsInside(Rect *rect);
 };
 
 #endif

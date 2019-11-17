@@ -30,3 +30,8 @@ void Rect::setX(int x){
 void Rect::setY(int y){
     this->y = y;
 }
+
+
+bool Rect::isAllBoundsInside(Rect *rect){
+
+}

@@ -1,6 +1,6 @@
 #include "drawable/IDrawable.hpp"
 #include "util/Rect.hpp"
-#include "util/Detection.hpp"
+#include "util/ScreenBounds.hpp"
 #include "entities/Rectangle.hpp"
 #include "graphics/ProgramFactory.hpp"
 #include "quadtree/QuadTree.hpp"
@@ -32,11 +32,9 @@ struct timeval tempoInicial, tempoFinal;
 float elapsedTime;
 char buffer[64];
 
-int Detector::screenWidth = 512;
-int Detector::screenHeight = 512;
-
 namespace game{
     Rect *screenRect;
+    ScreenBounds *screenBounds;
     std::vector<IDrawable *> drawables;
     ProgramFactory programFactory;
     QuadTree* quadtree;
@@ -67,7 +65,9 @@ void initDrawables(){
 }
 
 void update(){
+
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
+        game::screenBounds->collidesScreenBounds((MyRectangle *)(*drawable));
         (*drawable)->update();
     }
 }
@@ -118,6 +118,8 @@ void onClose(){
         delete (*drawable);
     }
     delete game::screenRect;
+    delete game::screenBounds;
+    //delete game::quadtree;
     std::cout << "onClose" << std::endl;
 }
 
@@ -131,6 +133,7 @@ void initOpenGLEnvironment(int width, int height){
 
 int main(int argc, char **argv){
     game::screenRect = new Rect(0, 0, 512, 512);
+    game::screenBounds = new ScreenBounds(game::screenRect);
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
