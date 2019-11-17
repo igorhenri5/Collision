@@ -1,5 +1,6 @@
 #include "drawable/IDrawable.hpp"
 #include "util/Rect.hpp"
+#include "util/Detection.hpp"
 #include "entities/Rectangle.hpp"
 #include "graphics/ProgramFactory.hpp"
 #include "quadtree/QuadTree.hpp"
@@ -10,6 +11,10 @@
 #include <sys/time.h>
 #include <GL/freeglut.h>
 #include <string.h>
+#include <cstdlib>
+
+
+#define  RECSIZE  8
 
 #ifdef _WIN32
     #include <windows.h>
@@ -27,22 +32,48 @@ struct timeval tempoInicial, tempoFinal;
 float elapsedTime;
 char buffer[64];
 
+int Detector::screenWidth = 512;
+int Detector::screenHeight = 512;
+
 namespace game{
     Rect *screenRect;
     std::vector<IDrawable *> drawables;
     ProgramFactory programFactory;
     QuadTree* quadtree;
+    int width;
+    int height;
+    int seed = 420;
 }
 
 void initDrawables(){
 
     game::quadtree = new QuadTree(0, new Rect(0,0,512,512));
 
+ /*   
     MyRectangle *rectangle;
     Rect *rect;
     rect = new Rect(64, 64, 64, 64);
     rectangle = new MyRectangle(rect, game::screenRect, 0, 1, 1, &(game::programFactory));
     game::drawables.push_back(rectangle);
+*/
+    game::drawables.push_back(new MyRectangle(new Rect(32, 192, RECSIZE, RECSIZE), game::screenRect,  0, -1, -1, &(game::programFactory)));
+    game::drawables.push_back(new MyRectangle(new Rect(64, 64, RECSIZE, RECSIZE), game::screenRect,   0,  0, -1, &(game::programFactory)));
+    game::drawables.push_back(new MyRectangle(new Rect(128, 128, RECSIZE, RECSIZE), game::screenRect, 0,  1,  1, &(game::programFactory)));
+    game::drawables.push_back(new MyRectangle(new Rect(192, 128, RECSIZE, RECSIZE), game::screenRect, 0,  1,  0, &(game::programFactory)));
+
+ /*
+    srand(game::seed); 
+    int displacementX,displacementY;
+    for(int i=0; i<game::height; i+=16){
+        displacementX = (rand()%2)-1;
+        displacementY = (rand()%2)-1;
+
+        displacementX = 1;
+        displacementY = 0;
+
+        game::drawables.push_back(new MyRectangle(new Rect(0, i, RECSIZE, RECSIZE), game::screenRect, 0, displacementX, displacementY, &(game::programFactory)));
+    }
+*/
 }
 
 void update(){
@@ -78,7 +109,8 @@ void mainloop(){
         std::cout << "Lag (millis): " << millis << std::endl;
         millis = 0;
     }
-    sleep(millis);
+    //sleep(millis);
+    //desliguei o sync pra ver a diferença nos dos monitores
 }
 
 void onKeyboardDownEvent(unsigned char key, int x, int y){
@@ -102,19 +134,18 @@ void initOpenGLEnvironment(int width, int height){
 }
 
 int main(int argc, char **argv){
-    int width, height;
-    width = 512;
-    height = 512;
+    game::width = 512;
+    game::height = 512;
 
-    game::screenRect = new Rect(0, 0, width, height);
+    game::screenRect = new Rect(0, 0, game::width, game::height);
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize(width, height);
+    glutInitWindowSize(game::width, game::height);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Programacao Paralela - TP");
     glewInit();
-    initOpenGLEnvironment(width, height);
+    initOpenGLEnvironment(game::width, game::height);
     initDrawables();
     glutDisplayFunc(draw);
     glutIdleFunc(mainloop);

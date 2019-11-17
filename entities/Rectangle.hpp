@@ -24,6 +24,10 @@ public:
     void setRect(Rect*);
     Frame* getFrame();
     void setFrame(Frame*);
+    int getDisplacementX();
+    void setDisplacementX(int);
+    int getDisplacementY();
+    void setDisplacementY(int);    
     virtual void draw();
     virtual void update();
     ~MyRectangle();

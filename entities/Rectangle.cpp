@@ -1,4 +1,5 @@
 #include "Rectangle.hpp"
+#include "../util/Detection.hpp"
 #include <iostream>
 
 MyRectangle::MyRectangle(Rect *rect, Rect *screenRect, float alpha, int displacementX, int displacementY, ProgramFactory *programFactory){
@@ -62,6 +63,21 @@ void MyRectangle::setFrame(Frame* frame){
     this->frame = frame;
 }
 
+int MyRectangle::getDisplacementX(){
+    return this->displacementX;
+}
+
+void MyRectangle::setDisplacementX(int val){
+    this->displacementX = val;
+}
+
+int MyRectangle::getDisplacementY(){
+    return this->displacementY;
+}
+
+void MyRectangle::setDisplacementY(int val){
+    this->displacementY = val;
+}  
 
 void MyRectangle::draw(){
     // std::cout << "draw rect" << std::endl;
@@ -70,12 +86,23 @@ void MyRectangle::draw(){
 }
 
 void MyRectangle::update(){
+
+    int* screenCollisionFlag = Detector::collidesScreenBounds(this);
+    if(screenCollisionFlag[0]){
+        this->displacementY = this->displacementY*-1;
+    }if(screenCollisionFlag[1]){
+        this->displacementX = this->displacementX*-1;
+    }
+    delete screenCollisionFlag;
+
     this->rect->setX(this->rect->getX() + this->displacementX);
     this->rect->setY(this->rect->getY() + this->displacementY);
+
     MatrixM::translate(this->mvp, this->mvpWidth, this->mvpHeight,
         VerticesFactory::pixelToGlCoordinateVariation(this->displacementX, this->screenRect->getWidth()),
         VerticesFactory::pixelToGlCoordinateVariation(this->displacementX, this->screenRect->getHeight()),
-         0);
+        0);
+
 }
 
 MyRectangle::~MyRectangle(){
