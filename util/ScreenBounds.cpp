@@ -4,28 +4,28 @@ ScreenBounds::ScreenBounds(Rect* bounds){
 	this->bounds = bounds;
 }
 
-bool ScreenBounds::checkScreenUp(Rect* rect){
-	return (rect->getY() + rect->getHeight() + 1 > this->bounds->getY() + this->bounds->getHeight());
+bool ScreenBounds::checkScreenUp(MyRectangle* rectangle){
+	return (rectangle->getRect()->getY() + rectangle->getRect()->getHeight() + rectangle->getDisplacementY() > this->bounds->getY() + this->bounds->getHeight());
 }
 
-bool ScreenBounds::checkScreenDown(Rect* rect){
-    return (rect->getY() - 1 < this->bounds->getY());
+bool ScreenBounds::checkScreenDown(MyRectangle* rectangle){
+    return (rectangle->getRect()->getY() + rectangle->getDisplacementY() < this->bounds->getY());
 }
 
-bool ScreenBounds::checkScreenRight(Rect* rect){
-    return (rect->getX()+rect->getWidth() + 1 > this->bounds->getX() + this->bounds->getWidth());
+bool ScreenBounds::checkScreenRight(MyRectangle* rectangle){
+    return (rectangle->getRect()->getX() + rectangle->getRect()->getWidth() + rectangle->getDisplacementX() > this->bounds->getX() + this->bounds->getWidth());
 }
 
-bool ScreenBounds::checkScreenLeft(Rect* rect){
-    return (rect->getX() - 1 < this->bounds->getY());
+bool ScreenBounds::checkScreenLeft(MyRectangle* rectangle){
+    return (rectangle->getRect()->getX() + rectangle->getDisplacementX() < this->bounds->getY());
 }
 
 bool ScreenBounds::checkCollisionY(MyRectangle* rectangle){
-	return (rectangle->getDisplacementY() == 1 && checkScreenUp(rectangle->getRect()) || rectangle->getDisplacementY() == -1 && checkScreenDown(rectangle->getRect()));
+	return (rectangle->getDisplacementY() == 1 && checkScreenUp(rectangle) || rectangle->getDisplacementY() == -1 && checkScreenDown(rectangle));
 }
 
 bool ScreenBounds::checkCollisionX(MyRectangle* rectangle){
-	return (rectangle->getDisplacementX() == 1 && checkScreenRight(rectangle->getRect()) || rectangle->getDisplacementX() == -1 && checkScreenLeft(rectangle->getRect()));
+	return (rectangle->getDisplacementX() == 1 && checkScreenRight(rectangle) || rectangle->getDisplacementX() == -1 && checkScreenLeft(rectangle));
 }
 
 void ScreenBounds::collidesScreenBounds(MyRectangle* rectangle){

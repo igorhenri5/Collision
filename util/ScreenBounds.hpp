@@ -7,10 +7,10 @@
 class ScreenBounds{
 private:
 	Rect* bounds;
-	bool checkScreenUp(Rect* rect);
-	bool checkScreenDown(Rect* rect);
-	bool checkScreenRight(Rect* rect);
-	bool checkScreenLeft(Rect* rect);
+	bool checkScreenUp(MyRectangle* rectangle);
+	bool checkScreenDown(MyRectangle* rectangle);
+	bool checkScreenRight(MyRectangle* rectangle);
+	bool checkScreenLeft(MyRectangle* rectangle);
 	bool checkCollisionX(MyRectangle* rectangle);
 	bool checkCollisionY(MyRectangle* rectangle);
 public:
