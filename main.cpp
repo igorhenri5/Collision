@@ -93,7 +93,26 @@ void worstCollision(){
 }
 
 void parralelCollision(){
+    Task *task;
+    int inicioParticao, fimParticao, numParticoes, tamanhoParticao;
 
+    tamanhoParticao = (game::drawables.size() + game::threadPool->size - 1) / game::threadPool->size;
+
+    if(tamanhoParticao < 100) // tamanho minimo particao
+        tamanhoParticao = 100;
+
+    numParticoes = (game::drawables.size() + tamanhoParticao - 1) / tamanhoParticao;
+    game::masterFlag->reset(numParticoes);
+
+    for(long int i = 0; i < numParticoes; i++){
+        inicioParticao = i * tamanhoParticao;
+        fimParticao = inicioParticao + tamanhoParticao;
+        if(fimParticao > game::drawables.size()){
+          fimParticao = game::drawables.size();
+        }
+        game::threadPool->addTask(new AddTask(game::masterFlag, game::quadtree, game::drawables.begin() + inicioParticao, game::drawables.begin() + fimParticao));
+    }
+    game::masterFlag->wait();
 }
 
 void update(){
@@ -186,7 +205,7 @@ int main(int argc, char **argv){
     game::screenBounds = new ScreenBounds(game::screenRect);
     game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()));
     game::threadPool = new ThreadPool(4);
-    game::masterFlag = new MasterFlag(4);
+    game::masterFlag = new MasterFlag(0);
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
