@@ -92,7 +92,7 @@ void worstCollision(){
     }
 }
 
-void parralelCollision(){
+void parralelAdd(){
     Task *task;
     int inicioParticao, fimParticao, numParticoes, tamanhoParticao;
 
@@ -104,7 +104,7 @@ void parralelCollision(){
     numParticoes = (game::drawables.size() + tamanhoParticao - 1) / tamanhoParticao;
     game::masterFlag->reset(numParticoes);
 
-    for(long int i = 0; i < numParticoes; i++){
+    for(int i = 0; i < numParticoes; i++){
         inicioParticao = i * tamanhoParticao;
         fimParticao = inicioParticao + tamanhoParticao;
         if(fimParticao > game::drawables.size()){
