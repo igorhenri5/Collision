@@ -4,6 +4,8 @@
 #include "entities/Rectangle.hpp"
 #include "graphics/ProgramFactory.hpp"
 #include "quadtree/QuadTree.hpp"
+#include "threadpool/ThreadPool.hpp"
+#include "threadpool/MasterFlag.hpp"
 #include <iostream>
 #include <vector>
 #include <time.h>
@@ -39,6 +41,8 @@ namespace game{
     ProgramFactory programFactory;
     QuadTree* quadtree;
     int seed = 420;
+    ThreadPool *threadPool;
+    MasterFlag *masterFlag;
 }
 
 void printElapsedTime(){
@@ -86,6 +90,10 @@ void worstCollision(){
             rectangle->collides((MyRectangle *) game::drawables.at(j));
         }
     }
+}
+
+void parralelCollision(){
+
 }
 
 void update(){
@@ -160,6 +168,8 @@ void onClose(){
     delete game::screenRect;
     delete game::screenBounds;
     delete game::quadtree;
+    delete game::threadPool;
+    delete game::masterFlag;
     std::cout << "onClose" << std::endl;
 }
 
@@ -175,6 +185,8 @@ int main(int argc, char **argv){
     game::screenRect = new Rect(0, 0, 1280, 720);
     game::screenBounds = new ScreenBounds(game::screenRect);
     game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()));
+    game::threadPool = new ThreadPool(4);
+    game::masterFlag = new MasterFlag(4);
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
