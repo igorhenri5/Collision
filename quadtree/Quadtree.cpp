@@ -30,6 +30,11 @@ void QuadTree::clear(){
 	}
 }
 
+std::vector<MyRectangle*>* QuadTree::getEntityList(){
+	return &(this->entityList);
+}
+
+
 void QuadTree::split(){
 	int nodeWidth  = (int)(bounds->getWidth() /2);
 	int nodeHeight = (int)(bounds->getHeight()/2);
@@ -76,24 +81,24 @@ int QuadTree::getPlaceIndex(MyRectangle* entity){
 	double centralX = bounds->getX() + (bounds->getWidth() /2);
 	double centralY = bounds->getY() + (bounds->getHeight()/2);
 
-	bool topQuad    = (entity->getRect()->getY() < centralY && entity->getRect()->getY() + entity->getRect()->getHeight() < centralY);
-	bool bottomQuad = (entity->getRect()->getY() > centralY);
+	bool bottomQuad = (entity->getRect()->getY() < centralY && entity->getRect()->getY() + entity->getRect()->getHeight() < centralY);
+	bool topQuad    = (entity->getRect()->getY() > centralY);
 
-//  0 1
 //  3 2
+//  0 1
 	if(entity->getRect()->getX() < centralX && entity->getRect()->getX() + entity->getRect()->getWidth() < centralX) {
-		if(topQuad){
+		if(bottomQuad){
 			index = 0;
 		}
-		else if(bottomQuad){
+		else if(topQuad){
 			index = 3;
 		}
 	}
 	else if(entity->getRect()->getX() > centralX){
-		if(topQuad){
+		if(bottomQuad){
 			index = 1;
 		}
-		else if(bottomQuad){
+		else if(topQuad){
 			index = 2;
 		}
 	}
@@ -102,15 +107,61 @@ int QuadTree::getPlaceIndex(MyRectangle* entity){
 
 //Retornar um vector com os objetos que possivelmente podem colidir com o objeto do parametro
 
-//SHURD
-//a lista ta incompleta. falta verificar a lista da quadtree filhas
+int* QuadTree::getMultiIndex(MyRectangle* entity){
+	int* multiIndex = new int[4];
+	multiIndex[0] = 1;
+	multiIndex[1] = 1;
+	multiIndex[2] = 1;
+	multiIndex[3] = 1;
+
+	double centralX = bounds->getX() + (bounds->getWidth() /2);
+	double centralY = bounds->getY() + (bounds->getHeight()/2);
+
+	bool bottomArea = (entity->getRect()->getY() < centralY && entity->getRect()->getY() + entity->getRect()->getHeight() < centralY);
+	bool topArea    = (entity->getRect()->getY() > centralY);
+	bool leftArea   = (entity->getRect()->getX() < centralX && entity->getRect()->getX() + entity->getRect()->getWidth() < centralX);
+	bool rightArea  = (entity->getRect()->getX() > centralX);
+
+//  3 2
+//  0 1
+	if(bottomArea){
+		multiIndex[2] = 0;
+		multiIndex[3] = 0;
+	}else if(topArea){
+		multiIndex[0] = 0;
+		multiIndex[1] = 0;
+	}
+
+	if(leftArea){
+		multiIndex[2] = 0;
+		multiIndex[1] = 0;
+	}else if(rightArea){
+		multiIndex[0] = 0;
+		multiIndex[3] = 0;
+	}
+
+	return multiIndex;
+}
 
 std::vector<MyRectangle*>* QuadTree::retrieve(MyRectangle* entity){
 	int index = getPlaceIndex(entity);
 	if(index != -1 && nodes[0] != nullptr){
 		return nodes[index]->retrieve(entity);
 	}
-	return &entityList;
+	std::vector<MyRectangle*> auxEntityList;
+	int* multiIndex = getMultiIndex(entity);
+
+	for (int i=0; i<4; i++){
+		if(multiIndex[i]){
+			for (auto it = nodes[i]->getEntityList()->begin(); it != nodes[i]->getEntityList()->end(); ++it){
+		        auxEntityList.push_back((*it));
+		    }
+		}
+	}
+
+	delete multiIndex;
+	return &auxEntityList;
+
  }
 
 void QuadTree::collides(MyRectangle *rectangle){

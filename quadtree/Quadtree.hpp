@@ -22,7 +22,9 @@ public:
 	void clear();
 	void split();
 	void add(MyRectangle*);
+	std::vector<MyRectangle*>* getEntityList();
 	int getPlaceIndex(MyRectangle*);
+	int* getMultiIndex(MyRectangle*);
 	std::vector<MyRectangle*>* retrieve(MyRectangle*);
 	void collidesAll();
 };

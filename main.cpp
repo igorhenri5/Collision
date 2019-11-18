@@ -41,12 +41,10 @@ namespace game{
 }
 
 void initDrawables(){
-
     // game::drawables.push_back(new MyRectangle(new Rect(32, 192, RECSIZE, RECSIZE), game::screenRect,  0, -1, -1, &(game::programFactory)));
     // game::drawables.push_back(new MyRectangle(new Rect(64, 64, RECSIZE, RECSIZE), game::screenRect,   0,  0, -1, &(game::programFactory)));
     // game::drawables.push_back(new MyRectangle(new Rect(128, 128, RECSIZE, RECSIZE), game::screenRect, 0,  1,  1, &(game::programFactory)));
     // game::drawables.push_back(new MyRectangle(new Rect(192, 128, RECSIZE, RECSIZE), game::screenRect, 0,  1,  0, &(game::programFactory)));
-
 
     srand(game::seed);
     int displacementX, displacementY;
@@ -90,9 +88,6 @@ void printEnlapsedTime(){
 }
 
 void mainloop(){
-    float millis, fps;
-    fps = 30;
-
     gettimeofday(&tempoInicial, NULL);
     update();
     draw();
@@ -100,14 +95,16 @@ void mainloop(){
 
     elapsedTime = ((tempoFinal.tv_sec  - tempoInicial.tv_sec) * 1000000u + tempoFinal.tv_usec - tempoInicial.tv_usec) / 1.e6;
     printEnlapsedTime();
-
+    /*
+    float millis, fps;
+    fps = 30;
     millis = 1000.0f / fps - elapsedTime * 1000.0f;
     if(millis < 0){
         std::cout << "Lag (millis): " << millis << std::endl;
         millis = 0;
     }
-    //sleep(millis);
-    //desliguei o sync pra ver a diferença nos dos monitores
+    sleep(millis);
+    */
 }
 
 void onKeyboardDownEvent(unsigned char key, int x, int y){
