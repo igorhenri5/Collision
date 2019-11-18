@@ -27,6 +27,7 @@
     }
 #endif
 
+struct timeval tempoInicialAll, tempoFinalAll;
 struct timeval tempoInicial, tempoFinal;
 float elapsedTime;
 char buffer[64];
@@ -38,6 +39,18 @@ namespace game{
     ProgramFactory programFactory;
     QuadTree* quadtree;
     int seed = 420;
+}
+
+void printElapsedTime(){
+    snprintf(buffer, sizeof(buffer), "%f", elapsedTime);
+    glutSetWindowTitle(buffer);
+    std::cout << "elapsedTime: " << elapsedTime << std::endl;
+}
+
+int x = 100;
+
+float getSeconds(struct timeval *tempoI, struct timeval *tempoF){
+    return ((tempoF->tv_sec  - tempoI->tv_sec) * 1000000u + tempoF->tv_usec - tempoI->tv_usec) / 1.e6;
 }
 
 void initDrawables(){
@@ -60,14 +73,37 @@ void initDrawables(){
 
 void update(){
     game::quadtree->clear();
+
+    gettimeofday(&tempoInicial, NULL);
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
         game::quadtree->add((MyRectangle *)(*drawable));
     }
-    game::quadtree->collidesAll();
+    gettimeofday(&tempoFinal, NULL);
+    elapsedTime = getSeconds(&tempoInicial, &tempoFinal);
+    if(x<=0){
+        std::cout << "Add ";
+        printElapsedTime();
+    }
 
+    gettimeofday(&tempoInicial, NULL);
+    game::quadtree->collidesAll();
+    gettimeofday(&tempoFinal, NULL);
+    elapsedTime = getSeconds(&tempoInicial, &tempoFinal);
+    if(x<=0){
+        std::cout << "Cld ";
+        printElapsedTime();
+    }
+
+    gettimeofday(&tempoInicial, NULL);
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
         game::screenBounds->collidesScreenBounds((MyRectangle *)(*drawable));
         (*drawable)->update();
+    }
+    gettimeofday(&tempoFinal, NULL);
+    elapsedTime = getSeconds(&tempoInicial, &tempoFinal);
+    if(x<=0){
+        std::cout << "Upt ";
+        printElapsedTime();
     }
 }
 
@@ -81,22 +117,15 @@ void draw(){
     glutSwapBuffers();
 }
 
-void printElapsedTime(){
-    snprintf(buffer, sizeof(buffer), "%f", elapsedTime);
-    glutSetWindowTitle(buffer);
-    std::cout << "elapsedTime: " << elapsedTime << std::endl;
-}
-
-int x = 100;
-
 void mainloop(){
-    gettimeofday(&tempoInicial, NULL);
+    gettimeofday(&tempoInicialAll, NULL);
     update();
-    gettimeofday(&tempoFinal, NULL);
+    gettimeofday(&tempoFinalAll, NULL);
     draw();
 
-    elapsedTime = ((tempoFinal.tv_sec  - tempoInicial.tv_sec) * 1000000u + tempoFinal.tv_usec - tempoInicial.tv_usec) / 1.e6;
+    elapsedTime = getSeconds(&tempoInicialAll, &tempoFinalAll);
     if(x<=0){
+        std::cout << "All ";
         printElapsedTime();
         x=100;
     }
@@ -136,7 +165,7 @@ void initOpenGLEnvironment(int width, int height){
 }
 
 int main(int argc, char **argv){
-    game::screenRect = new Rect(0, 0, 1280, 720);
+    game::screenRect = new Rect(0, 0, 1920, 1080);
     game::screenBounds = new ScreenBounds(game::screenRect);
     game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()));
 
