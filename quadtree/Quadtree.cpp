@@ -38,7 +38,6 @@ std::vector<MyRectangle*>* QuadTree::getEntityList(){
 	return &(this->entityList);
 }
 
-
 void QuadTree::split(){
 	int nodeWidth  = (int)(bounds->getWidth() /2);
 	int nodeHeight = (int)(bounds->getHeight()/2);
@@ -94,7 +93,6 @@ void QuadTree::addParallel(MyRectangle* entity){
 		}
 	}
 
-
 	pthread_mutex_lock(&this->mutex);
 	entityList.push_back(entity);
 	pthread_mutex_unlock(&this->mutex);
@@ -128,8 +126,8 @@ int QuadTree::getPlaceIndex(MyRectangle* entity){
 	bool bottomQuad = (entity->getRect()->getY() < centralY && entity->getRect()->getY() + entity->getRect()->getHeight() < centralY);
 	bool topQuad    = (entity->getRect()->getY() > centralY);
 
-//  3 2
-//  0 1
+	//  3 2
+	//  0 1
 	if(entity->getRect()->getX() < centralX && entity->getRect()->getX() + entity->getRect()->getWidth() < centralX) {
 		if(bottomQuad){
 			index = 0;
@@ -149,7 +147,6 @@ int QuadTree::getPlaceIndex(MyRectangle* entity){
 	return index;
 }
 
-
 int* QuadTree::getMultiIndex(MyRectangle* entity){
 	int* multiIndex = new int[4];
 	multiIndex[0] = 1;
@@ -165,8 +162,8 @@ int* QuadTree::getMultiIndex(MyRectangle* entity){
 	bool leftArea   = (entity->getRect()->getX() < centralX && entity->getRect()->getX() + entity->getRect()->getWidth() < centralX);
 	bool rightArea  = (entity->getRect()->getX() > centralX);
 
-//  3 2
-//  0 1
+	//  3 2
+	//  0 1
 	if(bottomArea){
 		multiIndex[2] = 0;
 		multiIndex[3] = 0;
@@ -206,7 +203,6 @@ void QuadTree::retrieve(std::vector<MyRectangle*>* returnEntities, MyRectangle* 
     }
 
 }
-
 
 void QuadTree::collisionCheck(MyRectangle *rectangle){
 	for(int i = 0; i < this->entityList.size(); i++){
