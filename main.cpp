@@ -87,7 +87,7 @@ void worstCollision(){
     for(int i = 0; i < game::drawables.size(); i++){
         for(int j = i + 1; j < game::drawables.size(); j++){
             rectangle = (MyRectangle *) game::drawables.at(i);
-            rectangle->collides((MyRectangle *) game::drawables.at(j));
+            rectangle->collisionCheck((MyRectangle *) game::drawables.at(j));
         }
     }
 }

@@ -63,7 +63,7 @@ void MyRectangle::setDisplacementY(int val){
     this->displacementY = val;
 }
 
-void MyRectangle::collides(MyRectangle *rectangle){
+void MyRectangle::collisionCheck(MyRectangle *rectangle){
     Rect rectA(
         this->rect->getX() + this->displacementX,
         this->rect->getY() + this->displacementY,

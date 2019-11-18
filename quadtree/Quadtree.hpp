@@ -16,7 +16,7 @@ private:
   	pthread_mutex_t mutex;
     pthread_cond_t cond;
 	int level;
-	void collides(MyRectangle*);
+	void collisionCheck(MyRectangle*);
 
 public:
 	QuadTree(int level, Rect* bounds);

@@ -28,7 +28,7 @@ public:
     void setDisplacementX(int);
     int getDisplacementY();
     void setDisplacementY(int);
-    void collides(MyRectangle *renctangle);
+    void collisionCheck(MyRectangle *renctangle);
     virtual void draw();
     virtual void update();
     ~MyRectangle();
