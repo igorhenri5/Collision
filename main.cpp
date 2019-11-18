@@ -53,12 +53,18 @@ float getSeconds(struct timeval *tempoI, struct timeval *tempoF){
     return ((tempoF->tv_sec  - tempoI->tv_sec) * 1000000u + tempoF->tv_usec - tempoI->tv_usec) / 1.e6;
 }
 
-void initDrawables(){
-    // game::drawables.push_back(new MyRectangle(new Rect(32, 192, RECSIZE, RECSIZE), game::screenRect,  0, -1, -1, &(game::programFactory)));
-    // game::drawables.push_back(new MyRectangle(new Rect(64, 64, RECSIZE, RECSIZE), game::screenRect,   0,  0, -1, &(game::programFactory)));
-    // game::drawables.push_back(new MyRectangle(new Rect(128, 128, RECSIZE, RECSIZE), game::screenRect, 0,  1,  1, &(game::programFactory)));
-    // game::drawables.push_back(new MyRectangle(new Rect(192, 128, RECSIZE, RECSIZE), game::screenRect, 0,  1,  0, &(game::programFactory)));
 
+void forceSync(float fps){
+    float millis, fps;
+    millis = 1000.0f / fps - elapsedTime * 1000.0f;
+    if(millis < 0){
+        std::cout << "Lag (millis): " << millis << std::endl;
+        millis = 0.0f;
+    }
+    sleep(millis);
+}
+
+void initDrawables(){
     srand(game::seed);
     int displacementX, displacementY;
     for(int i=0; i < game::screenRect->getWidth(); i += 16){
@@ -67,6 +73,17 @@ void initDrawables(){
             displacementY = (rand() % 3) - 1;
 
             game::drawables.push_back(new MyRectangle(new Rect(i, j, RECSIZE, RECSIZE), game::screenRect, 0, displacementX, displacementY, &(game::programFactory)));
+        }
+    }
+    std::cout << "numero de elementos: " << game::drawables.size() << std::endl;
+}
+
+void worstCollision(){
+    MyRectangle *rectangle;
+    for(int i = 0; i < game::drawables.size(); i++){
+        for(int j = i + 1; j < game::drawables.size(); j++){
+            rectangle = (MyRectangle *) game::drawables.at(i);
+            rectangle->collides((MyRectangle *) game::drawables.at(j));
         }
     }
 }
@@ -86,7 +103,9 @@ void update(){
     }
 
     gettimeofday(&tempoInicial, NULL);
+
     game::quadtree->collidesAll();
+
     gettimeofday(&tempoFinal, NULL);
     elapsedTime = getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
@@ -109,8 +128,6 @@ void update(){
 
 void draw(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // std::cout << "draw" << std::endl;
-    // std::cout << game::drawables.size() << std::endl;
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
         (*drawable)->draw();
     }
@@ -130,16 +147,6 @@ void mainloop(){
         x=100;
     }
     x--;
-    /*
-    float millis, fps;
-    fps = 30;
-    millis = 1000.0f / fps - elapsedTime * 1000.0f;
-    if(millis < 0){
-        std::cout << "Lag (millis): " << millis << std::endl;
-        millis = 0;
-    }
-    sleep(millis);
-    */
 }
 
 void onKeyboardDownEvent(unsigned char key, int x, int y){
@@ -165,7 +172,7 @@ void initOpenGLEnvironment(int width, int height){
 }
 
 int main(int argc, char **argv){
-    game::screenRect = new Rect(0, 0, 1920, 1080);
+    game::screenRect = new Rect(0, 0, 1280, 720);
     game::screenBounds = new ScreenBounds(game::screenRect);
     game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()));
 
