@@ -55,7 +55,7 @@ float getSeconds(struct timeval *tempoI, struct timeval *tempoF){
 
 
 void forceSync(float fps){
-    float millis, fps;
+    float millis;
     millis = 1000.0f / fps - elapsedTime * 1000.0f;
     if(millis < 0){
         std::cout << "Lag (millis): " << millis << std::endl;
