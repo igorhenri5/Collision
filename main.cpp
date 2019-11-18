@@ -84,7 +84,7 @@ void draw(){
 void printElapsedTime(){
     snprintf(buffer, sizeof(buffer), "%f", elapsedTime);
     glutSetWindowTitle(buffer);
-    //std::cout << "elapsedTime: " << elapsedTime << std::endl;
+    std::cout << "elapsedTime: " << elapsedTime << std::endl;
 }
 
 int x = 100;
@@ -136,14 +136,14 @@ void initOpenGLEnvironment(int width, int height){
 }
 
 int main(int argc, char **argv){
-    game::screenRect = new Rect(0, 0, 1920, 1080);
+    game::screenRect = new Rect(0, 0, 1280, 720);
     game::screenBounds = new ScreenBounds(game::screenRect);
     game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()));
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutInitWindowSize(game::screenRect->getWidth(), game::screenRect->getHeight());
-    glutInitWindowPosition(100, 100);
+    glutInitWindowPosition(0, 0);
     glutCreateWindow("Programacao Paralela - TP");
     glewInit();
     initOpenGLEnvironment(game::screenRect->getWidth(), game::screenRect->getHeight());

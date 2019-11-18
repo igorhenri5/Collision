@@ -20,7 +20,7 @@ build_quadtree:
 	g++ -c quadtree/*.cpp -I"C:\MinGW\glew\include"
 
 build_threadpool:
-	g++ -c threadpool/*.cpp
+	g++ -c threadpool/*.cpp -I"C:\MinGW\glew\include"
 
 build_graphics:
 	g++ -c graphics/*.cpp -I"C:\MinGW\glew\include"
