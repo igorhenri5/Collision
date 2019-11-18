@@ -14,6 +14,7 @@
 #include <GL/freeglut.h>
 #include <string.h>
 #include <cstdlib>
+#include <iomanip>
 
 #define  RECSIZE  4
 
@@ -31,7 +32,7 @@
 
 struct timeval tempoInicialAll, tempoFinalAll;
 struct timeval tempoInicial, tempoFinal;
-float elapsedTime;
+float elapsedTimeAdd, elapsedTimeUpt, elapsedTimeCld, elapsedTimeAll;
 char buffer[64];
 
 namespace game{
@@ -45,10 +46,11 @@ namespace game{
     MasterFlag *masterFlag;
 }
 
-void printElapsedTime(){
+void printElapsedTime(float elapsedTime){
     snprintf(buffer, sizeof(buffer), "%f", elapsedTime);
     glutSetWindowTitle(buffer);
-    std::cout << "elapsedTime: " << elapsedTime << std::endl;
+    std::cout << std::fixed;
+    std::cout << std::setprecision(6) << "elapsedTime: " << elapsedTime << std::endl;
 }
 
 float getSeconds(struct timeval *tempoI, struct timeval *tempoF){
@@ -56,7 +58,7 @@ float getSeconds(struct timeval *tempoI, struct timeval *tempoF){
 }
 
 
-void forceSync(float fps){
+void forceSync(float elapsedTime, float fps){
     float millis;
     millis = 1000.0f / fps - elapsedTime * 1000.0f;
     if(millis < 0){
@@ -90,7 +92,13 @@ void worstCollision(){
     }
 }
 
-void parralelAdd(){
+void addSerial(){
+    for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
+        game::quadtree->add((MyRectangle *)(*drawable));
+    }
+}
+
+void addParallel(){
     int inicioParticao, fimParticao, numParticoes, tamanhoParticao;
 
     tamanhoParticao = (game::drawables.size() + game::threadPool->size - 1) / game::threadPool->size;
@@ -99,14 +107,9 @@ void parralelAdd(){
         tamanhoParticao = 100;
 
     numParticoes = (game::drawables.size() + tamanhoParticao - 1) / tamanhoParticao;
-    // std::cout << "tamanhoParticao: " << tamanhoParticao << std::endl;
-    // std::cout << "numParticoes: " << numParticoes << std::endl;
 
     game::masterFlag->reset(numParticoes);
-
-    // std::cout << "OPA" << std::endl;
     for(int i = 0; i < numParticoes; i++){
-        // std::cout << "i:" << i << std::endl;
         inicioParticao = i * tamanhoParticao;
         fimParticao = inicioParticao + tamanhoParticao;
         if(fimParticao > game::drawables.size()){
@@ -114,9 +117,7 @@ void parralelAdd(){
         }
         game::threadPool->addTask(new AddTask(game::masterFlag, game::quadtree, game::drawables.begin() + inicioParticao, game::drawables.begin() + fimParticao));
     }
-    // std::cout << "wait" << std::endl;
     game::masterFlag->wait();
-    // std::cout << "opa" << std::endl;
 }
 
 void parallelCollides(){
@@ -147,15 +148,15 @@ void update(){
     game::quadtree->clear();
 
     gettimeofday(&tempoInicial, NULL);
-    // for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
-    //     game::quadtree->add((MyRectangle *)(*drawable));
-    // }
-    parralelAdd();
+
+    addParallel();
+
     gettimeofday(&tempoFinal, NULL);
-    elapsedTime = getSeconds(&tempoInicial, &tempoFinal);
+    elapsedTimeAdd += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
         std::cout << "Add ";
-        printElapsedTime();
+        printElapsedTime(elapsedTimeAdd / 100);
+        elapsedTimeAdd = 0;
     }
 
     gettimeofday(&tempoInicial, NULL);
@@ -163,10 +164,11 @@ void update(){
     game::quadtree->collidesAll();
 
     gettimeofday(&tempoFinal, NULL);
-    elapsedTime = getSeconds(&tempoInicial, &tempoFinal);
+    elapsedTimeCld += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
         std::cout << "Cld ";
-        printElapsedTime();
+        printElapsedTime(elapsedTimeCld / 100);
+        elapsedTimeCld = 0;
     }
 
     gettimeofday(&tempoInicial, NULL);
@@ -175,10 +177,11 @@ void update(){
         (*drawable)->update();
     }
     gettimeofday(&tempoFinal, NULL);
-    elapsedTime = getSeconds(&tempoInicial, &tempoFinal);
+    elapsedTimeUpt += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
         std::cout << "Upt ";
-        printElapsedTime();
+        printElapsedTime(elapsedTimeUpt / 100);
+        elapsedTimeUpt = 0;
     }
 }
 
@@ -196,11 +199,12 @@ void mainloop(){
     gettimeofday(&tempoFinalAll, NULL);
     draw();
 
-    elapsedTime = getSeconds(&tempoInicialAll, &tempoFinalAll);
+    elapsedTimeAll += getSeconds(&tempoInicialAll, &tempoFinalAll);
     if(x<=0){
         std::cout << "All ";
-        printElapsedTime();
+        printElapsedTime(elapsedTimeAll / 100);
         std::cout << std::endl;
+        elapsedTimeAll = 0;
         x=100;
     }
     x--;
@@ -231,11 +235,16 @@ void initOpenGLEnvironment(int width, int height){
 }
 
 int main(int argc, char **argv){
-    game::screenRect = new Rect(0, 0, 1280, 720);
+    game::screenRect = new Rect(0, 0, 1920, 1080);
     game::screenBounds = new ScreenBounds(game::screenRect);
     game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()));
     game::threadPool = new ThreadPool(4);
     game::masterFlag = new MasterFlag(0);
+    elapsedTimeAdd = 0;
+    elapsedTimeUpt = 0;
+    elapsedTimeCld = 0;
+    elapsedTimeAll = 0;
+
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
