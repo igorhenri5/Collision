@@ -60,15 +60,16 @@ void QuadTree::add(MyRectangle* entity){
 	entityList.push_back(entity);
 
 	if(entityList.size() > MAX_ENTITIES){
-		if(nodes[0] == nullptr)
+		if(nodes[0] == nullptr){
 			this->split();
 
-		for(std::vector<MyRectangle*>::iterator it = entityList.begin(); it != entityList.end();it++){
-			int index = getPlaceIndex(*it);
-			if(index != -1){
-				nodes[index]->add(*it);
-				entityList.erase(it);
-				it--;
+			for(std::vector<MyRectangle*>::iterator it = entityList.begin(); it != entityList.end();it++){
+				int index = getPlaceIndex(*it);
+				if(index != -1){
+					nodes[index]->add(*it);
+					entityList.erase(it);
+					it--;
+				}
 			}
 		}
 	}
@@ -105,7 +106,6 @@ int QuadTree::getPlaceIndex(MyRectangle* entity){
 	return index;
 }
 
-//Retornar um vector com os objetos que possivelmente podem colidir com o objeto do parametro
 
 int* QuadTree::getMultiIndex(MyRectangle* entity){
 	int* multiIndex = new int[4];
@@ -143,26 +143,27 @@ int* QuadTree::getMultiIndex(MyRectangle* entity){
 	return multiIndex;
 }
 
-std::vector<MyRectangle*>* QuadTree::retrieve(MyRectangle* entity){
+void QuadTree::retrieve(std::vector<MyRectangle*>* returnEntities, MyRectangle* entity){
+
 	int index = getPlaceIndex(entity);
 	if(index != -1 && nodes[0] != nullptr){
-		return nodes[index]->retrieve(entity);
-	}
-	std::vector<MyRectangle*> auxEntityList;
-	int* multiIndex = getMultiIndex(entity);
-
-	for (int i=0; i<4; i++){
-		if(multiIndex[i]){
-			for (auto it = nodes[i]->getEntityList()->begin(); it != nodes[i]->getEntityList()->end(); ++it){
-		        auxEntityList.push_back((*it));
-		    }
+		nodes[index]->retrieve(returnEntities, entity);
+	}else if(index == -1 && nodes[0] != nullptr){
+		int* multiIndex = getMultiIndex(entity);
+		for (int i=0; i<4; i++){
+			if(multiIndex[i]){
+				nodes[i]->retrieve(returnEntities, entity);
+			}
 		}
+		delete multiIndex;		
 	}
 
-	delete multiIndex;
-	return &auxEntityList;
+	for(auto it = this->getEntityList()->begin(); it != this->getEntityList()->end(); ++it){
+        returnEntities->push_back((*it));
+    }
 
- }
+}
+
 
 void QuadTree::collides(MyRectangle *rectangle){
 	for(int i = 0; i < this->entityList.size(); i++){

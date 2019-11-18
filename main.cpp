@@ -13,7 +13,7 @@
 #include <string.h>
 #include <cstdlib>
 
-#define  RECSIZE  8
+#define  RECSIZE  4
 
 #ifdef _WIN32
     #include <windows.h>
@@ -81,20 +81,26 @@ void draw(){
     glutSwapBuffers();
 }
 
-void printEnlapsedTime(){
+void printElapsedTime(){
     snprintf(buffer, sizeof(buffer), "%f", elapsedTime);
     glutSetWindowTitle(buffer);
     //std::cout << "elapsedTime: " << elapsedTime << std::endl;
 }
 
+int x = 100;
+
 void mainloop(){
     gettimeofday(&tempoInicial, NULL);
     update();
-    draw();
     gettimeofday(&tempoFinal, NULL);
+    draw();
 
     elapsedTime = ((tempoFinal.tv_sec  - tempoInicial.tv_sec) * 1000000u + tempoFinal.tv_usec - tempoInicial.tv_usec) / 1.e6;
-    printEnlapsedTime();
+    if(x<=0){
+        printElapsedTime();
+        x=100;
+    }
+    x--;
     /*
     float millis, fps;
     fps = 30;
@@ -130,7 +136,7 @@ void initOpenGLEnvironment(int width, int height){
 }
 
 int main(int argc, char **argv){
-    game::screenRect = new Rect(0, 0, 512, 512);
+    game::screenRect = new Rect(0, 0, 1920, 1080);
     game::screenBounds = new ScreenBounds(game::screenRect);
     game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()));
 

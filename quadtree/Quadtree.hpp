@@ -25,7 +25,7 @@ public:
 	std::vector<MyRectangle*>* getEntityList();
 	int getPlaceIndex(MyRectangle*);
 	int* getMultiIndex(MyRectangle*);
-	std::vector<MyRectangle*>* retrieve(MyRectangle*);
+	void retrieve(std::vector<MyRectangle*>*, MyRectangle*);
 	void collidesAll();
 };
 
