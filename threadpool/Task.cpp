@@ -14,7 +14,7 @@ AddTask::AddTask(MasterFlag *masterFlag, QuadTree *quadtree, std::vector<IDrawab
 
 void AddTask::run(){
 	for (auto drawable = begin; drawable != end; ++drawable){
-		this->quadtree->add((MyRectangle *)(*drawable));
+		this->quadtree->addParallel((MyRectangle *)(*drawable));
     }
 	this->masterFlag->signal();
 }

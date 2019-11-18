@@ -75,6 +75,36 @@ void QuadTree::add(MyRectangle* entity){
 	}
 }
 
+void QuadTree::addParallel(MyRectangle* entity){
+
+	if(nodes[0] != nullptr){
+		int index = getPlaceIndex(entity);
+		if(index != -1){
+			nodes[index]->add(entity);
+			return;
+		}
+	}
+
+	pthread_mutex_lock(&mutex);
+	entityList.push_back(entity);
+
+	if(entityList.size() > MAX_ENTITIES){
+		if(nodes[0] == nullptr){
+			this->split();
+
+			for(std::vector<MyRectangle*>::iterator it = entityList.begin(); it != entityList.end();it++){
+				int index = getPlaceIndex(*it);
+				if(index != -1){
+					nodes[index]->add(*it);
+					entityList.erase(it);
+					it--;
+				}
+			}
+		}
+	}
+	pthread_mutex_unlock(&mutex);
+}
+
 //Descobrir em qual subQuadrante o objeto de tipo ? se encaixaria na arvore
 int QuadTree::getPlaceIndex(MyRectangle* entity){
 	int index = -1;
@@ -155,7 +185,7 @@ void QuadTree::retrieve(std::vector<MyRectangle*>* returnEntities, MyRectangle* 
 				nodes[i]->retrieve(returnEntities, entity);
 			}
 		}
-		delete multiIndex;		
+		delete multiIndex;
 	}
 
 	for(auto it = this->getEntityList()->begin(); it != this->getEntityList()->end(); ++it){
