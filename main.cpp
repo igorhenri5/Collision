@@ -51,8 +51,6 @@ void printElapsedTime(){
     std::cout << "elapsedTime: " << elapsedTime << std::endl;
 }
 
-int x = 100;
-
 float getSeconds(struct timeval *tempoI, struct timeval *tempoF){
     return ((tempoF->tv_sec  - tempoI->tv_sec) * 1000000u + tempoF->tv_usec - tempoI->tv_usec) / 1.e6;
 }
@@ -120,6 +118,30 @@ void parralelAdd(){
     game::masterFlag->wait();
     // std::cout << "opa" << std::endl;
 }
+
+void parallelCollides(){
+    int inicioParticao, fimParticao, numParticoes, tamanhoParticao;
+
+    tamanhoParticao = (game::drawables.size() + game::threadPool->size - 1) / game::threadPool->size;
+
+    if(tamanhoParticao < 100) // tamanho minimo particao
+        tamanhoParticao = 100;
+
+    numParticoes = (game::drawables.size() + tamanhoParticao - 1) / tamanhoParticao;
+
+    game::masterFlag->reset(numParticoes);
+    for(int i = 0; i < numParticoes; i++){
+        inicioParticao = i * tamanhoParticao;
+        fimParticao = inicioParticao + tamanhoParticao;
+        if(fimParticao > game::drawables.size()){
+          fimParticao = game::drawables.size();
+        }
+        game::threadPool->addTask(new CollisionCheckTask(game::masterFlag, game::quadtree, game::drawables.begin() + inicioParticao, game::drawables.begin() + fimParticao));
+    }
+    game::masterFlag->wait();
+}
+
+int x = 100;
 
 void update(){
     game::quadtree->clear();
@@ -217,6 +239,7 @@ int main(int argc, char **argv){
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    //glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);  //Sem Vsync
     glutInitWindowSize(game::screenRect->getWidth(), game::screenRect->getHeight());
     glutInitWindowPosition(0, 0);
     glutCreateWindow("Programacao Paralela - TP");
