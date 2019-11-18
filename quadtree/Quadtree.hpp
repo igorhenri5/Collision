@@ -16,7 +16,7 @@ private:
   	pthread_mutex_t mutex;
     pthread_cond_t cond;
 	int level;
-	void HandleCollision(MyRectangle*);
+	void handleCollision(MyRectangle*);
 
 public:
 	QuadTree(int level, Rect* bounds);
@@ -30,7 +30,7 @@ public:
 	int getPlaceIndex(MyRectangle*);
 	int* getMultiIndex(MyRectangle*);
 	void retrieve(std::vector<MyRectangle*>*, MyRectangle*);
-	void HandleAllCollisions();
+	void handleAllCollisions();
 };
 
 #endif

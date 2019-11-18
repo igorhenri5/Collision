@@ -87,7 +87,7 @@ void worstCollision(){
     for(int i = 0; i < game::drawables.size(); i++){
         for(int j = i + 1; j < game::drawables.size(); j++){
             rectangle = (MyRectangle *) game::drawables.at(i);
-            rectangle->HandleCollision((MyRectangle *) game::drawables.at(j));
+            rectangle->handleCollision((MyRectangle *) game::drawables.at(j));
         }
     }
 }
@@ -137,7 +137,7 @@ void parallelCollisionCheck(){
         if(fimParticao > game::drawables.size()){
           fimParticao = game::drawables.size();
         }
-        //game::threadPool->addTask(new HandleCollisionTask(game::masterFlag, game::quadtree, game::drawables.begin() + inicioParticao, game::drawables.begin() + fimParticao));
+        //game::threadPool->addTask(new handleCollisionTask(game::masterFlag, game::quadtree, game::drawables.begin() + inicioParticao, game::drawables.begin() + fimParticao));
     }
     game::masterFlag->wait();
 }
@@ -161,7 +161,7 @@ void update(){
 
     gettimeofday(&tempoInicial, NULL);
 
-    game::quadtree->HandleAllCollisions();
+    game::quadtree->handleAllCollisions();
 
     gettimeofday(&tempoFinal, NULL);
     elapsedTimeCld += getSeconds(&tempoInicial, &tempoFinal);
@@ -173,7 +173,7 @@ void update(){
 
     gettimeofday(&tempoInicial, NULL);
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
-        game::screenBounds->HandleCollisionScreenBounds((MyRectangle *)(*drawable));
+        game::screenBounds->handleCollisionScreenBounds((MyRectangle *)(*drawable));
         (*drawable)->update();
     }
     gettimeofday(&tempoFinal, NULL);
