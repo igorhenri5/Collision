@@ -120,7 +120,7 @@ void addParallel(){
     game::masterFlag->wait();
 }
 
-void parallelCollides(){
+void parallelCollisionCheck(){
     int inicioParticao, fimParticao, numParticoes, tamanhoParticao;
 
     tamanhoParticao = (game::drawables.size() + game::threadPool->size - 1) / game::threadPool->size;
@@ -137,7 +137,7 @@ void parallelCollides(){
         if(fimParticao > game::drawables.size()){
           fimParticao = game::drawables.size();
         }
-        game::threadPool->addTask(new CollisionCheckTask(game::masterFlag, game::quadtree, game::drawables.begin() + inicioParticao, game::drawables.begin() + fimParticao));
+        //game::threadPool->addTask(new CollisionCheckTask(game::masterFlag, game::quadtree, game::drawables.begin() + inicioParticao, game::drawables.begin() + fimParticao));
     }
     game::masterFlag->wait();
 }
@@ -161,7 +161,7 @@ void update(){
 
     gettimeofday(&tempoInicial, NULL);
 
-    game::quadtree->collidesAll();
+    game::quadtree->collisionCheckAll();
 
     gettimeofday(&tempoFinal, NULL);
     elapsedTimeCld += getSeconds(&tempoInicial, &tempoFinal);
@@ -173,7 +173,7 @@ void update(){
 
     gettimeofday(&tempoInicial, NULL);
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
-        game::screenBounds->collidesScreenBounds((MyRectangle *)(*drawable));
+        game::screenBounds->collisionCheckScreenBounds((MyRectangle *)(*drawable));
         (*drawable)->update();
     }
     gettimeofday(&tempoFinal, NULL);
@@ -235,7 +235,9 @@ void initOpenGLEnvironment(int width, int height){
 }
 
 int main(int argc, char **argv){
+    //game::screenRect = new Rect(0, 0, 1280, 720);
     game::screenRect = new Rect(0, 0, 1920, 1080);
+    //game::screenRect = new Rect(0, 0, 3840, 2160);
     game::screenBounds = new ScreenBounds(game::screenRect);
     game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()));
     game::threadPool = new ThreadPool(4);

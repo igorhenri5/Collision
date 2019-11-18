@@ -30,7 +30,7 @@ public:
 	int getPlaceIndex(MyRectangle*);
 	int* getMultiIndex(MyRectangle*);
 	void retrieve(std::vector<MyRectangle*>*, MyRectangle*);
-	void collidesAll();
+	void collisionCheckAll();
 };
 
 #endif

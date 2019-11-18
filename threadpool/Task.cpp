@@ -18,3 +18,15 @@ void AddTask::run(){
     }
 	this->masterFlag->signal();
 }
+
+
+CollisionCheckTask::CollisionCheckTask(MasterFlag *masterFlag, QuadTree *quadtree, std::vector<IDrawable *>::iterator begin, std::vector<IDrawable *>::iterator end) : Task(masterFlag){
+	this->quadtree	= quadtree;
+	this->begin 	= begin;
+	this->end   	= end;
+}
+
+void CollisionCheckTask::run(){
+
+}
+

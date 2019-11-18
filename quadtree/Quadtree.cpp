@@ -219,7 +219,7 @@ void QuadTree::collides(MyRectangle *rectangle){
 	}
 }
 
-void QuadTree::collidesAll(){
+void QuadTree::collisionCheckAll(){
 	for(int i = 0; i < this->entityList.size(); i++){
 		for(int j = i + 1; j < this->entityList.size(); j++){
 			this->entityList.at(i)->collides(this->entityList.at(j));
@@ -232,7 +232,7 @@ void QuadTree::collidesAll(){
 			}
 		}
 		for(int j = 0; j < 4; j++){
-			nodes[j]->collidesAll();
+			nodes[j]->collisionCheckAll();
 		}
 	}
 

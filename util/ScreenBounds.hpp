@@ -15,7 +15,7 @@ private:
 	bool checkCollisionY(MyRectangle* rectangle);
 public:
 	ScreenBounds(Rect* bounds);
-	void collidesScreenBounds(MyRectangle* rectangle);
+	void collisionCheckScreenBounds(MyRectangle* rectangle);
 };
 
 #endif

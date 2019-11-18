@@ -30,7 +30,7 @@ private:
 	QuadTree *quadtree;
     std::vector<IDrawable *>::iterator begin, end;
 public:
-    AddTask(MasterFlag *masterFlag, QuadTree *quadtree, std::vector<IDrawable *>::iterator begin, std::vector<IDrawable *>::iterator end);
+    CollisionCheckTask(MasterFlag *masterFlag, QuadTree *quadtree, std::vector<IDrawable *>::iterator begin, std::vector<IDrawable *>::iterator end);
     void run();
 };
 

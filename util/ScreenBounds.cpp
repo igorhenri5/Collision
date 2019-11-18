@@ -28,7 +28,7 @@ bool ScreenBounds::checkCollisionX(MyRectangle* rectangle){
 	return (rectangle->getDisplacementX() > 0 && checkScreenRight(rectangle) || rectangle->getDisplacementX() < 0 && checkScreenLeft(rectangle));
 }
 
-void ScreenBounds::collidesScreenBounds(MyRectangle* rectangle){
+void ScreenBounds::collisionCheckScreenBounds(MyRectangle* rectangle){
 	 if(this->checkCollisionY(rectangle)){
          rectangle->setDisplacementY(rectangle->getDisplacementY() * -1);
      }
