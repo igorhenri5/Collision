@@ -20,13 +20,13 @@ void AddTask::run(){
 }
 
 
-CollisionCheckTask::CollisionCheckTask(MasterFlag *masterFlag, QuadTree *quadtree, std::vector<IDrawable *>::iterator begin, std::vector<IDrawable *>::iterator end) : Task(masterFlag){
+HandleCollisionTask::HandleCollisionTask(MasterFlag *masterFlag, QuadTree *quadtree, std::vector<IDrawable *>::iterator begin, std::vector<IDrawable *>::iterator end) : Task(masterFlag){
 	this->quadtree	= quadtree;
 	this->begin 	= begin;
 	this->end   	= end;
 }
 
-void CollisionCheckTask::run(){
+void HandleCollisionTask::run(){
 
 }
 

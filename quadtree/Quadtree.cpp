@@ -204,31 +204,31 @@ void QuadTree::retrieve(std::vector<MyRectangle*>* returnEntities, MyRectangle* 
 
 }
 
-void QuadTree::collisionCheck(MyRectangle *rectangle){
+void QuadTree::HandleCollision(MyRectangle *rectangle){
 	for(int i = 0; i < this->entityList.size(); i++){
-		this->entityList.at(i)->collisionCheck(rectangle);
+		this->entityList.at(i)->HandleCollision(rectangle);
 	}
 	if(nodes[0] != nullptr){
 		for(int i = 0; i < 4; i++){
-			nodes[i]->collisionCheck(rectangle);
+			nodes[i]->HandleCollision(rectangle);
 		}
 	}
 }
 
-void QuadTree::collisionCheckAll(){
+void QuadTree::HandleAllCollisions(){
 	for(int i = 0; i < this->entityList.size(); i++){
 		for(int j = i + 1; j < this->entityList.size(); j++){
-			this->entityList.at(i)->collisionCheck(this->entityList.at(j));
+			this->entityList.at(i)->HandleCollision(this->entityList.at(j));
 		}
 	}
 	if(nodes[0] != nullptr){
 		for(int i = 0; i < this->entityList.size(); i++){
 			for(int j = 0; j < 4; j++){
-				nodes[j]->collisionCheck(this->entityList.at(i));
+				nodes[j]->HandleCollision(this->entityList.at(i));
 			}
 		}
 		for(int j = 0; j < 4; j++){
-			nodes[j]->collisionCheckAll();
+			nodes[j]->HandleAllCollisions();
 		}
 	}
 
