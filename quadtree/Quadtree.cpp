@@ -8,6 +8,8 @@ QuadTree::QuadTree(int level, Rect* bounds){
 	}
 	this->level  = level;
 	this->bounds = bounds;
+	pthread_mutex_init(&mutex, 0);
+    pthread_cond_init(&cond, 0);
 }
 
 QuadTree::~QuadTree(){
@@ -17,6 +19,8 @@ QuadTree::~QuadTree(){
 	}
 	delete nodes;
 	delete bounds;
+	pthread_mutex_destroy(&mutex);
+    pthread_cond_destroy(&cond);
 }
 
 void QuadTree::clear(){
@@ -77,18 +81,26 @@ void QuadTree::add(MyRectangle* entity){
 
 void QuadTree::addParallel(MyRectangle* entity){
 
-	if(nodes[0] != nullptr){
+  	bool isSplitted;
+	pthread_mutex_lock(&this->mutex);
+    isSplitted = nodes[0] != nullptr;
+    pthread_mutex_unlock(&this->mutex);
+
+	if(isSplitted){
 		int index = getPlaceIndex(entity);
 		if(index != -1){
-			nodes[index]->add(entity);
+			nodes[index]->addParallel(entity);
 			return;
 		}
 	}
 
-	pthread_mutex_lock(&mutex);
+
+	pthread_mutex_lock(&this->mutex);
 	entityList.push_back(entity);
+	pthread_mutex_unlock(&this->mutex);
 
 	if(entityList.size() > MAX_ENTITIES){
+		pthread_mutex_lock(&this->mutex);
 		if(nodes[0] == nullptr){
 			this->split();
 
@@ -100,9 +112,10 @@ void QuadTree::addParallel(MyRectangle* entity){
 					it--;
 				}
 			}
+
 		}
+		pthread_mutex_unlock(&this->mutex);
 	}
-	pthread_mutex_unlock(&mutex);
 }
 
 //Descobrir em qual subQuadrante o objeto de tipo ? se encaixaria na arvore

@@ -93,7 +93,6 @@ void worstCollision(){
 }
 
 void parralelAdd(){
-    Task *task;
     int inicioParticao, fimParticao, numParticoes, tamanhoParticao;
 
     tamanhoParticao = (game::drawables.size() + game::threadPool->size - 1) / game::threadPool->size;
@@ -102,9 +101,14 @@ void parralelAdd(){
         tamanhoParticao = 100;
 
     numParticoes = (game::drawables.size() + tamanhoParticao - 1) / tamanhoParticao;
+    // std::cout << "tamanhoParticao: " << tamanhoParticao << std::endl;
+    // std::cout << "numParticoes: " << numParticoes << std::endl;
+
     game::masterFlag->reset(numParticoes);
 
+    // std::cout << "OPA" << std::endl;
     for(int i = 0; i < numParticoes; i++){
+        // std::cout << "i:" << i << std::endl;
         inicioParticao = i * tamanhoParticao;
         fimParticao = inicioParticao + tamanhoParticao;
         if(fimParticao > game::drawables.size()){
@@ -112,16 +116,19 @@ void parralelAdd(){
         }
         game::threadPool->addTask(new AddTask(game::masterFlag, game::quadtree, game::drawables.begin() + inicioParticao, game::drawables.begin() + fimParticao));
     }
+    // std::cout << "wait" << std::endl;
     game::masterFlag->wait();
+    // std::cout << "opa" << std::endl;
 }
 
 void update(){
     game::quadtree->clear();
 
     gettimeofday(&tempoInicial, NULL);
-    for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
-        game::quadtree->add((MyRectangle *)(*drawable));
-    }
+    // for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
+    //     game::quadtree->add((MyRectangle *)(*drawable));
+    // }
+    parralelAdd();
     gettimeofday(&tempoFinal, NULL);
     elapsedTime = getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
@@ -171,6 +178,7 @@ void mainloop(){
     if(x<=0){
         std::cout << "All ";
         printElapsedTime();
+        std::cout << std::endl;
         x=100;
     }
     x--;
