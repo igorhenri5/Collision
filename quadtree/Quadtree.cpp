@@ -238,29 +238,25 @@ void QuadTree::handleAllCollisions(){
 }
 
 //retorna numero de tarefas criadas
-int QuadTree::parallelHandleCollision(MasterFlag* masterFlag, ThreadPool* threadPool, MyRectangle *rectangle){
-	//EMITE TAREFAS1
-	int numTarefasCriadas;
-	numTarefasCriadas = 1;
-    threadPool->addTask(new HandleCollisionTask(masterFlag, rectangle, this->entityList.begin(), this->entityList.end()));
+void QuadTree::parallelHandleCollision(std::vector<std::pair<MyRectangle*, MyRectangle*>>* pairList, MyRectangle *rectangle){
+	for (auto r = this->entityList.begin(); r != this->entityList.end(); ++r){
+		pairList->push_back(std::make_pair(rectangle,(*r)));
+    }
 
 	if(nodes[0] != nullptr){
 		for(int i = 0; i < 4; i++){
-			numTarefasCriadas+= nodes[i]->parallelHandleCollision(masterFlag, threadPool, rectangle);
+			nodes[i]->parallelHandleCollision(pairList, rectangle);
 		}
 	}
-	return numTarefasCriadas;
 }
 
 //retorna numero de tarefas criadas
-int QuadTree::parallelHandleAllCollisions(MasterFlag* masterFlag, ThreadPool* threadPool){
+void QuadTree::parallelHandleAllCollisions(std::vector<std::pair<MyRectangle*, MyRectangle*>>* pairList){
 	int vecSize = this->entityList.size();
-	int numTarefasCriadas;
-	numTarefasCriadas = 0;
-	for(int i = 0; i < vecSize-1; i++){
-		//EMITE TAREFAS1
-		numTarefasCriadas++;
-        threadPool->addTask(new HandleCollisionTask(masterFlag, entityList.at(i), this->entityList.begin() + i + 1, this->entityList.end()));
+    for (auto r1 = this->entityList.begin(); r1 != this->entityList.end(); ++r1){
+        for (auto r2 = r1+1; r2 != this->entityList.end(); ++r2){
+			pairList->push_back(std::make_pair((*r1),(*r2)));
+	    }
 	}
 
 	if(nodes[0] != nullptr){
@@ -270,13 +266,13 @@ int QuadTree::parallelHandleAllCollisions(MasterFlag* masterFlag, ThreadPool* th
 		  for(int j = 0; j < 4; j++){
 
 		      if(multiIndex[j])
-		      	numTarefasCriadas += nodes[j]->parallelHandleCollision(masterFlag, threadPool, this->entityList.at(i));
+		      	nodes[j]->parallelHandleCollision(pairList, this->entityList.at(i));
 		  }
 		  delete multiIndex;
 		}
 		for(int j = 0; j < 4; j++){
-		  numTarefasCriadas += nodes[j]->parallelHandleAllCollisions(masterFlag, threadPool);
+		  nodes[j]->parallelHandleAllCollisions(pairList);
 		}
 	}
-	return numTarefasCriadas;
-}
+} 
+

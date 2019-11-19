@@ -9,6 +9,8 @@
 #include "threadpool/AddTask.hpp"
 #include <iostream>
 #include <vector>
+#include <utility>
+
 #include <time.h>
 #include <chrono>
 #include <sys/time.h>
@@ -33,8 +35,9 @@
 
 struct timeval tempoInicialAll, tempoFinalAll;
 struct timeval tempoInicial, tempoFinal;
-float elapsedTimeAdd, elapsedTimeUpt, elapsedTimeCld, elapsedTimeCln, elapsedTimeAll;
+float elapsedTimeAdd, elapsedTimeMount, elapsedTimeUpt, elapsedTimeCld, elapsedTimeCln, elapsedTimeAll;
 char buffer[64];
+int x = 100;
 
 namespace game{
     Rect *screenRect;
@@ -123,9 +126,38 @@ void addParallel(){
 }
 
 void parallelHandleAllCollisions(){
-    game::masterFlag->reset(0);
-    game::masterFlag->increaseTaskNum(game::quadtree->parallelHandleAllCollisions(game::masterFlag, game::threadPool));
+    int inicioParticao, fimParticao, numParticoes, tamanhoParticao;
+    std::vector<std::pair<MyRectangle*, MyRectangle*>> pairList;
+
+    gettimeofday(&tempoInicial, NULL);
+    game::quadtree->parallelHandleAllCollisions(&pairList);
+    gettimeofday(&tempoFinal, NULL);
+    elapsedTimeMount += getSeconds(&tempoInicial, &tempoFinal);
+
+    if(x<=0){
+        std::cout << "Mnt ";
+        printElapsedTime(elapsedTimeMount / 100);
+        elapsedTimeMount = 0;
+    }
+
+    tamanhoParticao = (pairList.size() + game::threadPool->size - 1) / game::threadPool->size;
+    //std::cout << "P: " << tamanhoParticao << std::endl;
+    if(tamanhoParticao < 100) // tamanho minimo particao
+        tamanhoParticao = 100;
+
+    numParticoes = (pairList.size() + tamanhoParticao - 1) / tamanhoParticao;
+
+    game::masterFlag->reset(numParticoes);
+    for(int i = 0; i < numParticoes; i++){
+        inicioParticao = i * tamanhoParticao;
+        fimParticao = inicioParticao + tamanhoParticao;
+        if(fimParticao > pairList.size()){
+            fimParticao = pairList.size();
+        }
+        game::threadPool->addTask(new HandleCollisionTask(game::masterFlag, pairList.begin() + inicioParticao, pairList.begin() + fimParticao));
+    }
     game::masterFlag->wait();
+
 }
 
 //da pra paralelizar isso aqui
@@ -134,8 +166,6 @@ void cleanFlags(){
         ((MyRectangle *)(*drawable))->setCollidedFlag(0);
     }
 }
-
-int x = 100;
 
 void update(){
     game::quadtree->clear();
@@ -240,6 +270,8 @@ void initOpenGLEnvironment(int width, int height){
 }
 
 int main(int argc, char **argv){
+    int threadNum = 4;
+
     if(argc == 2){
         std::string param1(argv[1]);
         game::screenRect = new Rect(0, 0, std::stoi(param1), std::stoi(param1));
@@ -248,13 +280,19 @@ int main(int argc, char **argv){
         std::string param1(argv[1]);
         std::string param2(argv[2]);
         game::screenRect = new Rect(0, 0, std::stoi(param1), std::stoi(param2));
-    }
-    else{
+    }else if(argc == 4){
+        std::string param1(argv[1]);
+        std::string param2(argv[2]);
+        std::string param3(argv[3]);
+        game::screenRect = new Rect(0, 0, std::stoi(param1), std::stoi(param2));
+        threadNum = std::stoi(param3);
+    }else{
         game::screenRect = new Rect(0, 0, 1280, 720);
     }
+
     game::screenBounds = new ScreenBounds(game::screenRect);
     game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()));
-    game::threadPool = new ThreadPool(4);
+    game::threadPool = new ThreadPool(threadNum);
     game::masterFlag = new MasterFlag(0);
     elapsedTimeAdd = 0;
     elapsedTimeUpt = 0;
@@ -263,8 +301,8 @@ int main(int argc, char **argv){
 
 
     glutInit(&argc, argv);
-    //glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);  //Sem Vsync
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    //glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);  //Sem Vsync
     glutInitWindowSize(game::screenRect->getWidth(), game::screenRect->getHeight());
     glutInitWindowPosition(0, 0);
     glutCreateWindow("Programacao Paralela - TP");

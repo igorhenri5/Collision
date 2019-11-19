@@ -2,14 +2,14 @@
 #define __TASKS__
 
 #include "Task.hpp"
+#include <utility>
 #include "../entities/Rectangle.hpp"
 
 class HandleCollisionTask : public Task{
 private:
-	MyRectangle* rectangle;
-    std::vector<MyRectangle*>::iterator begin, end;
+    std::vector<std::pair<MyRectangle*, MyRectangle*>>::iterator begin, end;
 public:
-    HandleCollisionTask(MasterFlag*, MyRectangle*, std::vector<MyRectangle*>::iterator, std::vector<MyRectangle*>::iterator);
+    HandleCollisionTask(MasterFlag*, std::vector<std::pair<MyRectangle*, MyRectangle*>>::iterator, std::vector<std::pair<MyRectangle*, MyRectangle*>>::iterator);
     void run();
 };
 

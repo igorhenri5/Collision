@@ -22,15 +22,14 @@ void AddTask::run(){
 }
 
 
-HandleCollisionTask::HandleCollisionTask(MasterFlag *masterFlag, MyRectangle* rectangle, std::vector<MyRectangle*>::iterator begin, std::vector<MyRectangle*>::iterator end) : Task(masterFlag){
-	this->rectangle	= rectangle;
+HandleCollisionTask::HandleCollisionTask(MasterFlag* masterFlag, std::vector<std::pair<MyRectangle*, MyRectangle*>>::iterator begin, std::vector<std::pair<MyRectangle*, MyRectangle*>>::iterator end) : Task(masterFlag){
 	this->begin 	= begin;
 	this->end   	= end;
 }
 
 void HandleCollisionTask::run(){
-	for (auto rectang = begin; rectang != end; ++rectang){
-		this->rectangle->handleCollision((MyRectangle *)(*rectang));
+	for (auto pair = begin; pair != end; ++pair){
+		(*pair).first->handleCollision((*pair).second);
     }
 	this->masterFlag->signal();
 }

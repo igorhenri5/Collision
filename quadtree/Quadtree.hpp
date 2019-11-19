@@ -1,6 +1,6 @@
 #ifndef __QTREE__
 #define __QTREE__
-
+#include <utility>
 #include <vector>
 #include <pthread.h>
 #include "../util/Rect.hpp"
@@ -20,7 +20,7 @@ private:
     pthread_cond_t cond;
 	int level;
 	void handleCollision(MyRectangle*);
-	int parallelHandleCollision(MasterFlag*, ThreadPool*, MyRectangle*);
+	void parallelHandleCollision(std::vector<std::pair<MyRectangle*, MyRectangle*>>*, MyRectangle*);
 
 
 public:
@@ -36,7 +36,7 @@ public:
 	int* getMultiIndex(MyRectangle*);
 	void retrieve(std::vector<MyRectangle*>*, MyRectangle*);
 	void handleAllCollisions();
-	int parallelHandleAllCollisions(MasterFlag*, ThreadPool*);
+	void parallelHandleAllCollisions(std::vector<std::pair<MyRectangle*, MyRectangle*>>*);
 
 };
 
