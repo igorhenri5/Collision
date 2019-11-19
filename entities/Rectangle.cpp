@@ -74,9 +74,13 @@ void MyRectangle::setCollidedFlag(int val){
     this->collidedFlag = val;
 }
 
+pthread_mutex_t* MyRectangle::getMutex(){
+    return &this->mutex;
+}
 
 void MyRectangle::handleCollision(MyRectangle *rectangle){
     pthread_mutex_lock(&this->mutex);
+    pthread_mutex_lock(rectangle->getMutex());
     if(!this->collidedFlag){
         Rect rectA(
             this->rect->getX() + this->displacementX,
@@ -95,13 +99,13 @@ void MyRectangle::handleCollision(MyRectangle *rectangle){
 
         if(this->collidedFlag){
             rectangle->setCollidedFlag(1);
-            rectangle->setDisplacementX(rectangle->getDisplacementX() * -1);
-            rectangle->setDisplacementX(rectangle->getDisplacementX() * -1);
-
             this->displacementY *= -1;
             this->displacementX *= -1;
+            rectangle->setDisplacementX(rectangle->getDisplacementX() * -1);
+            rectangle->setDisplacementX(rectangle->getDisplacementX() * -1);
         }
     }
+    pthread_mutex_unlock(rectangle->getMutex());
     pthread_mutex_unlock(&this->mutex);
 }
 
