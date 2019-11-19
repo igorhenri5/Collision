@@ -12,6 +12,7 @@ public:
     MasterFlag(int taskLimit);
     ~MasterFlag();
     void reset(int taskLimit);
+    void increaseTaskNum(int);
     void wait();
     void signal();
 };

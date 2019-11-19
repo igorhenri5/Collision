@@ -7,6 +7,7 @@
 #include "../entities/Rectangle.hpp"
 #include "../threadpool/ThreadPool.hpp"
 #include "../threadpool/MasterFlag.hpp"
+#include "../threadpool/HandleCollisionTask.hpp"
 
 #define MAX_ENTITIES 32
 
@@ -19,7 +20,8 @@ private:
     pthread_cond_t cond;
 	int level;
 	void handleCollision(MyRectangle*);
-	void parallelHandleCollision(MyRectangle*);
+	void parallelHandleCollision(MasterFlag*, ThreadPool*, MyRectangle*);
+
 
 public:
 	QuadTree(int level, Rect* bounds);

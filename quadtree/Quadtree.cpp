@@ -237,23 +237,24 @@ void QuadTree::handleAllCollisions(){
 	}
 }
 
-
-void QuadTree::parallelHandleCollision(MyRectangle *rectangle){
+void QuadTree::parallelHandleCollision(MasterFlag* masterFlag, ThreadPool* threadPool, MyRectangle *rectangle){
 	//EMITE TAREFAS1
 	masterFlag->increaseTaskNum(1);
-    threadPool->addTask(new HandleCollisionTask(game::masterFlag, rectangle, this->entityList.begin(), this->entityList.end()));
+    threadPool->addTask(new HandleCollisionTask(masterFlag, rectangle, this->entityList.begin(), this->entityList.end()));    
+
 	if(nodes[0] != nullptr){
 		for(int i = 0; i < 4; i++){
-			nodes[i]->parallelHandleCollision(rectangle);
+			nodes[i]->parallelHandleCollision(masterFlag, threadPool, rectangle);
 		}
 	}
 }
 
-void QuadTree::parallelHandleAllCollisions(MasterFlag* masterflag, ThreadPool* threadPool){
-	for(int i = 0; i < this->entityList.size()-1; i++){
+void QuadTree::parallelHandleAllCollisions(MasterFlag* masterFlag, ThreadPool* threadPool){
+	int vecSize = this->entityList.size();
+	for(int i = 0; i < vecSize-1; i++){
 		//EMITE TAREFAS1
 		masterFlag->increaseTaskNum(1);
-        threadPool->addTask(new HandleCollisionTask(game::masterFlag, entityList.at(i), this->entityList.begin() + i + 1, this->entityList.end()));
+        threadPool->addTask(new HandleCollisionTask(masterFlag, entityList.at(i), this->entityList.begin() + i + 1, this->entityList.end()));
 	}
 
 	if(nodes[0] != nullptr){
@@ -261,13 +262,14 @@ void QuadTree::parallelHandleAllCollisions(MasterFlag* masterflag, ThreadPool* t
 		  
 		  int* multiIndex = getMultiIndex(this->entityList.at(i));
 		  for(int j = 0; j < 4; j++){
+
 		      if(multiIndex[j])
-		      	nodes[j]->parallelHandleCollision(this->entityList.at(i));
+		      	nodes[j]->parallelHandleCollision(masterFlag, threadPool, this->entityList.at(i));
 		  }
 		  delete multiIndex;
 		}
 		for(int j = 0; j < 4; j++){
-		  nodes[j]->parallelHandleAllCollisions(masterflag, threadPool);
+		  nodes[j]->parallelHandleAllCollisions(masterFlag, threadPool);
 		}
 	}
 }

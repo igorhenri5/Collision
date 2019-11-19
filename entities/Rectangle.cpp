@@ -66,6 +66,15 @@ void MyRectangle::setDisplacementY(int val){
     this->displacementY = val;
 }
 
+int MyRectangle::getCollidedFlag(){
+    return this->collidedFlag;
+}
+
+void MyRectangle::setCollidedFlag(int val){
+    this->collidedFlag = val;
+}
+
+
 void MyRectangle::handleCollision(MyRectangle *rectangle){
     if(!this->collidedFlag){    
         pthread_mutex_lock(&this->mutex);

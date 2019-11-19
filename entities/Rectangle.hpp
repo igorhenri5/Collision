@@ -31,6 +31,8 @@ public:
     void setDisplacementX(int);
     int getDisplacementY();
     void setDisplacementY(int);
+    int getCollidedFlag();
+    void setCollidedFlag(int);
     void handleCollision(MyRectangle *renctangle);
     virtual void draw();
     virtual void update();

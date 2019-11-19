@@ -6,6 +6,7 @@
 #include "quadtree/QuadTree.hpp"
 #include "threadpool/ThreadPool.hpp"
 #include "threadpool/MasterFlag.hpp"
+#include "threadpool/AddTask.hpp"
 #include <iostream>
 #include <vector>
 #include <time.h>
@@ -121,10 +122,18 @@ void addParallel(){
     game::masterFlag->wait();
 }
 
-void parallelHandleCollision(){
-    game::masterFlag->reset(numParticoes);
+void parallelHandleAllCollisions(){
+    game::masterFlag->reset(10000);
     game::quadtree->parallelHandleAllCollisions(game::masterFlag, game::threadPool);
+    game::masterFlag->increaseTaskNum(-10000);
     game::masterFlag->wait();
+}
+
+//da pra paralelizar isso aqui
+void cleanFlags(){
+    for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
+        ((MyRectangle *)(*drawable))->setCollidedFlag(0);
+    }
 }
 
 int x = 100;
@@ -134,7 +143,8 @@ void update(){
 
     gettimeofday(&tempoInicial, NULL);
     //Adicionar
-    addParallel();
+    addSerial();
+    //addParallel();
     gettimeofday(&tempoFinal, NULL);
     elapsedTimeAdd += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
@@ -145,7 +155,9 @@ void update(){
 
     gettimeofday(&tempoInicial, NULL);
     //Colidir
-    game::quadtree->handleAllCollisions();
+    //game::quadtree->handleAllCollisions();
+    parallelHandleAllCollisions();
+
     gettimeofday(&tempoFinal, NULL);
     elapsedTimeCld += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
