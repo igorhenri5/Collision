@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <pthread.h>
+#include <utility>
 #include "../util/Rect.hpp"
 #include "../entities/Rectangle.hpp"
 #include "../threadpool/ThreadPool.hpp"
@@ -16,6 +17,7 @@ private:
 	QuadTree** nodes;
 	Rect* bounds;
 	std::vector<MyRectangle*> entityList;
+	std::vector<std::pair<MyRectangle*, MyRectangle*>> collissions;
   	pthread_mutex_t mutex;
     pthread_cond_t cond;
 	int level;
@@ -37,6 +39,7 @@ public:
 	void retrieve(std::vector<MyRectangle*>*, MyRectangle*);
 	void handleAllCollisions();
 	int parallelHandleAllCollisions(MasterFlag*, ThreadPool*);
+	int createCollisionVectors();
 
 };
 

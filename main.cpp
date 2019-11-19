@@ -33,8 +33,11 @@
 
 struct timeval tempoInicialAll, tempoFinalAll;
 struct timeval tempoInicial, tempoFinal;
+struct timeval tempoInicialWait, tempoFinalWait;
 float elapsedTimeAdd, elapsedTimeUpt, elapsedTimeCld, elapsedTimeCln, elapsedTimeAll;
 char buffer[64];
+
+int x = 100;
 
 namespace game{
     Rect *screenRect;
@@ -125,13 +128,13 @@ void addParallel(){
 void parallelHandleAllCollisions(){
     game::masterFlag->reset(0);
     game::masterFlag->increaseTaskNum(game::quadtree->parallelHandleAllCollisions(game::masterFlag, game::threadPool));
-    if(x<=0){
-        std::cout << "wait: " << std::endl;
-    }
+    // if(x<=0){
+    //     std::cout << "wait: " << std::endl;
+    // }
     game::masterFlag->wait();
-    if(x<=0){
-        std::cout << "signal " << std::endl;
-    }
+    // if(x<=0){
+    //     std::cout << "signal " << std::endl;
+    // }
 }
 
 //da pra paralelizar isso aqui
@@ -140,8 +143,6 @@ void cleanFlags(){
         ((MyRectangle *)(*drawable))->setCollidedFlag(0);
     }
 }
-
-int x = 100;
 
 void update(){
     game::quadtree->clear();
@@ -260,7 +261,7 @@ int main(int argc, char **argv){
     }
     game::screenBounds = new ScreenBounds(game::screenRect);
     game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()));
-    game::threadPool = new ThreadPool(1);
+    game::threadPool = new ThreadPool(2);
     game::masterFlag = new MasterFlag(0);
     elapsedTimeAdd = 0;
     elapsedTimeUpt = 0;

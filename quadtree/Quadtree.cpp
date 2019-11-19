@@ -280,3 +280,17 @@ int QuadTree::parallelHandleAllCollisions(MasterFlag* masterFlag, ThreadPool* th
 	}
 	return numTarefasCriadas;
 }
+
+//retorna tamanho dos vetores criados
+int QuadTree::createCollisionVectors(){
+	int numeroColisoes;
+	numeroColisoes = 0;
+	if(nodes[0] != nullptr){
+		for(int i = 0; i < 4; i++){
+			numeroColisoes += nodes[i]->getEntityList()->size();
+		}
+	}
+	this->collissions.resize(this->entityList.size() * (this->entityList.size() - 1) / 2);
+	numeroColisoes += this->entityList.size();
+	return numeroColisoes;
+}
