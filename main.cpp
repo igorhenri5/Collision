@@ -57,7 +57,6 @@ float getSeconds(struct timeval *tempoI, struct timeval *tempoF){
     return ((tempoF->tv_sec  - tempoI->tv_sec) * 1000000u + tempoF->tv_usec - tempoI->tv_usec) / 1.e6;
 }
 
-
 void forceSync(float elapsedTime, float fps){
     float millis;
     millis = 1000.0f / fps - elapsedTime * 1000.0f;
@@ -71,8 +70,10 @@ void forceSync(float elapsedTime, float fps){
 void initDrawables(){
     srand(game::seed);
     int displacementX, displacementY;
-    for(int i=0; i < game::screenRect->getWidth(); i += 16){
-        for(int j = 0; j < game::screenRect->getHeight(); j += 64){
+    int iInc = RECSIZE*RECSIZE;
+    int jInc = iInc*RECSIZE;
+    for(int i=0; i < game::screenRect->getWidth(); i += iInc){
+        for(int j = 0; j < game::screenRect->getHeight(); j += jInc){
             displacementX = (rand() % 3) - 1;
             displacementY = (rand() % 3) - 1;
 
@@ -258,8 +259,8 @@ int main(int argc, char **argv){
 
 
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    //glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);  //Sem Vsync
+    //glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);  //Sem Vsync
     glutInitWindowSize(game::screenRect->getWidth(), game::screenRect->getHeight());
     glutInitWindowPosition(0, 0);
     glutCreateWindow("Programacao Paralela - TP");
