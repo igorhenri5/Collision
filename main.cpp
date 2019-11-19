@@ -249,11 +249,6 @@ int main(int argc, char **argv){
         game::screenRect = new Rect(0, 0, 1280, 720);
     }
 
-
-
-
-    // game::screenRect = new Rect(0, 0, 1920, 1080);
-    //game::screenRect = new Rect(0, 0, 3840, 2160);
     game::screenBounds = new ScreenBounds(game::screenRect);
     game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()));
     game::threadPool = new ThreadPool(4);
