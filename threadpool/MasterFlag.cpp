@@ -20,9 +20,6 @@ void MasterFlag::reset(int taskLimit){
 void MasterFlag::increaseTaskNum(int increaseAmount){
     pthread_mutex_lock(&this->mutex);
     taskLimit += increaseAmount;
-    if(this->tasksDone == this->taskLimit){
-        pthread_cond_signal(&this->cond);
-    }
     pthread_mutex_unlock(&this->mutex);
 }
 
