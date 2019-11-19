@@ -216,20 +216,24 @@ void QuadTree::handleCollision(MyRectangle *rectangle){
 }
 
 void QuadTree::handleAllCollisions(){
-	for(int i = 0; i < this->entityList.size(); i++){
-		for(int j = i + 1; j < this->entityList.size(); j++){
-			this->entityList.at(i)->handleCollision(this->entityList.at(j));
-		}
-	}
-	if(nodes[0] != nullptr){
-		for(int i = 0; i < this->entityList.size(); i++){
-			for(int j = 0; j < 4; j++){
-				nodes[j]->handleCollision(this->entityList.at(i));
-			}
-		}
-		for(int j = 0; j < 4; j++){
-			nodes[j]->handleAllCollisions();
-		}
-	}
+  for(int i = 0; i < this->entityList.size(); i++){
+      for(int j = i + 1; j < this->entityList.size(); j++){
+          this->entityList.at(i)->handleCollision(this->entityList.at(j));
+      }
+  }
+  if(nodes[0] != nullptr){
+      for(int i = 0; i < this->entityList.size(); i++){
+          
+          int* multiIndex = getMultiIndex(this->entityList.at(i));
+          for(int j = 0; j < 4; j++){
+              if(multiIndex[j])
+              	nodes[j]->handleCollision(this->entityList.at(i));
+          }
+          delete multiIndex;
+      }
+      for(int j = 0; j < 4; j++){
+          nodes[j]->handleAllCollisions();
+      }
+  }
 
 }
