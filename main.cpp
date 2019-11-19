@@ -12,7 +12,7 @@
 #include <chrono>
 #include <sys/time.h>
 #include <GL/freeglut.h>
-#include <string.h>
+#include <string>
 #include <cstdlib>
 #include <iomanip>
 
@@ -235,8 +235,24 @@ void initOpenGLEnvironment(int width, int height){
 }
 
 int main(int argc, char **argv){
-    //game::screenRect = new Rect(0, 0, 1280, 720);
-    game::screenRect = new Rect(0, 0, 1920, 1080);
+
+    if(argc == 2){
+        std::string param1(argv[1]);
+        game::screenRect = new Rect(0, 0, std::stoi(param1), std::stoi(param1));
+    }
+    else if(argc == 3){
+        std::string param1(argv[1]);
+        std::string param2(argv[2]);
+        game::screenRect = new Rect(0, 0, std::stoi(param1), std::stoi(param2));
+    }
+    else{
+        game::screenRect = new Rect(0, 0, 1280, 720);
+    }
+
+
+
+
+    // game::screenRect = new Rect(0, 0, 1920, 1080);
     //game::screenRect = new Rect(0, 0, 3840, 2160);
     game::screenBounds = new ScreenBounds(game::screenRect);
     game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()));
