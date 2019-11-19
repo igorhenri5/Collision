@@ -5,6 +5,8 @@
 #include <pthread.h>
 #include "../util/Rect.hpp"
 #include "../entities/Rectangle.hpp"
+#include "../threadpool/ThreadPool.hpp"
+#include "../threadpool/MasterFlag.hpp"
 
 #define MAX_ENTITIES 32
 
@@ -17,6 +19,7 @@ private:
     pthread_cond_t cond;
 	int level;
 	void handleCollision(MyRectangle*);
+	void parallelHandleCollision(MyRectangle*);
 
 public:
 	QuadTree(int level, Rect* bounds);
@@ -31,6 +34,8 @@ public:
 	int* getMultiIndex(MyRectangle*);
 	void retrieve(std::vector<MyRectangle*>*, MyRectangle*);
 	void handleAllCollisions();
+	void parallelHandleAllCollisions(MasterFlag*, ThreadPool*);
+
 };
 
 #endif

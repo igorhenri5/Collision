@@ -17,6 +17,12 @@ void MasterFlag::reset(int taskLimit){
     this->taskLimit = taskLimit;
 }
 
+void MasterFlag::increaseTaskNum(int increaseAmount){
+    pthread_mutex_lock(&this->mutex);
+    taskLimit += increaseAmount;
+    pthread_mutex_unlock(&this->mutex);
+}
+
 void MasterFlag::wait(){
     pthread_mutex_lock(&this->mutex);
     if(this->tasksDone < this->taskLimit)

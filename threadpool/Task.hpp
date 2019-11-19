@@ -27,10 +27,10 @@ public:
 
 class HandleCollisionTask : public Task{
 private:
-	QuadTree *quadtree;
+	MyRectangle* rectangle;
     std::vector<IDrawable *>::iterator begin, end;
 public:
-    HandleCollisionTask(MasterFlag *masterFlag, QuadTree *quadtree, std::vector<IDrawable *>::iterator begin, std::vector<IDrawable *>::iterator end);
+    HandleCollisionTask(MasterFlag *masterFlag, MyRectangle* rectangle, std::vector<IDrawable *>::iterator begin, std::vector<IDrawable *>::iterator end);
     void run();
 };
 

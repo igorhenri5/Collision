@@ -32,7 +32,7 @@
 
 struct timeval tempoInicialAll, tempoFinalAll;
 struct timeval tempoInicial, tempoFinal;
-float elapsedTimeAdd, elapsedTimeUpt, elapsedTimeCld, elapsedTimeAll;
+float elapsedTimeAdd, elapsedTimeUpt, elapsedTimeCld, elapsedTimeCln, elapsedTimeAll;
 char buffer[64];
 
 namespace game{
@@ -121,25 +121,9 @@ void addParallel(){
     game::masterFlag->wait();
 }
 
-void parallelCollisionCheck(){
-    int inicioParticao, fimParticao, numParticoes, tamanhoParticao;
-
-    tamanhoParticao = (game::drawables.size() + game::threadPool->size - 1) / game::threadPool->size;
-
-    if(tamanhoParticao < 100) // tamanho minimo particao
-        tamanhoParticao = 100;
-
-    numParticoes = (game::drawables.size() + tamanhoParticao - 1) / tamanhoParticao;
-
+void parallelHandleCollision(){
     game::masterFlag->reset(numParticoes);
-    for(int i = 0; i < numParticoes; i++){
-        inicioParticao = i * tamanhoParticao;
-        fimParticao = inicioParticao + tamanhoParticao;
-        if(fimParticao > game::drawables.size()){
-          fimParticao = game::drawables.size();
-        }
-        //game::threadPool->addTask(new handleCollisionTask(game::masterFlag, game::quadtree, game::drawables.begin() + inicioParticao, game::drawables.begin() + fimParticao));
-    }
+    game::quadtree->parallelHandleAllCollisions(game::masterFlag, game::threadPool);
     game::masterFlag->wait();
 }
 
@@ -149,9 +133,8 @@ void update(){
     game::quadtree->clear();
 
     gettimeofday(&tempoInicial, NULL);
-
+    //Adicionar
     addParallel();
-
     gettimeofday(&tempoFinal, NULL);
     elapsedTimeAdd += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
@@ -161,15 +144,25 @@ void update(){
     }
 
     gettimeofday(&tempoInicial, NULL);
-
+    //Colidir
     game::quadtree->handleAllCollisions();
-
     gettimeofday(&tempoFinal, NULL);
     elapsedTimeCld += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
         std::cout << "Cld ";
         printElapsedTime(elapsedTimeCld / 100);
         elapsedTimeCld = 0;
+    }
+
+    gettimeofday(&tempoInicial, NULL);
+    //Limpar
+    cleanFlags();
+    gettimeofday(&tempoFinal, NULL);
+    elapsedTimeCln += getSeconds(&tempoInicial, &tempoFinal);
+    if(x<=0){
+        std::cout << "Cln ";
+        printElapsedTime(elapsedTimeCln / 100);
+        elapsedTimeCln = 0;
     }
 
     gettimeofday(&tempoInicial, NULL);

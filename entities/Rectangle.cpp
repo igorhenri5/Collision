@@ -30,6 +30,9 @@ MyRectangle::MyRectangle(Rect *rect, Rect *screenRect, float alpha, int displace
     this->programParams = new ProgramParams(this->frame->getDrawableBuffer(), this->mvpMatrix);
 
     this->programFactory = programFactory;
+  
+    pthread_mutex_init(&mutex, 0);  
+    this->collidedFlag = 0;
 }
 
 Rect* MyRectangle::getRect(){
@@ -64,23 +67,34 @@ void MyRectangle::setDisplacementY(int val){
 }
 
 void MyRectangle::handleCollision(MyRectangle *rectangle){
-    Rect rectA(
-        this->rect->getX() + this->displacementX,
-        this->rect->getY() + this->displacementY,
-        this->rect->getWidth(),
-        this->rect->getHeight()
-    );
-    Rect rectB(
-        rectangle->getRect()->getX() + rectangle->getDisplacementX(),
-        rectangle->getRect()->getY() + rectangle->getDisplacementY(),
-        rectangle->getRect()->getWidth(),
-        rectangle->getRect()->getHeight()
-    );
-    if(rectA.intersect(&rectB)){
-        rectangle->setDisplacementY(rectangle->getDisplacementY() * -1);
-        rectangle->setDisplacementX(rectangle->getDisplacementX() * -1);
-        this->displacementY *= -1;
-        this->displacementX *= -1;
+    if(!this->collidedFlag){    
+        pthread_mutex_lock(&this->mutex);
+        if(!this->collidedFlag){
+            Rect rectA(
+                this->rect->getX() + this->displacementX,
+                this->rect->getY() + this->displacementY,
+                this->rect->getWidth(),
+                this->rect->getHeight()
+            );
+            Rect rectB(
+                rectangle->getRect()->getX() + rectangle->getDisplacementX(),
+                rectangle->getRect()->getY() + rectangle->getDisplacementY(),
+                rectangle->getRect()->getWidth(),
+                rectangle->getRect()->getHeight()
+            );
+
+            this->collidedFlag = rectA.intersect(&rectB);
+
+            if(this->collidedFlag){
+                rectangle->setCollidedFlag(1);
+                rectangle->setDisplacementX(rectangle->getDisplacementX() * -1);
+                rectangle->setDisplacementX(rectangle->getDisplacementX() * -1);
+
+                this->displacementY *= -1;
+                this->displacementX *= -1;
+            }
+        }
+        pthread_mutex_unlock(&this->mutex);
     }
 }
 

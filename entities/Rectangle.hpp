@@ -1,6 +1,7 @@
 #ifndef __MYRECTANG__
 #define __MYRECTANG__
 
+#include <pthread.h>
 #include <GL/glew.h>
 #include "../drawable/IDrawable.hpp"
 #include "../animation/Frame.hpp"
@@ -18,6 +19,8 @@ private:
     ProgramFactory *programFactory;
     ProgramParams *programParams;
     float *mvpMatrix;
+    pthread_mutex_t mutex;
+    int collidedFlag;
 public:
     MyRectangle(Rect *rect,  Rect *screenRect, float alpha, int displacementX, int displacementY, ProgramFactory *programFactory);
     Rect* getRect();

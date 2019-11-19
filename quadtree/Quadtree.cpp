@@ -216,24 +216,58 @@ void QuadTree::handleCollision(MyRectangle *rectangle){
 }
 
 void QuadTree::handleAllCollisions(){
-  for(int i = 0; i < this->entityList.size(); i++){
-      for(int j = i + 1; j < this->entityList.size(); j++){
-          this->entityList.at(i)->handleCollision(this->entityList.at(j));
-      }
-  }
-  if(nodes[0] != nullptr){
-      for(int i = 0; i < this->entityList.size(); i++){
-          
-          int* multiIndex = getMultiIndex(this->entityList.at(i));
-          for(int j = 0; j < 4; j++){
-              if(multiIndex[j])
-              	nodes[j]->handleCollision(this->entityList.at(i));
-          }
-          delete multiIndex;
-      }
-      for(int j = 0; j < 4; j++){
-          nodes[j]->handleAllCollisions();
-      }
-  }
+	for(int i = 0; i < this->entityList.size(); i++){
+		for(int j = i + 1; j < this->entityList.size(); j++){
+		  this->entityList.at(i)->handleCollision(this->entityList.at(j));
+		}
+	}
+	if(nodes[0] != nullptr){
+		for(int i = 0; i < this->entityList.size(); i++){
+		  
+		  int* multiIndex = getMultiIndex(this->entityList.at(i));
+		  for(int j = 0; j < 4; j++){
+		      if(multiIndex[j])
+		      	nodes[j]->handleCollision(this->entityList.at(i));
+		  }
+		  delete multiIndex;
+		}
+		for(int j = 0; j < 4; j++){
+		  nodes[j]->handleAllCollisions();
+		}
+	}
+}
 
+
+void QuadTree::parallelHandleCollision(MyRectangle *rectangle){
+	//EMITE TAREFAS1
+	masterFlag->increaseTaskNum(1);
+    threadPool->addTask(new HandleCollisionTask(game::masterFlag, rectangle, this->entityList.begin(), this->entityList.end()));
+	if(nodes[0] != nullptr){
+		for(int i = 0; i < 4; i++){
+			nodes[i]->parallelHandleCollision(rectangle);
+		}
+	}
+}
+
+void QuadTree::parallelHandleAllCollisions(MasterFlag* masterflag, ThreadPool* threadPool){
+	for(int i = 0; i < this->entityList.size()-1; i++){
+		//EMITE TAREFAS1
+		masterFlag->increaseTaskNum(1);
+        threadPool->addTask(new HandleCollisionTask(game::masterFlag, entityList.at(i), this->entityList.begin() + i + 1, this->entityList.end()));
+	}
+
+	if(nodes[0] != nullptr){
+		for(int i = 0; i < this->entityList.size(); i++){
+		  
+		  int* multiIndex = getMultiIndex(this->entityList.at(i));
+		  for(int j = 0; j < 4; j++){
+		      if(multiIndex[j])
+		      	nodes[j]->parallelHandleCollision(this->entityList.at(i));
+		  }
+		  delete multiIndex;
+		}
+		for(int j = 0; j < 4; j++){
+		  nodes[j]->parallelHandleAllCollisions(masterflag, threadPool);
+		}
+	}
 }
