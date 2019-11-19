@@ -30,8 +30,8 @@ MyRectangle::MyRectangle(Rect *rect, Rect *screenRect, float alpha, int displace
     this->programParams = new ProgramParams(this->frame->getDrawableBuffer(), this->mvpMatrix);
 
     this->programFactory = programFactory;
-  
-    pthread_mutex_init(&mutex, 0);  
+
+    pthread_mutex_init(&this->mutex, 0);
     this->collidedFlag = 0;
 }
 
@@ -76,35 +76,33 @@ void MyRectangle::setCollidedFlag(int val){
 
 
 void MyRectangle::handleCollision(MyRectangle *rectangle){
-    if(!this->collidedFlag){    
-        pthread_mutex_lock(&this->mutex);
-        if(!this->collidedFlag){
-            Rect rectA(
-                this->rect->getX() + this->displacementX,
-                this->rect->getY() + this->displacementY,
-                this->rect->getWidth(),
-                this->rect->getHeight()
-            );
-            Rect rectB(
-                rectangle->getRect()->getX() + rectangle->getDisplacementX(),
-                rectangle->getRect()->getY() + rectangle->getDisplacementY(),
-                rectangle->getRect()->getWidth(),
-                rectangle->getRect()->getHeight()
-            );
+    pthread_mutex_lock(&this->mutex);
+    if(!this->collidedFlag){
+        Rect rectA(
+            this->rect->getX() + this->displacementX,
+            this->rect->getY() + this->displacementY,
+            this->rect->getWidth(),
+            this->rect->getHeight()
+        );
+        Rect rectB(
+            rectangle->getRect()->getX() + rectangle->getDisplacementX(),
+            rectangle->getRect()->getY() + rectangle->getDisplacementY(),
+            rectangle->getRect()->getWidth(),
+            rectangle->getRect()->getHeight()
+        );
 
-            this->collidedFlag = rectA.intersect(&rectB);
+        this->collidedFlag = rectA.intersect(&rectB);
 
-            if(this->collidedFlag){
-                rectangle->setCollidedFlag(1);
-                rectangle->setDisplacementX(rectangle->getDisplacementX() * -1);
-                rectangle->setDisplacementX(rectangle->getDisplacementX() * -1);
+        if(this->collidedFlag){
+            rectangle->setCollidedFlag(1);
+            rectangle->setDisplacementX(rectangle->getDisplacementX() * -1);
+            rectangle->setDisplacementX(rectangle->getDisplacementX() * -1);
 
-                this->displacementY *= -1;
-                this->displacementX *= -1;
-            }
+            this->displacementY *= -1;
+            this->displacementX *= -1;
         }
-        pthread_mutex_unlock(&this->mutex);
     }
+    pthread_mutex_unlock(&this->mutex);
 }
 
 void MyRectangle::draw(){
@@ -126,6 +124,7 @@ void MyRectangle::update(){
 }
 
 MyRectangle::~MyRectangle(){
+    pthread_mutex_destroy(&this->mutex);
     delete this->mvpMatrix;
     delete this->rect;
     delete this->frame;

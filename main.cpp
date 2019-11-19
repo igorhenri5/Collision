@@ -123,9 +123,8 @@ void addParallel(){
 }
 
 void parallelHandleAllCollisions(){
-    game::masterFlag->reset(10000);
-    game::quadtree->parallelHandleAllCollisions(game::masterFlag, game::threadPool);
-    game::masterFlag->increaseTaskNum(-10000);
+    game::masterFlag->reset(0);
+    game::masterFlag->increaseTaskNum(game::quadtree->parallelHandleAllCollisions(game::masterFlag, game::threadPool));
     game::masterFlag->wait();
 }
 
@@ -143,8 +142,8 @@ void update(){
 
     gettimeofday(&tempoInicial, NULL);
     //Adicionar
-    addSerial();
-    //addParallel();
+    // addSerial();
+    addParallel();
     gettimeofday(&tempoFinal, NULL);
     elapsedTimeAdd += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
@@ -155,7 +154,7 @@ void update(){
 
     gettimeofday(&tempoInicial, NULL);
     //Colidir
-    //game::quadtree->handleAllCollisions();
+    // game::quadtree->handleAllCollisions();
     parallelHandleAllCollisions();
 
     gettimeofday(&tempoFinal, NULL);

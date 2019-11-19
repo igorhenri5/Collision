@@ -20,7 +20,7 @@ private:
     pthread_cond_t cond;
 	int level;
 	void handleCollision(MyRectangle*);
-	void parallelHandleCollision(MasterFlag*, ThreadPool*, MyRectangle*);
+	int parallelHandleCollision(MasterFlag*, ThreadPool*, MyRectangle*);
 
 
 public:
@@ -36,7 +36,7 @@ public:
 	int* getMultiIndex(MyRectangle*);
 	void retrieve(std::vector<MyRectangle*>*, MyRectangle*);
 	void handleAllCollisions();
-	void parallelHandleAllCollisions(MasterFlag*, ThreadPool*);
+	int parallelHandleAllCollisions(MasterFlag*, ThreadPool*);
 
 };
 
