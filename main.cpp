@@ -235,7 +235,6 @@ void initOpenGLEnvironment(int width, int height){
 }
 
 int main(int argc, char **argv){
-
     if(argc == 2){
         std::string param1(argv[1]);
         game::screenRect = new Rect(0, 0, std::stoi(param1), std::stoi(param1));
@@ -248,7 +247,6 @@ int main(int argc, char **argv){
     else{
         game::screenRect = new Rect(0, 0, 1280, 720);
     }
-
     game::screenBounds = new ScreenBounds(game::screenRect);
     game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()));
     game::threadPool = new ThreadPool(4);
