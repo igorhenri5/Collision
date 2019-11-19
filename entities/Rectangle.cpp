@@ -31,7 +31,7 @@ MyRectangle::MyRectangle(Rect *rect, Rect *screenRect, float alpha, int displace
 
     this->programFactory = programFactory;
 
-    pthread_mutex_init(&this->mutex, 0);
+    //pthread_mutex_init(&this->mutex, 0);
     this->collidedFlag = 0;
 }
 
@@ -73,41 +73,41 @@ int MyRectangle::getCollidedFlag(){
 void MyRectangle::setCollidedFlag(int val){
     this->collidedFlag = val;
 }
-
+/*
 pthread_mutex_t* MyRectangle::getMutex(){
     return &this->mutex;
 }
-
+*/
 void MyRectangle::handleCollision(MyRectangle *rectangle){
-    // pthread_mutex_lock(&this->mutex);
-    // pthread_mutex_lock(rectangle->getMutex());
-    // if(!this->collidedFlag){
-        Rect rectA(
-            this->rect->getX() + this->displacementX,
-            this->rect->getY() + this->displacementY,
-            this->rect->getWidth(),
-            this->rect->getHeight()
-        );
-        Rect rectB(
-            rectangle->getRect()->getX() + rectangle->getDisplacementX(),
-            rectangle->getRect()->getY() + rectangle->getDisplacementY(),
-            rectangle->getRect()->getWidth(),
-            rectangle->getRect()->getHeight()
-        );
+    //if(!this->collidedFlag){
+     
+        //pthread_mutex_lock(&this->mutex);
+        //pthread_mutex_lock(rectangle->getMutex());
+   //     if(!this->collidedFlag){
+            Rect rectA(
+                this->rect->getX() + this->displacementX,
+                this->rect->getY() + this->displacementY,
+                this->rect->getWidth(),
+                this->rect->getHeight()
+            );
+            Rect rectB(
+                rectangle->getRect()->getX() + rectangle->getDisplacementX(),
+                rectangle->getRect()->getY() + rectangle->getDisplacementY(),
+                rectangle->getRect()->getWidth(),
+                rectangle->getRect()->getHeight()
+            );
 
-        // this->collidedFlag = rectA.intersect(&rectB);
-        if(rectA.intersect(&rectB)){
-        // if(this->collidedFlag){
-            // rectangle->setCollidedFlag(1);
-            this->displacementY *= -1;
-            this->displacementX *= -1;
-            rectangle->setDisplacementX(rectangle->getDisplacementX() * -1);
-            rectangle->setDisplacementX(rectangle->getDisplacementX() * -1);
-        }
-    // }
-    // pthread_mutex_unlock(rectangle->getMutex());
-    // pthread_mutex_unlock(&this->mutex);
+            if(rectA.intersect(&rectB)){
+                this->collidedFlag = 1;
+                rectangle->setCollidedFlag(1);
+            }
+        //}
+        //pthread_mutex_unlock(rectangle->getMutex());
+        //pthread_mutex_unlock(&this->mutex);
+    //}
 }
+
+//se deu colisão = this->col
 
 void MyRectangle::draw(){
     // std::cout << "draw rect" << std::endl;
@@ -116,6 +116,11 @@ void MyRectangle::draw(){
 }
 
 void MyRectangle::update(){
+
+    if(this->collidedFlag){
+        this->displacementY *= -1;
+        this->displacementX *= -1;
+    }
 
     this->rect->setX(this->rect->getX() + this->displacementX);
     this->rect->setY(this->rect->getY() + this->displacementY);
@@ -128,7 +133,7 @@ void MyRectangle::update(){
 }
 
 MyRectangle::~MyRectangle(){
-    pthread_mutex_destroy(&this->mutex);
+    //pthread_mutex_destroy(&this->mutex);
     delete this->mvpMatrix;
     delete this->rect;
     delete this->frame;

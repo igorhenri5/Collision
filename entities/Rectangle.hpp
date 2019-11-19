@@ -19,7 +19,7 @@ private:
     ProgramFactory *programFactory;
     ProgramParams *programParams;
     float *mvpMatrix;
-    pthread_mutex_t mutex;
+//    pthread_mutex_t mutex;
     int collidedFlag;
 public:
     MyRectangle(Rect *rect,  Rect *screenRect, float alpha, int displacementX, int displacementY, ProgramFactory *programFactory);
@@ -33,7 +33,7 @@ public:
     void setDisplacementY(int);
     int getCollidedFlag();
     void setCollidedFlag(int);
-    pthread_mutex_t* getMutex();
+    //pthread_mutex_t* getMutex();
     void handleCollision(MyRectangle *renctangle);
     virtual void draw();
     virtual void update();
