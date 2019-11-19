@@ -275,4 +275,3 @@ void QuadTree::parallelHandleAllCollisions(std::vector<std::pair<MyRectangle*, M
 		}
 	}
 } 
-
