@@ -79,9 +79,9 @@ pthread_mutex_t* MyRectangle::getMutex(){
 }
 
 void MyRectangle::handleCollision(MyRectangle *rectangle){
-    pthread_mutex_lock(&this->mutex);
-    pthread_mutex_lock(rectangle->getMutex());
-    if(!this->collidedFlag){
+    // pthread_mutex_lock(&this->mutex);
+    // pthread_mutex_lock(rectangle->getMutex());
+    // if(!this->collidedFlag){
         Rect rectA(
             this->rect->getX() + this->displacementX,
             this->rect->getY() + this->displacementY,
@@ -95,18 +95,18 @@ void MyRectangle::handleCollision(MyRectangle *rectangle){
             rectangle->getRect()->getHeight()
         );
 
-        this->collidedFlag = rectA.intersect(&rectB);
-
-        if(this->collidedFlag){
-            rectangle->setCollidedFlag(1);
+        // this->collidedFlag = rectA.intersect(&rectB);
+        if(rectA.intersect(&rectB)){
+        // if(this->collidedFlag){
+            // rectangle->setCollidedFlag(1);
             this->displacementY *= -1;
             this->displacementX *= -1;
             rectangle->setDisplacementX(rectangle->getDisplacementX() * -1);
             rectangle->setDisplacementX(rectangle->getDisplacementX() * -1);
         }
-    }
-    pthread_mutex_unlock(rectangle->getMutex());
-    pthread_mutex_unlock(&this->mutex);
+    // }
+    // pthread_mutex_unlock(rectangle->getMutex());
+    // pthread_mutex_unlock(&this->mutex);
 }
 
 void MyRectangle::draw(){

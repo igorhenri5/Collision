@@ -154,8 +154,8 @@ void update(){
 
     gettimeofday(&tempoInicial, NULL);
     //Colidir
-    game::quadtree->handleAllCollisions();
-    // parallelHandleAllCollisions();
+    // game::quadtree->handleAllCollisions();
+    parallelHandleAllCollisions();
 
     gettimeofday(&tempoFinal, NULL);
     elapsedTimeCld += getSeconds(&tempoInicial, &tempoFinal);
