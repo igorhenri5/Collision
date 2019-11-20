@@ -53,7 +53,7 @@ void initDrawables(){
     srand(game::seed);
     int displacementX, displacementY;
     int iInc = RECSIZE*RECSIZE;
-    int jInc = iInc*RECSIZE;
+    int jInc = iInc;
     for(int i=0; i < game::screenRect->getWidth(); i += iInc){
         for(int j = 0; j < game::screenRect->getHeight(); j += jInc){
             displacementX = (rand() % 3) - 1;

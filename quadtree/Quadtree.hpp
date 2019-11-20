@@ -10,7 +10,7 @@
 #include "../threadpool/MasterFlag.hpp"
 #include "../threadpool/HandleCollisionTask.hpp"
 
-#define MAX_ENTITIES 32
+#define MAX_ENTITIES 64
 
 class QuadTree{
 private:

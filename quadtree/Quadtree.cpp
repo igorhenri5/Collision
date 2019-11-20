@@ -259,8 +259,13 @@ void QuadTree::parallelMountAllCollisionPairList(int rank, int threadNum, std::v
 
 	util::determinarParticao(&inicio1, &fim1, rank, threadNum, this->entityList.size(), 0);
     for(int i = inicio1; i < fim1; i++){
+		/*
 		util::determinarParticao(&inicio2, &fim2, rank, threadNum, this->entityList.size(), i + 1);
         for(int j = inicio2; j < fim2; j++){
+			pairList->push_back(std::make_pair(this->entityList.at(i), this->entityList.at(j)));
+	    }
+	    */
+        for(int j = i+1; j <this->entityList.size(); j++){
 			pairList->push_back(std::make_pair(this->entityList.at(i), this->entityList.at(j)));
 	    }
 	}
