@@ -2,7 +2,7 @@ all: build_animation build_quadtree build_threadpool build_util build_graphics b
 .PHONY: all
 
 link:
-	g++ -o main *.o -L"glew\lib" -L"freeglut\lib" -pthread -lglew32 -lfreeglut -lopengl32 -Wl,--subsystem,windows
+	g++ -o main *.o -L"glew\lib" -L"freeglut\lib" -pthread -lglew32 -lfreeglut -lopengl32
 
 build_main:
 	g++ -c main.cpp -I"freeglut\include" -I"glew\include"

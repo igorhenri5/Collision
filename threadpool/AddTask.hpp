@@ -2,7 +2,7 @@
 #define __ADDTASK__
 
 #include "Task.hpp"
-#include "../quadtree/Quadtree.hpp"
+#include "../quadtree/QuadTree.hpp"
 #include "../drawable/IDrawable.hpp"
 
 class AddTask : public Task{

@@ -2,7 +2,7 @@
 #define __MOUNTTASK__
 
 #include "Task.hpp"
-#include "../quadtree/Quadtree.hpp"
+#include "../quadtree/QuadTree.hpp"
 #include <vector>
 #include "../entities/Rectangle.hpp"
 

@@ -21,18 +21,6 @@
 
 #define  RECSIZE  4
 
-#ifdef _WIN32
-    #include <windows.h>
-    void sleep(unsigned milliseconds){
-        Sleep(milliseconds);
-    }
-#else
-    #include <unistd.h>
-    void sleep(unsigned milliseconds){
-        usleep(milliseconds);
-    }
-#endif
-
 struct timeval tempoInicialAll, tempoFinalAll;
 struct timeval tempoInicial, tempoFinal;
 float elapsedTimeAdd, elapsedTimeMount, elapsedTimeUpt, elapsedTimeCld, elapsedTimeCln, elapsedTimeAll;
@@ -59,16 +47,6 @@ void printElapsedTime(float elapsedTime){
 
 float getSeconds(struct timeval *tempoI, struct timeval *tempoF){
     return ((tempoF->tv_sec  - tempoI->tv_sec) * 1000000u + tempoF->tv_usec - tempoI->tv_usec) / 1.e6;
-}
-
-void forceSync(float elapsedTime, float fps){
-    float millis;
-    millis = 1000.0f / fps - elapsedTime * 1000.0f;
-    if(millis < 0){
-        std::cout << "Lag (millis): " << millis << std::endl;
-        millis = 0.0f;
-    }
-    sleep(millis);
 }
 
 void initDrawables(){
