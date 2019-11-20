@@ -23,7 +23,7 @@ struct timeval tempoInicialAll, tempoFinalAll;
 struct timeval tempoInicial, tempoFinal;
 float elapsedTimeAdd, elapsedTimeMount, elapsedTimeUpt, elapsedTimeCld, elapsedTimeCln, elapsedTimeAll;
 char buffer[64];
-int x = 100;
+int x = 10;
 
 namespace game{
     Rect *screenRect;
@@ -149,7 +149,8 @@ void update(){
     game::quadtree->clear();
 
     gettimeofday(&tempoInicial, NULL);
-    addParallel();
+    //addParallel();
+    addSerial();
     gettimeofday(&tempoFinal, NULL);
     elapsedTimeAdd += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
@@ -159,7 +160,8 @@ void update(){
     }
 
     gettimeofday(&tempoInicial, NULL);
-    parallelHandleAllCollisions();
+    game::quadtree->handleAllCollisions();
+    //parallelHandleAllCollisions();
     gettimeofday(&tempoFinal, NULL);
     elapsedTimeCld += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
