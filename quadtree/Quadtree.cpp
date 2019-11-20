@@ -1,5 +1,6 @@
 #include "QuadTree.hpp"
 #include <iostream>
+#include "../util/util.hpp"
 
 QuadTree::QuadTree(int level, Rect* bounds){
 	this->nodes = new QuadTree*[4];
@@ -238,40 +239,44 @@ void QuadTree::handleAllCollisions(){
 }
 
 //retorna numero de tarefas criadas
-void QuadTree::parallelHandleCollision(std::vector<std::pair<MyRectangle*, MyRectangle*>>* pairList, MyRectangle *rectangle){
-	for (auto r = this->entityList.begin(); r != this->entityList.end(); ++r){
-		pairList->push_back(std::make_pair(rectangle,(*r)));
+void QuadTree::parallelMountCollisionPairList(int rank, int threadNum, std::vector<std::pair<MyRectangle*, MyRectangle*>>* pairList, MyRectangle *rectangle){
+	int inicio, fim;
+	util::determinarParticao(&inicio, &fim, rank, threadNum, this->entityList.size(), 0);
+	for(int i = inicio; i < fim; i++){
+		pairList->push_back(std::make_pair(rectangle, this->entityList.at(i)));
     }
 
 	if(nodes[0] != nullptr){
 		for(int i = 0; i < 4; i++){
-			nodes[i]->parallelHandleCollision(pairList, rectangle);
+			nodes[i]->parallelMountCollisionPairList(rank, threadNum, pairList, rectangle);
 		}
 	}
 }
 
 //retorna numero de tarefas criadas
-void QuadTree::parallelHandleAllCollisions(std::vector<std::pair<MyRectangle*, MyRectangle*>>* pairList){
-	int vecSize = this->entityList.size();
-    for (auto r1 = this->entityList.begin(); r1 != this->entityList.end(); ++r1){
-        for (auto r2 = r1+1; r2 != this->entityList.end(); ++r2){
-			pairList->push_back(std::make_pair((*r1),(*r2)));
+void QuadTree::parallelMountAllCollisionPairList(int rank, int threadNum, std::vector<std::pair<MyRectangle*, MyRectangle*>>* pairList){
+	int inicio1, fim1, inicio2, fim2;
+
+	util::determinarParticao(&inicio1, &fim1, rank, threadNum, this->entityList.size(), 0);
+    for(int i = inicio1; i < fim1; i++){
+		util::determinarParticao(&inicio2, &fim2, rank, threadNum, this->entityList.size(), i + 1);
+        for(int j = inicio2; j < fim2; j++){
+			pairList->push_back(std::make_pair(this->entityList.at(i), this->entityList.at(j)));
 	    }
 	}
 
 	if(nodes[0] != nullptr){
 		for(int i = 0; i < this->entityList.size(); i++){
-
 		  int* multiIndex = getMultiIndex(this->entityList.at(i));
 		  for(int j = 0; j < 4; j++){
 
 		      if(multiIndex[j])
-		      	nodes[j]->parallelHandleCollision(pairList, this->entityList.at(i));
+		      	nodes[j]->parallelMountCollisionPairList(rank, threadNum, pairList, this->entityList.at(i));
 		  }
 		  delete multiIndex;
 		}
 		for(int j = 0; j < 4; j++){
-		  nodes[j]->parallelHandleAllCollisions(pairList);
+		  nodes[j]->parallelMountAllCollisionPairList(rank, threadNum, pairList);
 		}
 	}
-} 
+}

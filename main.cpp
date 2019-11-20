@@ -10,7 +10,6 @@
 #include <iostream>
 #include <vector>
 #include <utility>
-
 #include <time.h>
 #include <chrono>
 #include <sys/time.h>
@@ -18,6 +17,7 @@
 #include <string>
 #include <cstdlib>
 #include <iomanip>
+#include <omp.h>
 
 #define  RECSIZE  4
 
@@ -125,12 +125,29 @@ void addParallel(){
     game::masterFlag->wait();
 }
 
-void parallelHandleAllCollisions(){
-    int inicioParticao, fimParticao, numParticoes, tamanhoParticao;
-    std::vector<std::pair<MyRectangle*, MyRectangle*>> pairList;
+std::vector<std::vector<std::pair<MyRectangle*, MyRectangle*>>*>* mountPairLists(){
+    std::vector<std::vector<std::pair<MyRectangle*, MyRectangle*>>*> *pairLists;
+    int threadNum = game::threadPool->size;
 
+    pairLists = new std::vector<std::vector<std::pair<MyRectangle*, MyRectangle*>>*>();
+    for(int i = 0; i < threadNum; i++)
+        pairLists->push_back(new std::vector<std::pair<MyRectangle*, MyRectangle*>>());
+
+    #pragma omp parallel num_threads(threadNum)
+    {
+        int rank = omp_get_thread_num();
+        // std::cout << rank << std::endl;
+        // std::cout << omp_get_num_threads() << std::endl;
+        game::quadtree->parallelMountAllCollisionPairList(rank, omp_get_num_threads(), pairLists->at(rank));
+    }
+    return pairLists;
+}
+
+
+void parallelHandleAllCollisions(){
+    std::vector<std::vector<std::pair<MyRectangle*, MyRectangle*>>*> *pairLists;
     gettimeofday(&tempoInicial, NULL);
-    game::quadtree->parallelHandleAllCollisions(&pairList);
+    pairLists = mountPairLists();
     gettimeofday(&tempoFinal, NULL);
     elapsedTimeMount += getSeconds(&tempoInicial, &tempoFinal);
 
@@ -139,25 +156,17 @@ void parallelHandleAllCollisions(){
         printElapsedTime(elapsedTimeMount / 100);
         elapsedTimeMount = 0;
     }
-
-    tamanhoParticao = (pairList.size() + game::threadPool->size - 1) / game::threadPool->size;
-    //std::cout << "P: " << tamanhoParticao << std::endl;
-    if(tamanhoParticao < 100) // tamanho minimo particao
-        tamanhoParticao = 100;
-
-    numParticoes = (pairList.size() + tamanhoParticao - 1) / tamanhoParticao;
-
-    game::masterFlag->reset(numParticoes);
-    for(int i = 0; i < numParticoes; i++){
-        inicioParticao = i * tamanhoParticao;
-        fimParticao = inicioParticao + tamanhoParticao;
-        if(fimParticao > pairList.size()){
-            fimParticao = pairList.size();
-        }
-        game::threadPool->addTask(new HandleCollisionTask(game::masterFlag, pairList.begin() + inicioParticao, pairList.begin() + fimParticao));
+    game::masterFlag->reset(pairLists->size());
+    for(int i = 0; i < pairLists->size(); i++){
+        // std::cout << pairLists->at(i)->size() << std::endl;
+        game::threadPool->addTask(new HandleCollisionTask(game::masterFlag, pairLists->at(i)->begin(), pairLists->at(i)->end()));
     }
     game::masterFlag->wait();
 
+    for (auto pairList = pairLists->begin(); pairList != pairLists->end(); ++pairList){
+        delete *pairList;
+    }
+    delete pairLists;
 }
 
 //da pra paralelizar isso aqui
@@ -183,8 +192,7 @@ void update(){
     }
 
     gettimeofday(&tempoInicial, NULL);
-    //Colidir
-    // game::quadtree->handleAllCollisions();
+
     parallelHandleAllCollisions();
 
     gettimeofday(&tempoFinal, NULL);

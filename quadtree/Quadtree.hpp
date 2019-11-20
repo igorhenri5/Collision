@@ -22,7 +22,7 @@ private:
     pthread_cond_t cond;
 	int level;
 	void handleCollision(MyRectangle*);
-	void parallelHandleCollision(std::vector<std::pair<MyRectangle*, MyRectangle*>>*, MyRectangle*);
+	void parallelMountCollisionPairList(int rank, int threadNum, std::vector<std::pair<MyRectangle*, MyRectangle*>>*, MyRectangle*);
 
 
 public:
@@ -38,7 +38,7 @@ public:
 	int* getMultiIndex(MyRectangle*);
 	void retrieve(std::vector<MyRectangle*>*, MyRectangle*);
 	void handleAllCollisions();
-	void parallelHandleAllCollisions(std::vector<std::pair<MyRectangle*, MyRectangle*>>*);
+	void parallelMountAllCollisionPairList(int rank, int threadNum, std::vector<std::pair<MyRectangle*, MyRectangle*>>*);
 
 };
 
