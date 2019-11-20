@@ -7,6 +7,7 @@
 #include "threadpool/ThreadPool.hpp"
 #include "threadpool/MasterFlag.hpp"
 #include "threadpool/AddTask.hpp"
+#include "threadpool/MountTask.hpp"
 #include <iostream>
 #include <vector>
 #include <utility>
@@ -17,7 +18,6 @@
 #include <string>
 #include <cstdlib>
 #include <iomanip>
-#include <omp.h>
 
 #define  RECSIZE  4
 
@@ -127,19 +127,15 @@ void addParallel(){
 
 std::vector<std::vector<std::pair<MyRectangle*, MyRectangle*>>*>* mountPairLists(){
     std::vector<std::vector<std::pair<MyRectangle*, MyRectangle*>>*> *pairLists;
-    int threadNum = game::threadPool->size;
 
     pairLists = new std::vector<std::vector<std::pair<MyRectangle*, MyRectangle*>>*>();
-    for(int i = 0; i < threadNum; i++)
-        pairLists->push_back(new std::vector<std::pair<MyRectangle*, MyRectangle*>>());
 
-    #pragma omp parallel num_threads(threadNum)
-    {
-        int rank = omp_get_thread_num();
-        // std::cout << rank << std::endl;
-        // std::cout << omp_get_num_threads() << std::endl;
-        game::quadtree->parallelMountAllCollisionPairList(rank, omp_get_num_threads(), pairLists->at(rank));
+    game::masterFlag->reset(game::threadPool->size);
+    for(int i = 0; i < game::threadPool->size; i++){
+        pairLists->push_back(new std::vector<std::pair<MyRectangle*, MyRectangle*>>());
+        game::threadPool->addTask(new MountTask(game::masterFlag, game::quadtree, i, game::threadPool->size, pairLists->at(i)));
     }
+    game::masterFlag->wait();
     return pairLists;
 }
 
@@ -158,7 +154,6 @@ void parallelHandleAllCollisions(){
     }
     game::masterFlag->reset(pairLists->size());
     for(int i = 0; i < pairLists->size(); i++){
-        // std::cout << pairLists->at(i)->size() << std::endl;
         game::threadPool->addTask(new HandleCollisionTask(game::masterFlag, pairLists->at(i)->begin(), pairLists->at(i)->end()));
     }
     game::masterFlag->wait();
@@ -204,19 +199,9 @@ void update(){
     }
 
     gettimeofday(&tempoInicial, NULL);
-    //Limpar
-    cleanFlags();
-    gettimeofday(&tempoFinal, NULL);
-    elapsedTimeCln += getSeconds(&tempoInicial, &tempoFinal);
-    if(x<=0){
-        std::cout << "Cln ";
-        printElapsedTime(elapsedTimeCln / 100);
-        elapsedTimeCln = 0;
-    }
-
-    gettimeofday(&tempoInicial, NULL);
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
         game::screenBounds->handleCollisionScreenBounds((MyRectangle *)(*drawable));
+        // std::cout << "update" << std::endl;
         (*drawable)->update();
     }
     gettimeofday(&tempoFinal, NULL);
@@ -225,6 +210,17 @@ void update(){
         std::cout << "Upt ";
         printElapsedTime(elapsedTimeUpt / 100);
         elapsedTimeUpt = 0;
+    }
+
+    gettimeofday(&tempoInicial, NULL);
+    //Limpar
+    cleanFlags();
+    gettimeofday(&tempoFinal, NULL);
+    elapsedTimeCln += getSeconds(&tempoInicial, &tempoFinal);
+    if(x<=0){
+        std::cout << "Cln ";
+        printElapsedTime(elapsedTimeCln / 100);
+        elapsedTimeCln = 0;
     }
 }
 

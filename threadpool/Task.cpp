@@ -33,4 +33,3 @@ void HandleCollisionTask::run(){
     }
 	this->masterFlag->signal();
 }
-
