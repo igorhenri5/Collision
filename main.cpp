@@ -8,6 +8,7 @@
 #include "threadpool/MasterFlag.hpp"
 #include "threadpool/AddTask.hpp"
 #include "threadpool/MountTask.hpp"
+#include "threadpool/UpdateTask.hpp"
 #include <iostream>
 #include <vector>
 #include <utility>
@@ -171,13 +172,28 @@ void cleanFlags(){
     }
 }
 
+void parallelUpdateAll(){
+    game::masterFlag->reset(game::threadPool->size);
+    for(int i = 0; i < game::threadPool->size; i++){
+        game::threadPool->addTask(new UpdateTask(game::masterFlag, game::quadtree, i, game::threadPool->size));
+    }
+    game::masterFlag->wait();
+}
+
 void update(){
-    game::quadtree->clear();
 
     gettimeofday(&tempoInicial, NULL);
-    //Adicionar
-    // addSerial();
-    addParallel();
+    if(game::quadtree->isEmpty()){
+
+        game::quadtree->clear();
+        //Adicionar
+        // addSerial();
+        addParallel();
+    }
+    else{
+        // game::quadtree->updateAll();
+        parallelUpdateAll();
+    }
     gettimeofday(&tempoFinal, NULL);
     elapsedTimeAdd += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
@@ -295,7 +311,7 @@ int main(int argc, char **argv){
     }
 
     game::screenBounds = new ScreenBounds(game::screenRect);
-    game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()));
+    game::quadtree = new QuadTree(0, new Rect(0, 0, game::screenRect->getWidth(), game::screenRect->getHeight()), nullptr);
     game::threadPool = new ThreadPool(threadNum);
     game::masterFlag = new MasterFlag(0);
     elapsedTimeAdd = 0;

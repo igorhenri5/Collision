@@ -2,13 +2,14 @@
 #include <iostream>
 #include "../util/util.hpp"
 
-QuadTree::QuadTree(int level, Rect* bounds){
+QuadTree::QuadTree(int level, Rect* bounds, QuadTree* parent){
 	this->nodes = new QuadTree*[4];
 	for(int i=0; i<4; i++){
 		nodes[i] = nullptr;
 	}
 	this->level  = level;
 	this->bounds = bounds;
+	this->parent = parent;
 	pthread_mutex_init(&mutex, 0);
     pthread_cond_init(&cond, 0);
 }
@@ -35,8 +36,20 @@ void QuadTree::clear(){
 	}
 }
 
+bool QuadTree::isEmpty(){
+	return (nodes[0] == nullptr && this->entityList.size() == 0);
+}
+
 std::vector<MyRectangle*>* QuadTree::getEntityList(){
 	return &(this->entityList);
+}
+
+QuadTree* QuadTree::getParent(){
+	return this->parent;
+}
+
+void QuadTree::setParent(QuadTree *parent){
+	this->parent = parent;
 }
 
 void QuadTree::split(){
@@ -45,10 +58,10 @@ void QuadTree::split(){
 	int x = (int)bounds->getX();
 	int y = (int)bounds->getY();
 
-	nodes[0] = new QuadTree(level+1, new Rect(x + nodeWidth, y, nodeWidth, nodeHeight));
-	nodes[1] = new QuadTree(level+1, new Rect(x, y, nodeWidth, nodeHeight));
-	nodes[2] = new QuadTree(level+1, new Rect(x, y + nodeHeight, nodeWidth, nodeHeight));
-	nodes[3] = new QuadTree(level+1, new Rect(x + nodeWidth, y + nodeHeight, nodeWidth, nodeHeight));
+	nodes[0] = new QuadTree(level+1, new Rect(x + nodeWidth, y, nodeWidth, nodeHeight), this);
+	nodes[1] = new QuadTree(level+1, new Rect(x, y, nodeWidth, nodeHeight), this);
+	nodes[2] = new QuadTree(level+1, new Rect(x, y + nodeHeight, nodeWidth, nodeHeight), this);
+	nodes[3] = new QuadTree(level+1, new Rect(x + nodeWidth, y + nodeHeight, nodeWidth, nodeHeight), this);
 }
 
 void QuadTree::add(MyRectangle* entity){
@@ -278,5 +291,64 @@ void QuadTree::parallelMountAllCollisionPairList(int rank, int threadNum, std::v
 		for(int j = 0; j < 4; j++){
 		  nodes[j]->parallelMountAllCollisionPairList(rank, threadNum, pairList);
 		}
+	}
+}
+
+void QuadTree::update(MyRectangle *rectangle){
+	int* multiIndex = getMultiIndex(rectangle);
+	if(multiIndex[0] && multiIndex[1] && multiIndex[2] && multiIndex[3] && this->parent != nullptr)
+		this->parent->update(rectangle);
+	else
+		this->entityList.push_back(rectangle);
+	delete multiIndex;
+}
+
+void QuadTree::updateAll(){
+	for(int i = 0; i < this->entityList.size(); i++){
+		int* multiIndex = getMultiIndex(this->entityList.at(i));
+		if(multiIndex[0] && multiIndex[1] && multiIndex[2] && multiIndex[3] && this->parent != nullptr){
+			this->parent->update(this->entityList.at(i));
+			entityList.erase(this->entityList.begin() + i);
+			i--;
+		}
+		delete multiIndex;
+	}
+	if(nodes[0] != nullptr){
+		 for(int i = 0; i < 4; i++){
+			 nodes[i]->updateAll();
+		 }
+	}
+}
+
+void QuadTree::parallelUpdate(MyRectangle* rectangle){
+	int* multiIndex = getMultiIndex(rectangle);
+	if(multiIndex[0] && multiIndex[1] && multiIndex[2] && multiIndex[3] && this->parent != nullptr)
+		this->parent->parallelUpdate(rectangle);
+	else{
+		pthread_mutex_lock(&this->mutex);
+		entityList.push_back(rectangle);
+		pthread_mutex_unlock(&this->mutex);
+	}
+	delete multiIndex;
+}
+
+void QuadTree::parallelUpdateAll(int rank, int threadNum){
+	int inicio, fim;
+	util::determinarParticao(&inicio, &fim, rank, threadNum, this->entityList.size(), 0);
+	for(int i = inicio; i < fim; i++){
+		int* multiIndex = getMultiIndex(this->entityList.at(i));
+		if(multiIndex[0] && multiIndex[1] && multiIndex[2] && multiIndex[3] && this->parent != nullptr){
+			this->parent->parallelUpdate(this->entityList.at(i));
+			pthread_mutex_lock(&this->mutex);
+			entityList.erase(this->entityList.begin() + i);
+			pthread_mutex_unlock(&this->mutex);
+			i--;
+		}
+		delete multiIndex;
+	}
+	if(nodes[0] != nullptr){
+		 for(int i = 0; i < 4; i++){
+			 nodes[i]->parallelUpdateAll(rank, threadNum);
+		 }
 	}
 }

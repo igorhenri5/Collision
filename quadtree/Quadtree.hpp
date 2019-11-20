@@ -14,7 +14,7 @@
 
 class QuadTree{
 private:
-	QuadTree** nodes;
+	QuadTree **nodes, *parent;
 	Rect* bounds;
 	std::vector<MyRectangle*> entityList;
 	std::vector<std::pair<MyRectangle*, MyRectangle*>> collissions;
@@ -26,19 +26,26 @@ private:
 
 
 public:
-	QuadTree(int level, Rect* bounds);
+	QuadTree(int level, Rect* bounds, QuadTree* parent);
 	~QuadTree();
 
 	void clear();
 	void split();
+	bool isEmpty();
 	void add(MyRectangle*);
 	void addParallel(MyRectangle*);
 	std::vector<MyRectangle*>* getEntityList();
+	QuadTree* getParent();
+	void setParent(QuadTree*);
 	int getPlaceIndex(MyRectangle*);
 	int* getMultiIndex(MyRectangle*);
 	void retrieve(std::vector<MyRectangle*>*, MyRectangle*);
 	void handleAllCollisions();
 	void parallelMountAllCollisionPairList(int rank, int threadNum, std::vector<std::pair<MyRectangle*, MyRectangle*>>*);
+	void update(MyRectangle*);
+	void updateAll();
+	void parallelUpdate(MyRectangle*);
+	void parallelUpdateAll(int rank, int threadNum);
 
 };
 
