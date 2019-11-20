@@ -166,6 +166,7 @@ void update(){
 
     gettimeofday(&tempoInicial, NULL);
 
+    // game::quadtree->handleAllCollisions();
     parallelHandleAllCollisions();
 
     gettimeofday(&tempoFinal, NULL);
