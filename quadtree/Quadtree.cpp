@@ -238,30 +238,27 @@ void QuadTree::handleAllCollisions(){
 	}
 }
 
-//retorna numero de tarefas criadas
-void QuadTree::parallelMountCollisionPairList(int rank, int threadNum, std::vector<std::pair<MyRectangle*, MyRectangle*>>* pairList, MyRectangle *rectangle){
+void QuadTree::parallelHandleCollision(int rank, int threadNum, MyRectangle *rectangle){
 	int inicio, fim;
 	util::determinarParticao(&inicio, &fim, rank, threadNum, this->entityList.size(), 0);
 	for(int i = inicio; i < fim; i++){
-		pairList->push_back(std::make_pair(rectangle, this->entityList.at(i)));
+		this->entityList.at(i)->handleCollision(rectangle);
     }
 
 	if(nodes[0] != nullptr){
 		for(int i = 0; i < 4; i++){
-			nodes[i]->parallelMountCollisionPairList(rank, threadNum, pairList, rectangle);
+			nodes[i]->parallelHandleCollision(rank, threadNum, rectangle);
 		}
 	}
 }
 
-//retorna numero de tarefas criadas
-void QuadTree::parallelMountAllCollisionPairList(int rank, int threadNum, std::vector<std::pair<MyRectangle*, MyRectangle*>>* pairList){
+void QuadTree::parallelHandleAllCollisions(int rank, int threadNum){
 	int inicio, fim;
 
-
-    for(int i = 0; i < this->entityList.size(); i++){
+	for(int i = 0; i < this->entityList.size(); i++){
 		util::determinarParticao(&inicio, &fim, rank, threadNum, this->entityList.size(), i + 1);
         for(int j = inicio; j < fim; j++){
-			pairList->push_back(std::make_pair(this->entityList.at(i), this->entityList.at(j)));
+			this->entityList.at(i)->handleCollision(this->entityList.at(j));
 	    }
 	}
 
@@ -271,12 +268,12 @@ void QuadTree::parallelMountAllCollisionPairList(int rank, int threadNum, std::v
 		  for(int j = 0; j < 4; j++){
 
 		      if(multiIndex[j])
-		      	nodes[j]->parallelMountCollisionPairList(rank, threadNum, pairList, this->entityList.at(i));
+		      	nodes[j]->parallelHandleCollision(rank, threadNum, this->entityList.at(i));
 		  }
 		  delete multiIndex;
 		}
 		for(int j = 0; j < 4; j++){
-		  nodes[j]->parallelMountAllCollisionPairList(rank, threadNum, pairList);
+		  nodes[j]->parallelHandleAllCollisions(rank, threadNum);
 		}
 	}
 }

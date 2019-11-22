@@ -2,19 +2,17 @@
 #include "util/Rect.hpp"
 #include "util/ScreenBounds.hpp"
 #include "entities/Rectangle.hpp"
-#include "graphics/ProgramFactory.hpp"
 #include "quadtree/QuadTree.hpp"
 #include "threadpool/ThreadPool.hpp"
 #include "threadpool/MasterFlag.hpp"
 #include "threadpool/AddTask.hpp"
-#include "threadpool/MountTask.hpp"
+#include "threadpool/HandleCollisionTask.hpp"
 #include <iostream>
 #include <vector>
 #include <utility>
 #include <time.h>
 #include <chrono>
 #include <sys/time.h>
-#include <GL/freeglut.h>
 #include <string>
 #include <cstdlib>
 #include <iomanip>
@@ -25,13 +23,12 @@ struct timeval tempoInicialAll, tempoFinalAll;
 struct timeval tempoInicial, tempoFinal;
 float elapsedTimeAdd, elapsedTimeMount, elapsedTimeUpt, elapsedTimeCld, elapsedTimeCln, elapsedTimeAll;
 char buffer[64];
-int x = 100;
+int x = 10;
 
 namespace game{
     Rect *screenRect;
     ScreenBounds *screenBounds;
     std::vector<IDrawable *> drawables;
-    ProgramFactory programFactory;
     QuadTree* quadtree;
     int seed = 420;
     ThreadPool *threadPool;
@@ -40,7 +37,6 @@ namespace game{
 
 void printElapsedTime(float elapsedTime){
     snprintf(buffer, sizeof(buffer), "%f", elapsedTime);
-    glutSetWindowTitle(buffer);
     std::cout << std::fixed;
     std::cout << std::setprecision(6) << "elapsedTime: " << elapsedTime << std::endl;
 }
@@ -59,7 +55,7 @@ void initDrawables(){
             displacementX = (rand() % 3) - 1;
             displacementY = (rand() % 3) - 1;
 
-            game::drawables.push_back(new MyRectangle(new Rect(i, j, RECSIZE, RECSIZE), game::screenRect, 0, displacementX, displacementY, &(game::programFactory)));
+            game::drawables.push_back(new MyRectangle(new Rect(i, j, RECSIZE, RECSIZE), game::screenRect, displacementX, displacementY));
         }
     }
     std::cout << "numero de elementos: " << game::drawables.size() << std::endl;
@@ -103,43 +99,12 @@ void addParallel(){
     game::masterFlag->wait();
 }
 
-std::vector<std::vector<std::pair<MyRectangle*, MyRectangle*>>*>* mountPairLists(){
-    std::vector<std::vector<std::pair<MyRectangle*, MyRectangle*>>*> *pairLists;
-
-    pairLists = new std::vector<std::vector<std::pair<MyRectangle*, MyRectangle*>>*>();
-
+void parallelHandleAllCollisions(){
     game::masterFlag->reset(game::threadPool->size);
     for(int i = 0; i < game::threadPool->size; i++){
-        pairLists->push_back(new std::vector<std::pair<MyRectangle*, MyRectangle*>>());
-        game::threadPool->addTask(new MountTask(game::masterFlag, game::quadtree, i, game::threadPool->size, pairLists->at(i)));
+        game::threadPool->addTask(new HandleCollisionTask(game::masterFlag, game::quadtree, i, game::threadPool->size));
     }
     game::masterFlag->wait();
-    return pairLists;
-}
-
-
-void parallelHandleAllCollisions(){
-    std::vector<std::vector<std::pair<MyRectangle*, MyRectangle*>>*> *pairLists;
-    gettimeofday(&tempoInicial, NULL);
-    pairLists = mountPairLists();
-    gettimeofday(&tempoFinal, NULL);
-    elapsedTimeMount += getSeconds(&tempoInicial, &tempoFinal);
-
-    if(x<=0){
-        std::cout << "Mnt ";
-        printElapsedTime(elapsedTimeMount / 100);
-        elapsedTimeMount = 0;
-    }
-    game::masterFlag->reset(pairLists->size());
-    for(int i = 0; i < pairLists->size(); i++){
-        game::threadPool->addTask(new HandleCollisionTask(game::masterFlag, pairLists->at(i)->begin(), pairLists->at(i)->end()));
-    }
-    game::masterFlag->wait();
-
-    for (auto pairList = pairLists->begin(); pairList != pairLists->end(); ++pairList){
-        delete *pairList;
-    }
-    delete pairLists;
 }
 
 //da pra paralelizar isso aqui
@@ -153,27 +118,23 @@ void update(){
     game::quadtree->clear();
 
     gettimeofday(&tempoInicial, NULL);
-    //Adicionar
-    // addSerial();
     addParallel();
     gettimeofday(&tempoFinal, NULL);
     elapsedTimeAdd += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
         std::cout << "Add ";
-        printElapsedTime(elapsedTimeAdd / 100);
+        printElapsedTime(elapsedTimeAdd / 10);
         elapsedTimeAdd = 0;
     }
 
     gettimeofday(&tempoInicial, NULL);
-
-    // game::quadtree->handleAllCollisions();
+    
     parallelHandleAllCollisions();
-
     gettimeofday(&tempoFinal, NULL);
     elapsedTimeCld += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
         std::cout << "Cld ";
-        printElapsedTime(elapsedTimeCld / 100);
+        printElapsedTime(elapsedTimeCld / 10);
         elapsedTimeCld = 0;
     }
 
@@ -187,7 +148,7 @@ void update(){
     elapsedTimeUpt += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
         std::cout << "Upt ";
-        printElapsedTime(elapsedTimeUpt / 100);
+        printElapsedTime(elapsedTimeUpt / 10);
         elapsedTimeUpt = 0;
     }
 
@@ -198,38 +159,25 @@ void update(){
     elapsedTimeCln += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
         std::cout << "Cln ";
-        printElapsedTime(elapsedTimeCln / 100);
+        printElapsedTime(elapsedTimeCln / 10);
         elapsedTimeCln = 0;
     }
-}
-
-void draw(){
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
-        (*drawable)->draw();
-    }
-    glutSwapBuffers();
 }
 
 void mainloop(){
     gettimeofday(&tempoInicialAll, NULL);
     update();
     gettimeofday(&tempoFinalAll, NULL);
-    draw();
 
     elapsedTimeAll += getSeconds(&tempoInicialAll, &tempoFinalAll);
     if(x<=0){
         std::cout << "All ";
-        printElapsedTime(elapsedTimeAll / 100);
+        printElapsedTime(elapsedTimeAll / 10);
         std::cout << std::endl;
         elapsedTimeAll = 0;
-        x=100;
+        x=10;
     }
     x--;
-}
-
-void onKeyboardDownEvent(unsigned char key, int x, int y){
-    std::cout << "onKeyboardDownEvent" << std::endl;
 }
 
 void onClose(){
@@ -242,14 +190,6 @@ void onClose(){
     delete game::threadPool;
     delete game::masterFlag;
     std::cout << "onClose" << std::endl;
-}
-
-void initOpenGLEnvironment(int width, int height){
-    glEnable(GL_DEPTH_TEST);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_BLEND);
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // Set background frame color
-    glViewport(0, 0, width, height);
 }
 
 int main(int argc, char **argv){
@@ -282,20 +222,10 @@ int main(int argc, char **argv){
     elapsedTimeCld = 0;
     elapsedTimeAll = 0;
 
-
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    //glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);  //Sem Vsync
-    glutInitWindowSize(game::screenRect->getWidth(), game::screenRect->getHeight());
-    glutInitWindowPosition(0, 0);
-    glutCreateWindow("Programacao Paralela - TP");
-    glewInit();
-    initOpenGLEnvironment(game::screenRect->getWidth(), game::screenRect->getHeight());
     initDrawables();
-    glutDisplayFunc(draw);
-    glutIdleFunc(mainloop);
-    glutCloseFunc(onClose);
-    glutKeyboardFunc(onKeyboardDownEvent);
-    glutMainLoop();
+    while(1){
+        mainloop();
+    }
+
     return 0;
 }

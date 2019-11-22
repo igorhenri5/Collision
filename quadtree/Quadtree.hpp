@@ -8,7 +8,6 @@
 #include "../entities/Rectangle.hpp"
 #include "../threadpool/ThreadPool.hpp"
 #include "../threadpool/MasterFlag.hpp"
-#include "../threadpool/HandleCollisionTask.hpp"
 
 #define MAX_ENTITIES 64
 
@@ -22,7 +21,7 @@ private:
     pthread_cond_t cond;
 	int level;
 	void handleCollision(MyRectangle*);
-	void parallelMountCollisionPairList(int rank, int threadNum, std::vector<std::pair<MyRectangle*, MyRectangle*>>*, MyRectangle*);
+	void parallelHandleCollision(int rank, int threadNum, MyRectangle*);
 
 
 public:
@@ -38,7 +37,7 @@ public:
 	int* getMultiIndex(MyRectangle*);
 	void retrieve(std::vector<MyRectangle*>*, MyRectangle*);
 	void handleAllCollisions();
-	void parallelMountAllCollisionPairList(int rank, int threadNum, std::vector<std::pair<MyRectangle*, MyRectangle*>>*);
+	void parallelHandleAllCollisions(int rank, int threadNum);
 
 };
 
