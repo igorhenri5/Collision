@@ -6,7 +6,7 @@
 #include "threadpool/ThreadPool.hpp"
 #include "threadpool/MasterFlag.hpp"
 #include "threadpool/AddTask.hpp"
-#include "threadpool/MountTask.hpp"
+#include "threadpool/HandleCollisionTask.hpp"
 #include <iostream>
 #include <vector>
 #include <utility>
@@ -99,43 +99,12 @@ void addParallel(){
     game::masterFlag->wait();
 }
 
-std::vector<std::vector<std::pair<MyRectangle*, MyRectangle*>>*>* mountPairLists(){
-    std::vector<std::vector<std::pair<MyRectangle*, MyRectangle*>>*> *pairLists;
-
-    pairLists = new std::vector<std::vector<std::pair<MyRectangle*, MyRectangle*>>*>();
-
+void parallelHandleAllCollisions(){
     game::masterFlag->reset(game::threadPool->size);
     for(int i = 0; i < game::threadPool->size; i++){
-        pairLists->push_back(new std::vector<std::pair<MyRectangle*, MyRectangle*>>());
-        game::threadPool->addTask(new MountTask(game::masterFlag, game::quadtree, i, game::threadPool->size, pairLists->at(i)));
+        game::threadPool->addTask(new HandleCollisionTask(game::masterFlag, game::quadtree, i, game::threadPool->size));
     }
     game::masterFlag->wait();
-    return pairLists;
-}
-
-
-void parallelHandleAllCollisions(){
-    std::vector<std::vector<std::pair<MyRectangle*, MyRectangle*>>*> *pairLists;
-    gettimeofday(&tempoInicial, NULL);
-    pairLists = mountPairLists();
-    gettimeofday(&tempoFinal, NULL);
-    elapsedTimeMount += getSeconds(&tempoInicial, &tempoFinal);
-
-    if(x<=0){
-        std::cout << "Mnt ";
-        printElapsedTime(elapsedTimeMount / 10);
-        elapsedTimeMount = 0;
-    }
-    game::masterFlag->reset(pairLists->size());
-    for(int i = 0; i < pairLists->size(); i++){
-        game::threadPool->addTask(new HandleCollisionTask(game::masterFlag, pairLists->at(i)->begin(), pairLists->at(i)->end()));
-    }
-    game::masterFlag->wait();
-
-    for (auto pairList = pairLists->begin(); pairList != pairLists->end(); ++pairList){
-        delete *pairList;
-    }
-    delete pairLists;
 }
 
 //da pra paralelizar isso aqui

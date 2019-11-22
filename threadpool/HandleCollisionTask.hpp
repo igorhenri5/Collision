@@ -1,15 +1,17 @@
-#ifndef __TASKS__
-#define __TASKS__
+#ifndef __HCLTASK__
+#define __HCLTASK__
 
 #include "Task.hpp"
-#include <utility>
+#include <vector>
 #include "../entities/Rectangle.hpp"
+#include "../quadtree/QuadTree.hpp"
 
 class HandleCollisionTask : public Task{
 private:
-    std::vector<std::pair<MyRectangle*, MyRectangle*>>::iterator begin, end;
+	QuadTree *quadtree;
+    int rank, threadNum;
 public:
-    HandleCollisionTask(MasterFlag*, std::vector<std::pair<MyRectangle*, MyRectangle*>>::iterator, std::vector<std::pair<MyRectangle*, MyRectangle*>>::iterator);
+    HandleCollisionTask(MasterFlag *masterFlag, QuadTree *quadtree, int rank, int threadNum);
     void run();
 };
 
