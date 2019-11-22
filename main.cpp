@@ -23,7 +23,7 @@ struct timeval tempoInicialAll, tempoFinalAll;
 struct timeval tempoInicial, tempoFinal;
 float elapsedTimeAdd, elapsedTimeMount, elapsedTimeUpt, elapsedTimeCld, elapsedTimeCln, elapsedTimeAll;
 char buffer[64];
-int x = 10;
+int x = 100;
 
 namespace game{
     Rect *screenRect;
@@ -123,18 +123,18 @@ void update(){
     elapsedTimeAdd += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
         std::cout << "Add ";
-        printElapsedTime(elapsedTimeAdd / 10);
+        printElapsedTime(elapsedTimeAdd / 100);
         elapsedTimeAdd = 0;
     }
 
     gettimeofday(&tempoInicial, NULL);
-    
+
     parallelHandleAllCollisions();
     gettimeofday(&tempoFinal, NULL);
     elapsedTimeCld += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
         std::cout << "Cld ";
-        printElapsedTime(elapsedTimeCld / 10);
+        printElapsedTime(elapsedTimeCld / 100);
         elapsedTimeCld = 0;
     }
 
@@ -148,7 +148,7 @@ void update(){
     elapsedTimeUpt += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
         std::cout << "Upt ";
-        printElapsedTime(elapsedTimeUpt / 10);
+        printElapsedTime(elapsedTimeUpt / 100);
         elapsedTimeUpt = 0;
     }
 
@@ -159,7 +159,7 @@ void update(){
     elapsedTimeCln += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
         std::cout << "Cln ";
-        printElapsedTime(elapsedTimeCln / 10);
+        printElapsedTime(elapsedTimeCln / 100);
         elapsedTimeCln = 0;
     }
 }
@@ -172,10 +172,10 @@ void mainloop(){
     elapsedTimeAll += getSeconds(&tempoInicialAll, &tempoFinalAll);
     if(x<=0){
         std::cout << "All ";
-        printElapsedTime(elapsedTimeAll / 10);
+        printElapsedTime(elapsedTimeAll / 100);
         std::cout << std::endl;
         elapsedTimeAll = 0;
-        x=10;
+        x=100;
     }
     x--;
 }

@@ -81,20 +81,18 @@ void QuadTree::add(MyRectangle* entity){
 
 void QuadTree::addParallel(MyRectangle* entity){
 
-  	bool isSplitted;
 	pthread_mutex_lock(&this->mutex);
-    isSplitted = nodes[0] != nullptr;
-    pthread_mutex_unlock(&this->mutex);
 
-	if(isSplitted){
+	if(nodes[0] != nullptr){
+		pthread_mutex_unlock(&this->mutex);
 		int index = getPlaceIndex(entity);
 		if(index != -1){
 			nodes[index]->addParallel(entity);
 			return;
 		}
+		pthread_mutex_lock(&this->mutex);
 	}
 
-	pthread_mutex_lock(&this->mutex);
 	entityList.push_back(entity);
 	pthread_mutex_unlock(&this->mutex);
 
