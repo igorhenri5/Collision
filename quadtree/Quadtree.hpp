@@ -16,12 +16,11 @@ private:
 	QuadTree** nodes;
 	Rect* bounds;
 	std::vector<MyRectangle*> entityList;
-	std::vector<std::pair<MyRectangle*, MyRectangle*>> collissions;
   	pthread_mutex_t mutex;
     pthread_cond_t cond;
 	int level;
 	void handleCollision(MyRectangle*);
-	void parallelHandleCollision(int rank, int threadNum, MyRectangle*);
+	void parallelHandleCollision(std::vector<MyRectangle *> *rectangleList, std::vector<bool> *flagList, int rank, int threadNum, MyRectangle*);
 
 
 public:
@@ -37,7 +36,7 @@ public:
 	int* getMultiIndex(MyRectangle*);
 	void retrieve(std::vector<MyRectangle*>*, MyRectangle*);
 	void handleAllCollisions();
-	void parallelHandleAllCollisions(int rank, int threadNum);
+	void parallelHandleAllCollisions(std::vector<MyRectangle *> *rectangleList, std::vector<bool> *flagList, int rank, int threadNum);
 
 };
 

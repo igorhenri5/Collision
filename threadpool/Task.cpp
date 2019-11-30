@@ -21,13 +21,16 @@ void AddTask::run(){
 	this->masterFlag->signal();
 }
 
-HandleCollisionTask::HandleCollisionTask(MasterFlag *masterFlag, QuadTree *quadtree, int rank, int threadNum): Task(masterFlag){
+HandleCollisionTask::HandleCollisionTask(MasterFlag *masterFlag, QuadTree *quadtree, std::vector<MyRectangle *> *rectangleList,
+                                            std::vector<bool> *flagList, int rank, int threadNum): Task(masterFlag){
 	this->quadtree	= quadtree;
+    this->rectangleList	= rectangleList;
+    this->flagList	= flagList;
 	this->rank		= rank;
 	this->threadNum	= threadNum;
 }
 
 void HandleCollisionTask::run(){
-	this->quadtree->parallelHandleAllCollisions(this->rank, this->threadNum);
+	this->quadtree->parallelHandleAllCollisions(this->rectangleList, this-> flagList,this->rank, this->threadNum);
 	this->masterFlag->signal();
 }

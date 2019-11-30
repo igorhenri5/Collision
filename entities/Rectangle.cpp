@@ -47,35 +47,27 @@ pthread_mutex_t* MyRectangle::getMutex(){
     return &this->mutex;
 }
 */
-void MyRectangle::handleCollision(MyRectangle *rectangle){
-    //if(!this->collidedFlag){
+bool MyRectangle::handleCollision(MyRectangle *rectangle){
+    Rect rectA(
+        this->rect->getX() + this->displacementX,
+        this->rect->getY() + this->displacementY,
+        this->rect->getWidth(),
+        this->rect->getHeight()
+    );
+    Rect rectB(
+        rectangle->getRect()->getX() + rectangle->getDisplacementX(),
+        rectangle->getRect()->getY() + rectangle->getDisplacementY(),
+        rectangle->getRect()->getWidth(),
+        rectangle->getRect()->getHeight()
+    );
 
-        //pthread_mutex_lock(&this->mutex);
-        //pthread_mutex_lock(rectangle->getMutex());
-        // if(!this->collidedFlag){
+    // if(rectA.intersect(&rectB)){
+    //     this->collidedFlag = 1;
+    //     rectangle->setCollidedFlag(1);
+    // }
 
-            Rect rectA(
-                this->rect->getX() + this->displacementX,
-                this->rect->getY() + this->displacementY,
-                this->rect->getWidth(),
-                this->rect->getHeight()
-            );
-            Rect rectB(
-                rectangle->getRect()->getX() + rectangle->getDisplacementX(),
-                rectangle->getRect()->getY() + rectangle->getDisplacementY(),
-                rectangle->getRect()->getWidth(),
-                rectangle->getRect()->getHeight()
-            );
+    return rectA.intersect(&rectB);
 
-            if(rectA.intersect(&rectB)){
-                this->collidedFlag = 1;
-                rectangle->setCollidedFlag(1);
-            }
-        // }
-
-        //pthread_mutex_unlock(rectangle->getMutex());
-        //pthread_mutex_unlock(&this->mutex);
-    //}
 }
 
 //se deu colisão = this->col

@@ -236,11 +236,13 @@ void QuadTree::handleAllCollisions(){
 	}
 }
 
-void QuadTree::parallelHandleCollision(int rank, int threadNum, MyRectangle *rectangle){
+void QuadTree::parallelHandleCollision(std::vector<MyRectangle *> *rectangleList, std::vector<bool> *flagList, int rank, int threadNum, MyRectangle *rectangle){
 	int inicio, fim;
 	util::determinarParticao(&inicio, &fim, rank, threadNum, this->entityList.size(), 0);
 	for(int i = inicio; i < fim; i++){
-		this->entityList.at(i)->handleCollision(rectangle);
+		rectangleList->push_back(this->entityList.at(i));
+		rectangleList->push_back(rectangle);
+		flagList->push_back(this->entityList.at(i)->handleCollision(rectangle));
     }
 
 	if(nodes[0] != nullptr){
@@ -250,13 +252,15 @@ void QuadTree::parallelHandleCollision(int rank, int threadNum, MyRectangle *rec
 	}
 }
 
-void QuadTree::parallelHandleAllCollisions(int rank, int threadNum){
+void QuadTree::parallelHandleAllCollisions(std::vector<MyRectangle *> *rectangleList, std::vector<bool> *flagList, int rank, int threadNum){
 	int inicio, fim;
 
 	for(int i = 0; i < this->entityList.size(); i++){
 		util::determinarParticao(&inicio, &fim, rank, threadNum, this->entityList.size(), i + 1);
         for(int j = inicio; j < fim; j++){
-			this->entityList.at(i)->handleCollision(this->entityList.at(j));
+			rectangleList->push_back(this->entityList.at(i));
+			rectangleList->push_back(this->entityList.at(j));
+			flagList->push_back(this->entityList.at(i)->handleCollision(this->entityList.at(j)));
 	    }
 	}
 

@@ -10,8 +10,11 @@ class HandleCollisionTask : public Task{
 private:
 	QuadTree *quadtree;
     int rank, threadNum;
+	std::vector<MyRectangle *> *rectangleList;
+	std::vector<bool> *flagList;
 public:
-    HandleCollisionTask(MasterFlag *masterFlag, QuadTree *quadtree, int rank, int threadNum);
+    HandleCollisionTask(MasterFlag *masterFlag, QuadTree *quadtree, std::vector<MyRectangle *> *rectangleList,
+							std::vector<bool> *flagList, int rank, int threadNum);
     void run();
 };
 

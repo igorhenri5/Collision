@@ -10,10 +10,9 @@ MergeTask::MergeTaskMergeTask(MasterFlag *masterFlag, std::vector<MyRectangle*> 
 }
 
 void MergeTask::run(){
-	for(int i = 0; i < this->rectanleList->size();  i++){
-		keys->at(i + begin) = this->rectanleList->at(i);
+	for(int i = 0; i < this->rectanleList->size(); i++){
+		keys->at(i + begin) = (int) this->rectanleList->at(i);
 		values->at(i + begin) = this->flagList->at(i);
 	}
 	this->masterFlag->signal();
 }
-

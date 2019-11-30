@@ -22,7 +22,7 @@ public:
     int getCollidedFlag();
     void setCollidedFlag(int);
     //pthread_mutex_t* getMutex();
-    void handleCollision(MyRectangle *renctangle);
+    bool handleCollision(MyRectangle *renctangle);
     virtual void draw();
     virtual void update();
     ~MyRectangle();
