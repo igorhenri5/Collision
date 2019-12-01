@@ -16,6 +16,8 @@
 #include <string>
 #include <cstdlib>
 #include <iomanip>
+#include "graphics/ProgramFactory.hpp"
+#include <GL/freeglut.h>
 
 #define  RECSIZE  4
 
@@ -29,6 +31,7 @@ namespace game{
     Rect *screenRect;
     ScreenBounds *screenBounds;
     std::vector<IDrawable *> drawables;
+    ProgramFactory programFactory;
     QuadTree* quadtree;
     int seed = 420;
     ThreadPool *threadPool;
@@ -55,7 +58,7 @@ void initDrawables(){
             displacementX = (rand() % 3) - 1;
             displacementY = (rand() % 3) - 1;
 
-            game::drawables.push_back(new MyRectangle(new Rect(i, j, RECSIZE, RECSIZE), game::screenRect, displacementX, displacementY));
+            game::drawables.push_back(new MyRectangle(new Rect(i, j, RECSIZE, RECSIZE), game::screenRect, 0, displacementX, displacementY, &(game::programFactory)));
         }
     }
     std::cout << "numero de elementos: " << game::drawables.size() << std::endl;
@@ -164,10 +167,19 @@ void update(){
     }
 }
 
+void draw(){
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
+        (*drawable)->draw();
+    }
+    glutSwapBuffers();
+}
+
 void mainloop(){
     gettimeofday(&tempoInicialAll, NULL);
     update();
     gettimeofday(&tempoFinalAll, NULL);
+    draw();
 
     elapsedTimeAll += getSeconds(&tempoInicialAll, &tempoFinalAll);
     if(x<=0){
@@ -190,6 +202,14 @@ void onClose(){
     delete game::threadPool;
     delete game::masterFlag;
     std::cout << "onClose" << std::endl;
+}
+
+void initOpenGLEnvironment(int width, int height){
+    glEnable(GL_DEPTH_TEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // Set background frame color
+    glViewport(0, 0, width, height);
 }
 
 int main(int argc, char **argv){
@@ -222,10 +242,20 @@ int main(int argc, char **argv){
     elapsedTimeCld = 0;
     elapsedTimeAll = 0;
 
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    //glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);  //Sem Vsync
+    glutInitWindowSize(game::screenRect->getWidth(), game::screenRect->getHeight());
+    glutInitWindowPosition(0, 0);
+    glutCreateWindow("Programacao Paralela - TP");
+    glewInit();
+    initOpenGLEnvironment(game::screenRect->getWidth(), game::screenRect->getHeight());
     initDrawables();
-    while(1){
-        mainloop();
-    }
+    glutDisplayFunc(draw);
+    glutIdleFunc(mainloop);
+    glutCloseFunc(onClose);
+    glutKeyboardFunc(onKeyboardDownEvent);
+    glutMainLoop();
 
     return 0;
 }
