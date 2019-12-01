@@ -254,7 +254,6 @@ int main(int argc, char **argv){
     glutDisplayFunc(draw);
     glutIdleFunc(mainloop);
     glutCloseFunc(onClose);
-    glutKeyboardFunc(onKeyboardDownEvent);
     glutMainLoop();
 
     return 0;
