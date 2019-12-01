@@ -10,9 +10,13 @@
 
 class MergeTask : public Task{
 private:
+    td::vector<MyRectangle*> *rectanleList;
+    std::vector<int> *flagList;
+    thrust::device_vector<int> *keys, *values;
+    int begin;
 public:
-    MergeTask(MasterFlag *masterFlag, std::vector<MyRectangle*> *rectanleList, std::vector<bool> *flagList,
-    			 thrust::device_vector<int> *keys, thrust::device_vector<bool> *values, int begin);
+    MergeTask(MasterFlag *masterFlag, std::vector<MyRectangle*> *rectanleList, std::vector<int> *flagList,
+    			 thrust::device_vector<int> *keys, thrust::device_vector<int> *values, int begin);
     void run();
 };
 

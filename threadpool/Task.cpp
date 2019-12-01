@@ -22,7 +22,7 @@ void AddTask::run(){
 }
 
 HandleCollisionTask::HandleCollisionTask(MasterFlag *masterFlag, QuadTree *quadtree, std::vector<MyRectangle *> *rectangleList,
-                                            std::vector<bool> *flagList, int rank, int threadNum): Task(masterFlag){
+                                            std::vector<int> *flagList, int rank, int threadNum): Task(masterFlag){
 	this->quadtree	= quadtree;
     this->rectangleList	= rectangleList;
     this->flagList	= flagList;

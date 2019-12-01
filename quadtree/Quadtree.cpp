@@ -236,7 +236,7 @@ void QuadTree::handleAllCollisions(){
 	}
 }
 
-void QuadTree::parallelHandleCollision(std::vector<MyRectangle *> *rectangleList, std::vector<bool> *flagList, int rank, int threadNum, MyRectangle *rectangle){
+void QuadTree::parallelHandleCollision(std::vector<MyRectangle *> *rectangleList, std::vector<int> *flagList, int rank, int threadNum, MyRectangle *rectangle){
 	int inicio, fim;
 	util::determinarParticao(&inicio, &fim, rank, threadNum, this->entityList.size(), 0);
 	for(int i = inicio; i < fim; i++){
@@ -252,7 +252,7 @@ void QuadTree::parallelHandleCollision(std::vector<MyRectangle *> *rectangleList
 	}
 }
 
-void QuadTree::parallelHandleAllCollisions(std::vector<MyRectangle *> *rectangleList, std::vector<bool> *flagList, int rank, int threadNum){
+void QuadTree::parallelHandleAllCollisions(std::vector<MyRectangle *> *rectangleList, std::vector<int> *flagList, int rank, int threadNum){
 	int inicio, fim;
 
 	for(int i = 0; i < this->entityList.size(); i++){

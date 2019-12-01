@@ -100,15 +100,11 @@ void addParallel(){
     game::masterFlag->wait();
 }
 
-void reduce(thrust::device_vector<int> *keys, thrust::device_vector<bool> *values){
-
-}
-
 void parallelHandleAllCollisions(){
     //collision
     game::masterFlag->reset(game::threadPool->size);
     std::vector<MyRectangle *> rectangleLists[game::threadPool->size];
-	std::vector<bool> flagLists[game::threadPool->size];
+	std::vector<int> flagLists[game::threadPool->size];
     for(int i = 0; i < game::threadPool->size; i++){
         game::threadPool->addTask(new HandleCollisionTask(game::masterFlag, game::quadtree, &rectangleLists[i], &flagLists[i], i, game::threadPool->size));
     }
@@ -120,14 +116,16 @@ void parallelHandleAllCollisions(){
         length += rectangleLists[i].size();
     }
     thrust::device_vector<int> keys(length);
-    thrust::device_vector<bool> values(length);
+    thrust::device_vector<int> values(length);
     game::masterFlag->reset(game::threadPool->size);
     game::threadPool->addTask(new MergeTask(game::masterFlag, &rectangleLists[i], &flagLists[i], &keys, &values, 0));
     for(int i = 1; i < game::threadPool->size; i++){
         game::threadPool->addTask(new MergeTask(game::masterFlag, &rectangleLists[i], &flagLists[i], &keys, &values, rectangleLists[i - 1].size()));
     }
     game::masterFlag->wait();
-    reduce(&keys, &values);
+    thrust::device_vector<int> v1(game::drawables.size());
+    thrust::device_vector<int> v2(game::drawables.size());
+    reduce(&keys, &values, &v1, &v2, game::drawables.size());
 }
 
 //da pra paralelizar isso aqui

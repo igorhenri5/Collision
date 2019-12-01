@@ -47,7 +47,7 @@ pthread_mutex_t* MyRectangle::getMutex(){
     return &this->mutex;
 }
 */
-bool MyRectangle::handleCollision(MyRectangle *rectangle){
+int MyRectangle::handleCollision(MyRectangle *rectangle){
     Rect rectA(
         this->rect->getX() + this->displacementX,
         this->rect->getY() + this->displacementY,
