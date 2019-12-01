@@ -16,7 +16,7 @@
 #include <string>
 #include <cstdlib>
 #include <iomanip>
-#include <thrust/device_vector.h>
+//#include <thrust/device_vector.h>
 
 #define  RECSIZE  4
 
@@ -111,6 +111,7 @@ void parallelHandleAllCollisions(){
     game::masterFlag->wait();
 
     //merge
+    /*
     int length = 0;
     for(int i = 0; i < game::threadPool->size; i++){
         length += rectangleLists[i].size();
@@ -126,6 +127,7 @@ void parallelHandleAllCollisions(){
     thrust::device_vector<int> v1(game::drawables.size());
     thrust::device_vector<int> v2(game::drawables.size());
     reduce(&keys, &values, &v1, &v2, game::drawables.size());
+    */
 }
 
 //da pra paralelizar isso aqui

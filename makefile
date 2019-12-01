@@ -21,3 +21,11 @@ build_threadpool:
 
 clean:
 	rm -f *.o *.exe
+	
+nv:
+	nvcc -ccbin g++-8 -c quadtree/*.cpp 
+	nvcc -ccbin g++-8 -c threadpool/*.cpp
+	nvcc -ccbin g++-8 -c util/*.cpp 
+	nvcc -ccbin g++-8 -c entities/*.cpp 
+	nvcc -ccbin g++-8 -c main.cpp 
+	nvcc -ccbin g++-8 -o tmain *.o -pthread 

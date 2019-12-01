@@ -6,11 +6,11 @@
 #include <thrust/device_vector.h>
 
 #include "Task.hpp"
-#include "Rectangle.hpp"
+#include "../entities/Rectangle.hpp"
 
 class MergeTask : public Task{
 private:
-    td::vector<MyRectangle*> *rectanleList;
+    std::vector<MyRectangle*> *rectanleList;
     std::vector<int> *flagList;
     thrust::device_vector<int> *keys, *values;
     int begin;

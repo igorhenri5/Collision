@@ -247,7 +247,7 @@ void QuadTree::parallelHandleCollision(std::vector<MyRectangle *> *rectangleList
 
 	if(nodes[0] != nullptr){
 		for(int i = 0; i < 4; i++){
-			nodes[i]->parallelHandleCollision(rank, threadNum, rectangle);
+			nodes[i]->parallelHandleCollision(rectangleList, flagList, rank, threadNum, rectangle);
 		}
 	}
 }
@@ -270,12 +270,12 @@ void QuadTree::parallelHandleAllCollisions(std::vector<MyRectangle *> *rectangle
 		  for(int j = 0; j < 4; j++){
 
 		      if(multiIndex[j])
-		      	nodes[j]->parallelHandleCollision(rank, threadNum, this->entityList.at(i));
+		      	nodes[j]->parallelHandleCollision(rectangleList, flagList, rank, threadNum, this->entityList.at(i));
 		  }
 		  delete multiIndex;
 		}
 		for(int j = 0; j < 4; j++){
-		  nodes[j]->parallelHandleAllCollisions(rank, threadNum);
+		  nodes[j]->parallelHandleAllCollisions(rectangleList, flagList, rank, threadNum);
 		}
 	}
 }
