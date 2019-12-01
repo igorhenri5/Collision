@@ -349,15 +349,6 @@ void QuadTree::handleAllCollisions(){
 			for(int j = i + 1; j < this->left.size(); j++){
 			  this->left.at(i)->handleCollision(this->left.at(j));
 			}
-			for(int j = 0; j < this->down.size(); j++){
-			  this->left.at(i)->handleCollision(this->down.at(j));
-			}
-			for(int j = 0; j < this->right.size(); j++){
-			  this->left.at(i)->handleCollision(this->right.at(j));
-			}
-			for(int j = 0; j < this->up.size(); j++){
-				this->left.at(i)->handleCollision(this->up.at(j));
-			}
 			nodes[0]->handleCollision(this->left.at(i));
 			nodes[3]->handleCollision(this->left.at(i));
 		}
@@ -365,21 +356,12 @@ void QuadTree::handleAllCollisions(){
 			for(int j = i + 1; j < this->down.size(); j++){
 			  this->down.at(i)->handleCollision(this->down.at(j));
 			}
-			for(int j = 0; j < this->right.size(); j++){
-			  this->down.at(i)->handleCollision(this->right.at(j));
-			}
-			for(int j = 0; j < this->up.size(); j++){
-				this->down.at(i)->handleCollision(this->up.at(j));
-			}
 			nodes[0]->handleCollision(this->down.at(i));
 			nodes[1]->handleCollision(this->down.at(i));
 		}
 		for(int i = 0; i < this->right.size(); i++){
 			for(int j = i + 1; j < this->right.size(); j++){
 			  this->right.at(i)->handleCollision(this->right.at(j));
-			}
-			for(int j = 0; j < this->up.size(); j++){
-			  this->right.at(i)->handleCollision(this->up.at(j));
 			}
 			nodes[1]->handleCollision(this->right.at(i));
 			nodes[2]->handleCollision(this->right.at(i));
@@ -498,15 +480,20 @@ std::pair<int, int> QuadTree::getCompactQuadTreeWithSize(std::vector<QuadTree*> 
 	quadTreeList->push_back(this);
 	numCollision_entity.first = 0;
 	numCollision_entity.second = 0;
+	if(nodes[0] == nullptr){
+		this->collisionsAtEntityList = this->entityList.size() * (this->entityList.size() - 1) / 2;
+		this->collisionsWithChildren = 0;
+	}
 	if(nodes[0] != nullptr){
 		for(int i = 0; i < 4; i++){
 			numCollision_entity = nodes[i]->getCompactQuadTreeWithSize(quadTreeList);
 			numCollision_entity.first += nodes[i]->getNumberOfCollisions();
 		}
+		this->collisionsAtEntityList = this->entityList.size() * (this->entityList.size() - 1) / 2;
+		this->collisionsWithChildren = this->entityList.size() * numCollision_entity.second;
 	}
-	this->collisionsAtEntityList = this->entityList.size() * (this->entityList.size() - 1) / 2;
-	this->collisionsWithChildren = this->entityList.size() * numCollision_entity.second;
 	this->numberOfCollisions = this->collisionsAtEntityList + this->collisionsWithChildren;
+	numCollision_entity.first += this->numberOfCollisions;
 	numCollision_entity.second += this->entityList.size();
 	return numCollision_entity;
 }

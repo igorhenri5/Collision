@@ -143,15 +143,15 @@ void update(){
     }
 
     gettimeofday(&tempoInicial, NULL);
-    std::pair<int, int> numCollision_entity;
-    std::vector<QuadTree*> quadTreeList;
-    numCollision_entity = game::quadtree->getCompactQuadTreeWithSize(&quadTreeList);
+    // std::pair<int, int> numCollision_entity;
+    // std::vector<QuadTree*> quadTreeList;
+    // numCollision_entity = game::quadtree->getCompactQuadTreeWithSize(&quadTreeList);
     game::quadtree->handleAllCollisions();
     // parallelHandleAllCollisions();
     gettimeofday(&tempoFinal, NULL);
     elapsedTimeCld += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){
-        // std::cout << quadTreeList.size() << std::endl;
+        // std::cout << numCollision_entity.first << std::endl;
         std::cout << "Cld ";
         printElapsedTime(elapsedTimeCld / 100);
         elapsedTimeCld = 0;
