@@ -284,8 +284,8 @@ void QuadTree::parallelHandleAllCollisions(int rank, int threadNum){
 void QuadTree::parallelHandleCollisionV2(int *inicio, int *numColisoes, MyRectangle *rectangle){
 	int fim;
 	if(*inicio < this->entityList.size()){
-		if(*numColisoes < this->entityList.size()){
-			fim = *numColisoes;
+		if(*inicio + *numColisoes <= this->entityList.size()){
+			fim = *inicio + *numColisoes;
 		}
 		else{
 			fim = this->entityList.size();
@@ -293,8 +293,8 @@ void QuadTree::parallelHandleCollisionV2(int *inicio, int *numColisoes, MyRectan
 		for(int i = *inicio; i < fim; i++){
 			this->entityList.at(i)->handleCollision(rectangle);
 	    }
+		*numColisoes -= fim - *inicio;
 		*inicio = 0;
-		*numColisoes -= fim;
 	}
 	else{
 		*inicio -= this->entityList.size();
@@ -307,25 +307,25 @@ void QuadTree::parallelHandleCollisionV2(int *inicio, int *numColisoes, MyRectan
 }
 
 void QuadTree::parallelHandleAllCollisionsV2(int *inicio, int *numColisoes){
-	int i, inicioi, inicioj, fim;
+	int inicioi, inicioj, fim;
 	if(*inicio < this->collisionsAtEntityList){
-		for(i = 0; *numColisoes > 0 && i < this->entityList.size(); i++){
-			*inicio += (i + 1);
-			if(*inicio < this->entityList.size()){
-				if(*numColisoes + i + 1 < this->entityList.size()){
-					fim = *numColisoes + i + 1;
+		for(int i = 0; *numColisoes > 0 && i < this->entityList.size(); i++){
+			if(*inicio + (i + 1) < this->entityList.size()){
+				if(*inicio + (i + 1) + *numColisoes <= this->entityList.size()){
+					fim = *inicio + (i + 1) + *numColisoes;
 				}
 				else{
 					fim = this->entityList.size();
 				}
-		        for(int j = *inicio; j < fim; j++){
+		        for(int j = *inicio + (i + 1); j < fim; j++){
 					this->entityList.at(i)->handleCollision(this->entityList.at(j));
 			    }
-				*numColisoes -= (fim - (i + 1));
+				*numColisoes -= (fim - (*inicio + (i + 1)));
 				*inicio = 0;
 			}
 			else{
-				*inicio -= this->entityList.size();
+				*inicio -= (this->entityList.size() - (i + 1));
+
 			}
 		}
 		*inicio = 0;
@@ -336,7 +336,7 @@ void QuadTree::parallelHandleAllCollisionsV2(int *inicio, int *numColisoes){
 
 	if(*numColisoes > 0){
 		if(nodes[0] != nullptr){
-			for(i = 0; *numColisoes > 0 && i < this->entityList.size(); i++){
+			for(int i = 0; *numColisoes > 0 && i < this->entityList.size(); i++){
 			  int* multiIndex = getMultiIndex(this->entityList.at(i));
 			  for(int j = 0; *numColisoes > 0 && j < 4; j++){
 				if(multiIndex[j]){
