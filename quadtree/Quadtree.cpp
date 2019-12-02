@@ -282,18 +282,11 @@ void QuadTree::parallelHandleAllCollisions(int rank, int threadNum){
 }
 
 void QuadTree::parallelHandleCollisionV2(int *inicio, int *numColisoes, MyRectangle *rectangle){
-	int fim;
 	if(*inicio < this->entityList.size()){
-		if(*inicio + *numColisoes <= this->entityList.size()){
-			fim = *inicio + *numColisoes;
-		}
-		else{
-			fim = this->entityList.size();
-		}
-		for(int i = *inicio; i < fim; i++){
+		for(int i = *inicio; *numColisoes > 0 && i < this->entityList.size(); i++){
 			this->entityList.at(i)->handleCollision(rectangle);
+			(*numColisoes)--;
 	    }
-		*numColisoes -= fim - *inicio;
 		*inicio = 0;
 	}
 	else{
@@ -307,33 +300,18 @@ void QuadTree::parallelHandleCollisionV2(int *inicio, int *numColisoes, MyRectan
 }
 
 void QuadTree::parallelHandleAllCollisionsV2(int *inicio, int *numColisoes){
-	int inicioi, inicioj, fim;
-	if(*inicio < this->collisionsAtEntityList){
-		for(int i = 0; *numColisoes > 0 && i < this->entityList.size(); i++){
-			if(*inicio + (i + 1) < this->entityList.size()){
-				if(*inicio + (i + 1) + *numColisoes <= this->entityList.size()){
-					fim = *inicio + (i + 1) + *numColisoes;
-				}
-				else{
-					fim = this->entityList.size();
-				}
-		        for(int j = *inicio + (i + 1); j < fim; j++){
-					this->entityList.at(i)->handleCollision(this->entityList.at(j));
-			    }
-				*numColisoes -= (fim - (*inicio + (i + 1)));
-				*inicio = 0;
-			}
-			else{
-				*inicio -= (this->entityList.size() - (i + 1));
-
-			}
+	for(int i = 0; *numColisoes > 0 && i < this->entityList.size(); i++){
+		if(*inicio + (i + 1) < this->entityList.size()){
+	        for(int j = *inicio + (i + 1); *numColisoes > 0 && j < this->entityList.size(); j++){
+				this->entityList.at(i)->handleCollision(this->entityList.at(j));
+				(*numColisoes)--;
+		    }
+			*inicio = 0;
 		}
-		*inicio = 0;
+		else{
+			*inicio -= (this->entityList.size() - (i + 1));
+		}
 	}
-	else{
-		*inicio -= this->collisionsAtEntityList;
-	}
-
 	if(*numColisoes > 0){
 		if(nodes[0] != nullptr){
 			for(int i = 0; *numColisoes > 0 && i < this->entityList.size(); i++){
