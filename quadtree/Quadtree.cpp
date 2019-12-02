@@ -115,7 +115,6 @@ void QuadTree::addParallel(MyRectangle* entity){
 	}
 }
 
-//Descobrir em qual subQuadrante o objeto de tipo ? se encaixaria na arvore
 int QuadTree::getPlaceIndex(MyRectangle* entity){
 	int index = -1;
 
