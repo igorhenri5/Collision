@@ -75,43 +75,27 @@ int MyRectangle::getCollidedFlag(){
 void MyRectangle::setCollidedFlag(int val){
     this->collidedFlag = val;
 }
-/*
-pthread_mutex_t* MyRectangle::getMutex(){
-    return &this->mutex;
-}
-*/
+
 void MyRectangle::handleCollision(MyRectangle *rectangle){
-    //if(!this->collidedFlag){
+    Rect rectA(
+        this->rect->getX() + this->displacementX,
+        this->rect->getY() + this->displacementY,
+        this->rect->getWidth(),
+        this->rect->getHeight()
+    );
+    Rect rectB(
+        rectangle->getRect()->getX() + rectangle->getDisplacementX(),
+        rectangle->getRect()->getY() + rectangle->getDisplacementY(),
+        rectangle->getRect()->getWidth(),
+        rectangle->getRect()->getHeight()
+    );
 
-        //pthread_mutex_lock(&this->mutex);
-        //pthread_mutex_lock(rectangle->getMutex());
-        // if(!this->collidedFlag){
-
-            Rect rectA(
-                this->rect->getX() + this->displacementX,
-                this->rect->getY() + this->displacementY,
-                this->rect->getWidth(),
-                this->rect->getHeight()
-            );
-            Rect rectB(
-                rectangle->getRect()->getX() + rectangle->getDisplacementX(),
-                rectangle->getRect()->getY() + rectangle->getDisplacementY(),
-                rectangle->getRect()->getWidth(),
-                rectangle->getRect()->getHeight()
-            );
-
-            if(rectA.intersect(&rectB)){
-                this->collidedFlag = 1;
-                rectangle->setCollidedFlag(1);
-            }
-        // }
-
-        //pthread_mutex_unlock(rectangle->getMutex());
-        //pthread_mutex_unlock(&this->mutex);
-    //}
+    if(rectA.intersect(&rectB)){
+        this->collidedFlag = 1;
+        rectangle->setCollidedFlag(1);
+    }
 }
 
-//se deu colisão = this->col
 
 void MyRectangle::draw(){
     GlUtil::draw(programFactory->getProgram(), this->programParams);
@@ -135,7 +119,6 @@ void MyRectangle::update(){
 }
 
 MyRectangle::~MyRectangle(){
-    //pthread_mutex_destroy(&this->mutex);
     delete this->mvpMatrix;
     delete this->rect;
     delete this->frame;
