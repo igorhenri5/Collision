@@ -309,33 +309,24 @@ void QuadTree::parallelHandleCollisionV2(int *inicio, int *numColisoes, MyRectan
 void QuadTree::parallelHandleAllCollisionsV2(int *inicio, int *numColisoes){
 	int i, inicioi, inicioj, fim;
 	if(*inicio < this->collisionsAtEntityList){
-		inicioi = *inicio / this->entityList.size();
-		*inicio = *inicio % this->entityList.size();
-		i = 0;
-		if(*numColisoes + i + 1 < this->entityList.size()){
-			fim = *numColisoes + i + 1;
-			fim = this->entityList.size();
-		}
-		else{
-			fim = this->entityList.size();
-		}
-        for(int j = i + 1; j < fim; j++){
-			this->entityList.at(i)->handleCollision(this->entityList.at(j));
-	    }
-		*numColisoes -= (fim - (i + 1));
-
-		for(i = inicioi + 1; *numColisoes > 0 && i < this->entityList.size(); i++){
-			if(*numColisoes + i + 1 < this->entityList.size()){
-				fim = *numColisoes + i + 1;
-				fim = this->entityList.size();
+		for(i = 0; *numColisoes > 0 && i < this->entityList.size(); i++){
+			*inicio += (i + 1);
+			if(*inicio < this->entityList.size()){
+				if(*numColisoes + i + 1 < this->entityList.size()){
+					fim = *numColisoes + i + 1;
+				}
+				else{
+					fim = this->entityList.size();
+				}
+		        for(int j = *inicio; j < fim; j++){
+					this->entityList.at(i)->handleCollision(this->entityList.at(j));
+			    }
+				*numColisoes -= (fim - (i + 1));
+				*inicio = 0;
 			}
 			else{
-				fim = this->entityList.size();
+				*inicio -= this->entityList.size();
 			}
-	        for(int j = i + 1; j < fim; j++){
-				this->entityList.at(i)->handleCollision(this->entityList.at(j));
-		    }
-			*numColisoes -= (fim - (i + 1));
 		}
 		*inicio = 0;
 	}
