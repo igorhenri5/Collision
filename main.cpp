@@ -7,6 +7,7 @@
 #include "threadpool/MasterFlag.hpp"
 #include "threadpool/AddTask.hpp"
 #include "threadpool/HandleCollisionTask.hpp"
+#include "threadpool/HandleCollisionTaskV2.hpp"
 #include <iostream>
 #include <vector>
 #include <utility>
@@ -110,6 +111,26 @@ void parallelHandleAllCollisions(){
     game::masterFlag->wait();
 }
 
+void parallelHandleAllCollisionsV2(){
+    std::pair<int, int> numCollision_entity;
+    std::vector<QuadTree*> quadTreeList;
+    // int colisoes = 0;
+    numCollision_entity = game::quadtree->getCompactQuadTreeWithSize(&quadTreeList);
+    // std::cout << "quadtree size: " << quadTreeList.size() << std::endl;
+    // std::cout << "num colisoes: " << numCollision_entity.first << std::endl;
+    // for(int i = 0; i < quadTreeList.size(); i++){
+    //     std::cout << "q" << i << ": " << quadTreeList.at(i)->getNumberOfCollisions() << std::endl;
+    //     colisoes += quadTreeList.at(i)->getNumberOfCollisions();
+    // }
+    // std::cout << "num colisoes2: " << colisoes << std::endl;
+    game::masterFlag->reset(game::threadPool->size);
+    for(int i = 0; i < game::threadPool->size; i++){
+
+        game::threadPool->addTask(new HandleCollisionTaskV2(game::masterFlag, &quadTreeList, i, game::threadPool->size, numCollision_entity.first));
+    }
+    game::masterFlag->wait();
+}
+
 //da pra paralelizar isso aqui
 void cleanFlags(){
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
@@ -131,8 +152,7 @@ void update(){
     }
 
     gettimeofday(&tempoInicial, NULL);
-
-    parallelHandleAllCollisions();
+    parallelHandleAllCollisionsV2();
     gettimeofday(&tempoFinal, NULL);
     elapsedTimeCld += getSeconds(&tempoInicial, &tempoFinal);
     if(x<=0){

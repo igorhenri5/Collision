@@ -1,6 +1,7 @@
 #include "Task.hpp"
 #include "AddTask.hpp"
 #include "HandleCollisionTask.hpp"
+#include "HandleCollisionTaskV2.hpp"
 
 Task::Task(MasterFlag *masterFlag){
     this->masterFlag = masterFlag;
@@ -29,5 +30,30 @@ HandleCollisionTask::HandleCollisionTask(MasterFlag *masterFlag, QuadTree *quadt
 
 void HandleCollisionTask::run(){
 	this->quadtree->parallelHandleAllCollisions(this->rank, this->threadNum);
+	this->masterFlag->signal();
+}
+
+HandleCollisionTaskV2::HandleCollisionTaskV2(MasterFlag *masterFlag, std::vector<QuadTree*> *quadTreeList, int rank, int threadNum, int numColisoes): Task(masterFlag){
+	this->quadTreeList	= quadTreeList;
+	this->rank		= rank;
+	this->threadNum	= threadNum;
+    this->numColisoes = numColisoes;
+}
+
+void HandleCollisionTaskV2::run(){
+    int inicio, numColisoesThread;
+    numColisoesThread = this->numColisoes / threadNum;
+    inicio = this->rank * numColisoesThread;
+    if(this->rank == threadNum - 1){
+        numColisoesThread = numColisoes - this->rank * numColisoesThread;
+    }
+    for(int i = 0; numColisoesThread > 0 && i < this->quadTreeList->size(); i++){
+        if(inicio < this->quadTreeList->at(i)->getNumberOfCollisions()){
+            this->quadTreeList->at(i)->parallelHandleAllCollisionsV2(&inicio, &numColisoesThread);
+        }
+        else{
+            inicio -= this->quadTreeList->at(i)->getNumberOfCollisions();
+        }
+    }
 	this->masterFlag->signal();
 }

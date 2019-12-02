@@ -9,6 +9,7 @@ QuadTree::QuadTree(int level, Rect* bounds){
 	}
 	this->level  = level;
 	this->bounds = bounds;
+	this->numberOfCollisions = 0;
 	pthread_mutex_init(&mutex, 0);
     pthread_cond_init(&cond, 0);
 }
@@ -37,6 +38,10 @@ void QuadTree::clear(){
 
 std::vector<MyRectangle*>* QuadTree::getEntityList(){
 	return &(this->entityList);
+}
+
+int QuadTree::getNumberOfCollisions(){
+	return this->numberOfCollisions;
 }
 
 void QuadTree::split(){
@@ -274,4 +279,120 @@ void QuadTree::parallelHandleAllCollisions(int rank, int threadNum){
 		  nodes[j]->parallelHandleAllCollisions(rank, threadNum);
 		}
 	}
+}
+
+void QuadTree::parallelHandleCollisionV2(int *inicio, int *numColisoes, MyRectangle *rectangle){
+	int fim;
+	if(*inicio < this->entityList.size()){
+		if(*numColisoes < this->entityList.size()){
+			fim = *numColisoes;
+		}
+		else{
+			fim = this->entityList.size();
+		}
+		for(int i = *inicio; i < fim; i++){
+			this->entityList.at(i)->handleCollision(rectangle);
+	    }
+		*inicio = 0;
+		*numColisoes -= fim;
+	}
+	else{
+		*inicio -= this->entityList.size();
+	}
+	if(nodes[0] != nullptr){
+		for(int i = 0; *numColisoes > 0 &&  i < 4; i++){
+			nodes[i]->parallelHandleCollisionV2(inicio, numColisoes, rectangle);
+		}
+	}
+}
+
+void QuadTree::parallelHandleAllCollisionsV2(int *inicio, int *numColisoes){
+	int i, inicioi, inicioj, fim;
+	if(*inicio < this->collisionsAtEntityList){
+		inicioi = *inicio / this->entityList.size();
+		*inicio = *inicio % this->entityList.size();
+		i = 0;
+		if(*numColisoes + i + 1 < this->entityList.size()){
+			fim = *numColisoes + i + 1;
+			fim = this->entityList.size();
+		}
+		else{
+			fim = this->entityList.size();
+		}
+        for(int j = i + 1; j < fim; j++){
+			this->entityList.at(i)->handleCollision(this->entityList.at(j));
+	    }
+		*numColisoes -= (fim - (i + 1));
+
+		for(i = inicioi + 1; *numColisoes > 0 && i < this->entityList.size(); i++){
+			if(*numColisoes + i + 1 < this->entityList.size()){
+				fim = *numColisoes + i + 1;
+				fim = this->entityList.size();
+			}
+			else{
+				fim = this->entityList.size();
+			}
+	        for(int j = i + 1; j < fim; j++){
+				this->entityList.at(i)->handleCollision(this->entityList.at(j));
+		    }
+			*numColisoes -= (fim - (i + 1));
+		}
+		*inicio = 0;
+	}
+	else{
+		*inicio -= this->collisionsAtEntityList;
+	}
+
+	if(*numColisoes > 0){
+		if(nodes[0] != nullptr){
+			for(i = 0; *numColisoes > 0 && i < this->entityList.size(); i++){
+			  int* multiIndex = getMultiIndex(this->entityList.at(i));
+			  for(int j = 0; *numColisoes > 0 && j < 4; j++){
+				if(multiIndex[j]){
+					nodes[j]->parallelHandleCollisionV2(inicio, numColisoes, this->entityList.at(i));
+				}
+			  }
+			  delete multiIndex;
+			}
+			for(int j = 0; *numColisoes > 0 && j < 4; j++){
+			  nodes[j]->parallelHandleAllCollisionsV2(inicio, numColisoes);
+			}
+		}
+	}
+}
+
+/**
+* return	.first	= numero total de colisioes do quadrante
+* 			.second	= numero total de retangulos
+*/
+std::pair<int, int> QuadTree::getCompactQuadTreeWithSize(std::vector<QuadTree*> *quadTreeList){
+	std::pair<int, int> numCollision_entity, numCollision_entityChild[4];
+
+	quadTreeList->push_back(this);
+	numCollision_entity.first = 0;
+	numCollision_entity.second = 0;
+	this->collisionsWithChildren = 0;
+
+	this->collisionsAtEntityList = this->entityList.size() * (this->entityList.size() - 1) / 2;
+	this->numberOfCollisions = this->collisionsAtEntityList;
+
+	if(nodes[0] != nullptr){
+		for(int i = 0; i < 4; i++){
+			numCollision_entityChild[i] = nodes[i]->getCompactQuadTreeWithSize(quadTreeList);
+			numCollision_entity.first += numCollision_entityChild[i].first;
+			numCollision_entity.second += numCollision_entityChild[i].second;
+		}
+		for(int i = 0; i < this->entityList.size(); i++){
+			int* multiIndex = getMultiIndex(this->entityList.at(i));
+			for(int j = 0; j < 4; j++){
+				if(multiIndex[j]){
+					this->numberOfCollisions += numCollision_entityChild[j].second;
+				}
+			}
+			delete multiIndex;
+		}
+	}
+	numCollision_entity.first += this->numberOfCollisions;
+	numCollision_entity.second += this->entityList.size();
+	return numCollision_entity;
 }
