@@ -107,7 +107,6 @@ void parallelHandleAllCollisions(){
     game::masterFlag->wait();
 }
 
-//da pra paralelizar isso aqui
 void cleanFlags(){
     for (auto drawable = game::drawables.begin(); drawable != game::drawables.end(); ++drawable){
         ((MyRectangle *)(*drawable))->setCollidedFlag(0);
